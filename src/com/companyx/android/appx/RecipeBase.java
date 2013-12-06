@@ -1,9 +1,15 @@
 package com.companyx.android.appx;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class RecipeBase {
-	public static final String[] ingredientType = { "MEAT", "VEGETABLE", "FRUIT" };
+	Map<String, Recipe> recipeDatabase;
+	
+	RecipeBase() {
+		recipeDatabase = new TreeMap<String, Recipe>();
+	}
 	
 	class Recipe {
 		String name;
