@@ -19,4 +19,6 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	/* This is a comment that wasn't here earlier */
+	
+	// Here's another comment that wasn't here either.
 }
