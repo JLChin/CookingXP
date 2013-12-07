@@ -4,7 +4,6 @@ gen/
 .classpath
 .project
 proguard-project.txt
-project.properties
 
 
 # Compiled source #
