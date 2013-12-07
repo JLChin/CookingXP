@@ -53,7 +53,7 @@ public class RecipeBase {
 	 * Returns a list of all recipes, sorted by name.
 	 * @return a list of all recipes, sorted by name.
 	 */
-	public List<Recipe> getRecipe() {
+	public List<Recipe> getRecipes() {
 		List<Recipe> result = new ArrayList<Recipe>();
 		
 		for (Map.Entry<String, Recipe> entry : recipeDatabase.entrySet())
