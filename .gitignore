@@ -2,7 +2,6 @@ bin/
 gen/
 .settings/
 .classpath
-.project
 proguard-project.txt
 
 
