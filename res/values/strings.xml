@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- SYSTEM -->
     <string name="app_name">AppX</string>
-    <string name="action_settings">Settings</string>
+
+    <!-- MENU -->
+    <string name="menu_recipes">Recipe</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_quit">Quit</string>
+
+    <!-- TITLE -->
+    <string name="title_recipes">Recipes</string>
+    
     <string name="hello_world">Hello world!</string>
 
 </resources>

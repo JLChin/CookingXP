@@ -19,7 +19,7 @@ public class RecipeBase {
 		recipeDatabase = new TreeMap<String, Recipe>();
 	}
 	
-	class Recipe {
+	static class Recipe {
 		String name;
 		int timeRequiredInMin;
 		List<Ingredient> ingredients;
@@ -29,7 +29,7 @@ public class RecipeBase {
 		}
 	}
 	
-	class Ingredient {
+	static class Ingredient {
 		String name;
 		
 		Ingredient (String name) {
