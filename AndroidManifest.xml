@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.companyx.android.appx.SelectRecipeActivity"
+            android:label="@string/title_recipes"
+            android:parentActivityName="com.companyx.android.appx.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.companyx.android.appx.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
