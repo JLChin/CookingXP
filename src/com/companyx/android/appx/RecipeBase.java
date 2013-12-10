@@ -1,6 +1,7 @@
 package com.companyx.android.appx;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,18 +14,20 @@ import java.util.TreeMap;
  * @author James Chin <JamesLChin@gmail.com>
  */
 public class RecipeBase {
-	Map<String, Recipe> recipeDatabase;
+	Map<String, Recipe> recipeMap; // recipes indexed by recipe name
+	Map<String, List<Recipe>> indexMap; // recipes indexed by search word
 	
 	RecipeBase() {
-		recipeDatabase = new TreeMap<String, Recipe>();
+		recipeMap = new TreeMap<String, Recipe>();
+		indexMap = new HashMap<String, List<Recipe>>();
 	}
 	
 	static class Recipe {
 		String name;
 		int timeRequiredInMin;
-		List<Ingredient> ingredients;
+		List<RecipeIngredient> recipeIngredients;
 		
-		Recipe (String name) {
+		Recipe (String name, List<RecipeIngredient> recipeIngredients, String directions) {
 			this.name = name;
 		}
 	}
@@ -37,16 +40,41 @@ public class RecipeBase {
 		}
 	}
 	
+	static class RecipeIngredient {
+		float amount;
+		String measurement;
+		Ingredient ingredient;
+
+		RecipeIngredient (float amount, String measurement, Ingredient ingredient) {
+			this.amount = amount;
+			this.measurement = measurement;
+			this.ingredient = ingredient;
+		}
+	}
+	
 	/**
-	 * Adds a new recipe to the recipe database.
+	 * Adds a new recipe to the recipe map and index map.
 	 * @param newRecipe the new recipe to be added to the database.
-	 * @return null if the recipe name was not previously contained in the database, otherwise returns the replaced recipe of the same name.
 	 */
-	public Recipe addRecipe(Recipe newRecipe) {
+	public void addRecipe(Recipe newRecipe) {
 		if (newRecipe == null)
-			return null;
+			return;
 		
-		return recipeDatabase.put(newRecipe.name, newRecipe);
+		// index the recipe by the words in the recipe name
+		String[] words = newRecipe.name.split(" ");
+		for (String word : words) {
+			// new word
+			if (!indexMap.containsKey(word))
+				indexMap.put(word, new ArrayList<Recipe>());
+			
+			// add new recipe to search index
+			indexMap.get(word).add(newRecipe);
+		}
+		
+		// TODO allow recipe name duplicates
+		
+		// add new recipe to master list
+		recipeMap.put(newRecipe.name, newRecipe);
 	}
 	
 	/**
@@ -56,7 +84,30 @@ public class RecipeBase {
 	public List<Recipe> getRecipes() {
 		List<Recipe> result = new ArrayList<Recipe>();
 		
-		for (Map.Entry<String, Recipe> entry : recipeDatabase.entrySet())
+		for (Map.Entry<String, Recipe> entry : recipeMap.entrySet())
+			result.add(entry.getValue());
+		
+		return result;
+	}
+	
+	/**
+	 * Returns a list of all recipes matching the specified search String, sorted by name.
+	 * TODO duplicate result names
+	 * @param searchString String containing the specifed search term(s).
+	 * @return a list of all recipes matching the specified search String, sorted by name.
+	 */
+	public List<Recipe> searchRecipes(String searchString) {
+		if (searchString == null)
+			return null;
+		
+		Map<String, Recipe> resultTree = new TreeMap<String, Recipe>();
+		List<Recipe> list = indexMap.get(searchString);
+		
+		for (Recipe r : list)
+			resultTree.put(r.name, r);
+		
+		List<Recipe> result = new ArrayList<Recipe>();
+		for (Map.Entry<String, Recipe> entry : resultTree.entrySet())
 			result.add(entry.getValue());
 		
 		return result;
