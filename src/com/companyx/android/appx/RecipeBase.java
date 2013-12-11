@@ -3,6 +3,7 @@ package com.companyx.android.appx;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -90,7 +91,7 @@ public class RecipeBase {
 		
 		// convert words to lowercase for indexing
 		for (int i = 0; i < words.length; i++)
-			words[i] = words[i].toLowerCase();
+			words[i] = words[i].toLowerCase(Locale.US);
 		
 		for (String word : words) {
 			// new word, did not exist previously
@@ -130,23 +131,38 @@ public class RecipeBase {
 	
 	/**
 	 * Returns a list of all recipes matching the specified search String, sorted by name.
-	 * TODO duplicate result names
-	 * @param searchString String containing the specifed search term(s).
+	 * @param searchString String containing the specified search term(s).
 	 * @return a list of all recipes matching the specified search String, sorted by name.
 	 */
 	public List<Recipe> searchRecipes(String searchString) {
 		if (searchString == null)
 			return null;
 		
-		Map<String, Recipe> resultTree = new TreeMap<String, Recipe>();
+		// convert searchString to lowercase, to find both lower and uppercase results in the database
+		searchString = searchString.toLowerCase(Locale.US);
+		
+		// create new Tree to store and automatically sort by recipe name
+		Map<String, List<Recipe>> resultTree = new TreeMap<String, List<Recipe>>();
+		
+		// get all recipes containing the current word in the name or ingredient list
 		List<Recipe> list = indexMap.get(searchString);
+		if (list != null) {
+			for (Recipe r : list) {
+				// new recipe name, did not exist previously
+				if (!resultTree.containsKey(r.name))
+					resultTree.put(r.name, new ArrayList<Recipe>());
+				
+				// add recipe to results Tree
+				resultTree.get(r.name).add(r);
+			}
+		}
 		
-		for (Recipe r : list)
-			resultTree.put(r.name, r);
-		
+		// output and return result as a List
 		List<Recipe> result = new ArrayList<Recipe>();
-		for (Map.Entry<String, Recipe> entry : resultTree.entrySet())
-			result.add(entry.getValue());
+		for (Map.Entry<String, List<Recipe>> entry : resultTree.entrySet()) {
+			for (Recipe r : entry.getValue())
+				result.add(r);
+		}
 		
 		return result;
 	}
