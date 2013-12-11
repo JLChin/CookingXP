@@ -1,11 +1,14 @@
 package com.companyx.android.appx;
 
 import android.annotation.SuppressLint;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -16,15 +19,15 @@ import java.util.TreeMap;
  * @author James Chin <JamesLChin@gmail.com>
  */
 public class RecipeBase {
-	Map<String, List<Recipe>> recipeMap; // recipes indexed by recipe name
-	Map<String, List<Recipe>> indexMap; // recipes indexed by search word
-	Map<Integer, Recipe> idMap; // recipes indexed by unique ID
+	Map<String, List<Recipe>> recipeMap; // maps recipe name to List of recipes that match that name
+	Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeID's
+	Map<Integer, Recipe> idMap; // maps unique integer ID to corresponding recipe
 	private int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
 	
 	@SuppressLint("UseSparseArrays")
 	RecipeBase() {
 		recipeMap = new TreeMap<String, List<Recipe>>();
-		indexMap = new HashMap<String, List<Recipe>>();
+		indexMap = new HashMap<String, Set<Integer>>();
 		idMap = new HashMap<Integer, Recipe>();
 		recipeCounter = 0;
 	}
@@ -116,10 +119,10 @@ public class RecipeBase {
 		for (String word : words) {
 			// new word, did not exist previously
 			if (!indexMap.containsKey(word))
-				indexMap.put(word, new ArrayList<Recipe>());
+				indexMap.put(word, new HashSet<Integer>());
 
-			// add recipe to search index
-			indexMap.get(word).add(recipe);
+			// add recipeID to search index
+			indexMap.get(word).add(recipe.recipeID);
 		}
 	}
 	
@@ -140,6 +143,7 @@ public class RecipeBase {
 	
 	/**
 	 * Returns a list of all recipes matching the specified search String, sorted by name.
+	 * TODO repeated words in search String
 	 * @param searchString String containing the specified search term(s).
 	 * @return a list of all recipes matching the specified search String, sorted by name.
 	 */
@@ -153,17 +157,26 @@ public class RecipeBase {
 		
 		// parse search terms
 		String[] searchWords = searchString.split(" ");
-		int numTerms = searchWords.length;
+		
+		// eliminate duplicate search terms
+		Set<String> searchWordSet = new HashSet<String>();
+		for (String s : searchWords)
+			searchWordSet.add(s);
+		
+		// number of matches required
+		int numTerms = searchWordSet.size();
 		
 		// create structure to hold unique recipes and count the number of hits for each
 		Map<Integer, Integer> hitTable = new HashMap<Integer, Integer>();
 		
-		for (String s : searchWords) {
+		for (String s : searchWordSet) {
 			// get all recipes containing the current word in the name or ingredient list
-			List<Recipe> list = indexMap.get(s);
+			Set<Integer> set = indexMap.get(s);
 			
-			if (list != null) {
-				for (Recipe r : list) {
+			if (set != null) {
+				for (int i : set) {
+					Recipe r = idMap.get(i); // retrieve recipe
+					
 					if (!hitTable.containsKey(r.recipeID))
 						hitTable.put(r.recipeID, 1);
 					else
