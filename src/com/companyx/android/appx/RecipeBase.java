@@ -14,24 +14,33 @@ import java.util.TreeMap;
  * @author James Chin <JamesLChin@gmail.com>
  */
 public class RecipeBase {
-	Map<String, Recipe> recipeMap; // recipes indexed by recipe name
+	Map<String, List<Recipe>> recipeMap; // recipes indexed by recipe name
 	Map<String, List<Recipe>> indexMap; // recipes indexed by search word
 	
 	RecipeBase() {
-		recipeMap = new TreeMap<String, Recipe>();
+		recipeMap = new TreeMap<String, List<Recipe>>();
 		indexMap = new HashMap<String, List<Recipe>>();
 	}
 	
+	/**
+	 * Class representing a recipe.
+	 */
 	static class Recipe {
 		String name;
-		int timeRequiredInMin;
+		int timeRequiredInMin; // TODO
 		List<RecipeIngredient> recipeIngredients;
+		List<Direction> directions;
 		
-		Recipe (String name, List<RecipeIngredient> recipeIngredients, String directions) {
+		Recipe (String name, List<RecipeIngredient> recipeIngredients, List<Direction> directions) {
 			this.name = name;
+			this.recipeIngredients = recipeIngredients;
+			this.directions = directions;
 		}
 	}
 	
+	/**
+	 * Class representing an ingredient.
+	 */
 	static class Ingredient {
 		String name;
 		
@@ -40,6 +49,10 @@ public class RecipeBase {
 		}
 	}
 	
+	/**
+	 * Class representing one itemized ingredient consisting of the number amount, unit of measurement, and ingredient.
+	 * Example: 1-1/4 Tablespoon Sugar
+	 */
 	static class RecipeIngredient {
 		float amount;
 		String measurement;
@@ -53,6 +66,17 @@ public class RecipeBase {
 	}
 	
 	/**
+	 * Class representing one instruction or action of the recipe.
+	 */
+	static class Direction {
+		String direction;
+		
+		Direction (String direction) {
+			this.direction = direction;
+		}
+	}
+	
+	/**
 	 * Adds a new recipe to the recipe map and index map.
 	 * @param newRecipe the new recipe to be added to the database.
 	 */
@@ -60,10 +84,16 @@ public class RecipeBase {
 		if (newRecipe == null)
 			return;
 		
-		// index the recipe by the words in the recipe name
+		// INDEX RECIPE NAME
+		// parse recipe name
 		String[] words = newRecipe.name.split(" ");
+		
+		// convert words to lowercase for indexing
+		for (int i = 0; i < words.length; i++)
+			words[i] = words[i].toLowerCase();
+		
 		for (String word : words) {
-			// new word
+			// new word, did not exist previously
 			if (!indexMap.containsKey(word))
 				indexMap.put(word, new ArrayList<Recipe>());
 			
@@ -71,10 +101,16 @@ public class RecipeBase {
 			indexMap.get(word).add(newRecipe);
 		}
 		
-		// TODO allow recipe name duplicates
+		// INDEX INGREDIENT NAMES
+		// TODO
+		
+		// ADD TO MASTER RECIPE MAP
+		// new recipe name, did not exist previously
+		if (!recipeMap.containsKey(newRecipe.name))
+			recipeMap.put(newRecipe.name, new ArrayList<Recipe>());
 		
 		// add new recipe to master list
-		recipeMap.put(newRecipe.name, newRecipe);
+		recipeMap.get(newRecipe.name).add(newRecipe);
 	}
 	
 	/**
@@ -84,8 +120,10 @@ public class RecipeBase {
 	public List<Recipe> getRecipes() {
 		List<Recipe> result = new ArrayList<Recipe>();
 		
-		for (Map.Entry<String, Recipe> entry : recipeMap.entrySet())
-			result.add(entry.getValue());
+		for (Map.Entry<String, List<Recipe>> entry : recipeMap.entrySet()) {
+			for (Recipe r : entry.getValue())
+				result.add(r);
+		}
 		
 		return result;
 	}
