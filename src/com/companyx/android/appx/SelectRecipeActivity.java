@@ -1,5 +1,6 @@
 package com.companyx.android.appx;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.companyx.android.appx.RecipeBase.Recipe;
+import com.companyx.android.appx.RecipeBase.RecipeIngredient;
 
 public class SelectRecipeActivity extends BaseListActivity {
 	RecipeBase recipeBase;
@@ -46,16 +48,23 @@ public class SelectRecipeActivity extends BaseListActivity {
 	private void loadRecipes() {
 		recipeBase = new RecipeBase();
 		
-		recipeBase.addRecipe(new Recipe("Curry Pie", null, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork 2", null, null));
-		recipeBase.addRecipe(new Recipe("Baked Salmon", null, null));
-		recipeBase.addRecipe(new Recipe("Apple Pie", null, null));
-		recipeBase.addRecipe(new Recipe("Pulled Pork Sandwich", null, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork 1", null, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork 2", null, null));
+		RecipeIngredient ri1 = new RecipeIngredient((float) 2.5, "pounds", "Roasted Pork");
+		List<RecipeIngredient> emptyList = new ArrayList<RecipeIngredient>();
+		List<RecipeIngredient> list1 = new ArrayList<RecipeIngredient>();
+		list1.add(ri1);
+		
+		recipeBase.addRecipe(new Recipe("Curry Pie", emptyList, null));
+		recipeBase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
+		recipeBase.addRecipe(new Recipe("Baked Salmon", emptyList, null));
+		recipeBase.addRecipe(new Recipe("Apple Pie", emptyList, null));
+		recipeBase.addRecipe(new Recipe("Pulled Pork Sandwich", emptyList, null));
+		recipeBase.addRecipe(new Recipe("Curry Pork 1", emptyList, null));
+		recipeBase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
+		recipeBase.addRecipe(new Recipe("Mystery Sandwich", list1, null));
+		
 		
 		//recipes = recipeBase.getRecipes();
-		recipes = recipeBase.searchRecipes("pork curry");
+		recipes = recipeBase.searchRecipes("sandwich pork");
 	}
 	
 	/**
