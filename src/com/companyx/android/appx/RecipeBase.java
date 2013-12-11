@@ -1,5 +1,6 @@
 package com.companyx.android.appx;
 
+import android.annotation.SuppressLint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +18,15 @@ import java.util.TreeMap;
 public class RecipeBase {
 	Map<String, List<Recipe>> recipeMap; // recipes indexed by recipe name
 	Map<String, List<Recipe>> indexMap; // recipes indexed by search word
+	Map<Integer, Recipe> idMap; // recipes indexed by unique ID
+	private int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
 	
+	@SuppressLint("UseSparseArrays")
 	RecipeBase() {
 		recipeMap = new TreeMap<String, List<Recipe>>();
 		indexMap = new HashMap<String, List<Recipe>>();
+		idMap = new HashMap<Integer, Recipe>();
+		recipeCounter = 0;
 	}
 	
 	/**
@@ -28,6 +34,7 @@ public class RecipeBase {
 	 */
 	static class Recipe {
 		String name;
+		int recipeID;
 		int timeRequiredInMin; // TODO
 		List<RecipeIngredient> recipeIngredients;
 		List<Direction> directions;
@@ -79,11 +86,18 @@ public class RecipeBase {
 	
 	/**
 	 * Adds a new recipe to the recipe map and index map.
+	 * Assumes recipe is well-formed.
 	 * @param newRecipe the new recipe to be added to the database.
 	 */
 	public void addRecipe(Recipe newRecipe) {
 		if (newRecipe == null)
 			return;
+		
+		// ASSIGN UNIQUE ID
+		newRecipe.recipeID = recipeCounter++;
+		
+		// INDEX ID
+		idMap.put(newRecipe.recipeID, newRecipe);
 		
 		// INDEX RECIPE NAME
 		// parse recipe name
@@ -134,6 +148,7 @@ public class RecipeBase {
 	 * @param searchString String containing the specified search term(s).
 	 * @return a list of all recipes matching the specified search String, sorted by name.
 	 */
+	@SuppressLint("UseSparseArrays")
 	public List<Recipe> searchRecipes(String searchString) {
 		if (searchString == null)
 			return null;
@@ -141,23 +156,43 @@ public class RecipeBase {
 		// convert searchString to lowercase, to find both lower and uppercase results in the database
 		searchString = searchString.toLowerCase(Locale.US);
 		
-		// create new Tree to store and automatically sort by recipe name
-		Map<String, List<Recipe>> resultTree = new TreeMap<String, List<Recipe>>();
+		// parse search terms
+		String[] searchWords = searchString.split(" ");
+		int numTerms = searchWords.length;
 		
-		// get all recipes containing the current word in the name or ingredient list
-		List<Recipe> list = indexMap.get(searchString);
-		if (list != null) {
-			for (Recipe r : list) {
-				// new recipe name, did not exist previously
-				if (!resultTree.containsKey(r.name))
-					resultTree.put(r.name, new ArrayList<Recipe>());
-				
-				// add recipe to results Tree
-				resultTree.get(r.name).add(r);
+		// create structure to hold unique recipes and count the number of hits for each
+		Map<Integer, Integer> hitTable = new HashMap<Integer, Integer>();
+		
+		for (String s : searchWords) {
+			// get all recipes containing the current word in the name or ingredient list
+			List<Recipe> list = indexMap.get(s);
+			
+			if (list != null) {
+				for (Recipe r : list) {
+					if (!hitTable.containsKey(r.recipeID))
+						hitTable.put(r.recipeID, 1);
+					else
+						hitTable.put(r.recipeID, hitTable.get(r.recipeID) + 1);
+				}
 			}
 		}
 		
-		// output and return result as a List
+		// get results and sort by recipe name
+		Map<String, List<Recipe>> resultTree = new TreeMap<String, List<Recipe>>();
+		for (Map.Entry<Integer, Integer> entry : hitTable.entrySet()) {
+			// if all terms matched, add the recipe to the result
+			if (entry.getValue() == numTerms) {
+				Recipe recipe = idMap.get(entry.getKey());
+				
+				// new recipe name
+				if (!resultTree.containsKey(recipe.name))
+					resultTree.put(recipe.name, new ArrayList<Recipe>());
+				
+				resultTree.get(recipe.name).add(recipe);
+			}
+		}
+		
+		// return results as a List
 		List<Recipe> result = new ArrayList<Recipe>();
 		for (Map.Entry<String, List<Recipe>> entry : resultTree.entrySet()) {
 			for (Recipe r : entry.getValue())

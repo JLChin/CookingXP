@@ -47,14 +47,15 @@ public class SelectRecipeActivity extends BaseListActivity {
 		recipeBase = new RecipeBase();
 		
 		recipeBase.addRecipe(new Recipe("Curry Pie", null, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork", null, null));
+		recipeBase.addRecipe(new Recipe("Curry Pork 2", null, null));
 		recipeBase.addRecipe(new Recipe("Baked Salmon", null, null));
 		recipeBase.addRecipe(new Recipe("Apple Pie", null, null));
 		recipeBase.addRecipe(new Recipe("Pulled Pork Sandwich", null, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork", null, null));
+		recipeBase.addRecipe(new Recipe("Curry Pork 1", null, null));
+		recipeBase.addRecipe(new Recipe("Curry Pork 2", null, null));
 		
 		//recipes = recipeBase.getRecipes();
-		recipes = recipeBase.searchRecipes("Pork");
+		recipes = recipeBase.searchRecipes("pork curry");
 	}
 	
 	/**
