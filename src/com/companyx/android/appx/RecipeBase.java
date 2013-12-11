@@ -1,7 +1,10 @@
 package com.companyx.android.appx;
 
+import android.annotation.SuppressLint;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,22 +16,39 @@ import java.util.TreeMap;
  * @author James Chin <JamesLChin@gmail.com>
  */
 public class RecipeBase {
-	Map<String, Recipe> recipeDatabase;
+	Map<String, List<Recipe>> recipeMap; // recipes indexed by recipe name
+	Map<String, List<Recipe>> indexMap; // recipes indexed by search word
+	Map<Integer, Recipe> idMap; // recipes indexed by unique ID
+	private int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
 	
+	@SuppressLint("UseSparseArrays")
 	RecipeBase() {
-		recipeDatabase = new TreeMap<String, Recipe>();
+		recipeMap = new TreeMap<String, List<Recipe>>();
+		indexMap = new HashMap<String, List<Recipe>>();
+		idMap = new HashMap<Integer, Recipe>();
+		recipeCounter = 0;
 	}
 	
+	/**
+	 * Class representing a recipe.
+	 */
 	static class Recipe {
 		String name;
-		int timeRequiredInMin;
-		List<Ingredient> ingredients;
+		int recipeID;
+		int timeRequiredInMin; // TODO
+		List<RecipeIngredient> recipeIngredients;
+		List<Direction> directions;
 		
-		Recipe (String name) {
+		Recipe (String name, List<RecipeIngredient> recipeIngredients, List<Direction> directions) {
 			this.name = name;
+			this.recipeIngredients = recipeIngredients;
+			this.directions = directions;
 		}
 	}
 	
+	/**
+	 * Class representing an ingredient.
+	 */
 	static class Ingredient {
 		String name;
 		
@@ -38,15 +58,74 @@ public class RecipeBase {
 	}
 	
 	/**
-	 * Adds a new recipe to the recipe database.
-	 * @param newRecipe the new recipe to be added to the database.
-	 * @return null if the recipe name was not previously contained in the database, otherwise returns the replaced recipe of the same name.
+	 * Class representing one itemized ingredient consisting of the number amount, unit of measurement, and ingredient.
+	 * Example: 1-1/4 Tablespoon Sugar
 	 */
-	public Recipe addRecipe(Recipe newRecipe) {
-		if (newRecipe == null)
-			return null;
+	static class RecipeIngredient {
+		float amount;
+		String measurement;
+		Ingredient ingredient;
+
+		RecipeIngredient (float amount, String measurement, Ingredient ingredient) {
+			this.amount = amount;
+			this.measurement = measurement;
+			this.ingredient = ingredient;
+		}
+	}
+	
+	/**
+	 * Class representing one instruction or action of the recipe.
+	 */
+	static class Direction {
+		String direction;
 		
-		return recipeDatabase.put(newRecipe.name, newRecipe);
+		Direction (String direction) {
+			this.direction = direction;
+		}
+	}
+	
+	/**
+	 * Adds a new recipe to the recipe map and index map.
+	 * Assumes recipe is well-formed.
+	 * @param newRecipe the new recipe to be added to the database.
+	 */
+	public void addRecipe(Recipe newRecipe) {
+		if (newRecipe == null)
+			return;
+		
+		// ASSIGN UNIQUE ID
+		newRecipe.recipeID = recipeCounter++;
+		
+		// INDEX ID
+		idMap.put(newRecipe.recipeID, newRecipe);
+		
+		// INDEX RECIPE NAME
+		// parse recipe name
+		String[] words = newRecipe.name.split(" ");
+		
+		// convert words to lowercase for indexing
+		for (int i = 0; i < words.length; i++)
+			words[i] = words[i].toLowerCase(Locale.US);
+		
+		for (String word : words) {
+			// new word, did not exist previously
+			if (!indexMap.containsKey(word))
+				indexMap.put(word, new ArrayList<Recipe>());
+			
+			// add new recipe to search index
+			indexMap.get(word).add(newRecipe);
+		}
+		
+		// INDEX INGREDIENT NAMES
+		// TODO
+		
+		// ADD TO MASTER RECIPE MAP
+		// new recipe name, did not exist previously
+		if (!recipeMap.containsKey(newRecipe.name))
+			recipeMap.put(newRecipe.name, new ArrayList<Recipe>());
+		
+		// add new recipe to master list
+		recipeMap.get(newRecipe.name).add(newRecipe);
 	}
 	
 	/**
@@ -56,8 +135,69 @@ public class RecipeBase {
 	public List<Recipe> getRecipes() {
 		List<Recipe> result = new ArrayList<Recipe>();
 		
-		for (Map.Entry<String, Recipe> entry : recipeDatabase.entrySet())
-			result.add(entry.getValue());
+		for (Map.Entry<String, List<Recipe>> entry : recipeMap.entrySet()) {
+			for (Recipe r : entry.getValue())
+				result.add(r);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Returns a list of all recipes matching the specified search String, sorted by name.
+	 * @param searchString String containing the specified search term(s).
+	 * @return a list of all recipes matching the specified search String, sorted by name.
+	 */
+	@SuppressLint("UseSparseArrays")
+	public List<Recipe> searchRecipes(String searchString) {
+		if (searchString == null)
+			return null;
+		
+		// convert searchString to lowercase, to find both lower and uppercase results in the database
+		searchString = searchString.toLowerCase(Locale.US);
+		
+		// parse search terms
+		String[] searchWords = searchString.split(" ");
+		int numTerms = searchWords.length;
+		
+		// create structure to hold unique recipes and count the number of hits for each
+		Map<Integer, Integer> hitTable = new HashMap<Integer, Integer>();
+		
+		for (String s : searchWords) {
+			// get all recipes containing the current word in the name or ingredient list
+			List<Recipe> list = indexMap.get(s);
+			
+			if (list != null) {
+				for (Recipe r : list) {
+					if (!hitTable.containsKey(r.recipeID))
+						hitTable.put(r.recipeID, 1);
+					else
+						hitTable.put(r.recipeID, hitTable.get(r.recipeID) + 1);
+				}
+			}
+		}
+		
+		// get results and sort by recipe name
+		Map<String, List<Recipe>> resultTree = new TreeMap<String, List<Recipe>>();
+		for (Map.Entry<Integer, Integer> entry : hitTable.entrySet()) {
+			// if all terms matched, add the recipe to the result
+			if (entry.getValue() == numTerms) {
+				Recipe recipe = idMap.get(entry.getKey());
+				
+				// new recipe name
+				if (!resultTree.containsKey(recipe.name))
+					resultTree.put(recipe.name, new ArrayList<Recipe>());
+				
+				resultTree.get(recipe.name).add(recipe);
+			}
+		}
+		
+		// return results as a List
+		List<Recipe> result = new ArrayList<Recipe>();
+		for (Map.Entry<String, List<Recipe>> entry : resultTree.entrySet()) {
+			for (Recipe r : entry.getValue())
+				result.add(r);
+		}
 		
 		return result;
 	}
