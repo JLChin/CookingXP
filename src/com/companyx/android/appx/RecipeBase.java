@@ -47,29 +47,18 @@ public class RecipeBase {
 	}
 	
 	/**
-	 * Class representing an ingredient.
-	 */
-	static class Ingredient {
-		String name;
-		
-		Ingredient (String name) {
-			this.name = name;
-		}
-	}
-	
-	/**
 	 * Class representing one itemized ingredient consisting of the number amount, unit of measurement, and ingredient.
 	 * Example: 1-1/4 Tablespoon Sugar
 	 */
 	static class RecipeIngredient {
 		float amount;
 		String measurement;
-		Ingredient ingredient;
+		String ingredientName;
 
-		RecipeIngredient (float amount, String measurement, Ingredient ingredient) {
+		RecipeIngredient (float amount, String measurement, String ingredientName) {
 			this.amount = amount;
 			this.measurement = measurement;
-			this.ingredient = ingredient;
+			this.ingredientName = ingredientName;
 		}
 	}
 	
@@ -100,32 +89,38 @@ public class RecipeBase {
 		idMap.put(newRecipe.recipeID, newRecipe);
 		
 		// INDEX RECIPE NAME
-		// parse recipe name
-		String[] words = newRecipe.name.split(" ");
+		index(newRecipe.name, newRecipe);
 		
+		// INDEX INGREDIENT NAMES
+		for (RecipeIngredient ri : newRecipe.recipeIngredients)
+			index(ri.ingredientName, newRecipe);
+		
+		// ADD TO MASTER RECIPE MAP
+		if (!recipeMap.containsKey(newRecipe.name))
+			recipeMap.put(newRecipe.name, new ArrayList<Recipe>());
+		recipeMap.get(newRecipe.name).add(newRecipe);
+	}
+	
+	/**
+	 * Helper function that indexes the given recipe by the words contained in the specified String.
+	 * @param string String containing the words to index the given recipe by.
+	 * @param recipe the given recipe.
+	 */
+	private void index(String string, Recipe recipe) {
+		String[] words = string.split(" ");
+
 		// convert words to lowercase for indexing
 		for (int i = 0; i < words.length; i++)
 			words[i] = words[i].toLowerCase(Locale.US);
-		
+
 		for (String word : words) {
 			// new word, did not exist previously
 			if (!indexMap.containsKey(word))
 				indexMap.put(word, new ArrayList<Recipe>());
-			
-			// add new recipe to search index
-			indexMap.get(word).add(newRecipe);
+
+			// add recipe to search index
+			indexMap.get(word).add(recipe);
 		}
-		
-		// INDEX INGREDIENT NAMES
-		// TODO
-		
-		// ADD TO MASTER RECIPE MAP
-		// new recipe name, did not exist previously
-		if (!recipeMap.containsKey(newRecipe.name))
-			recipeMap.put(newRecipe.name, new ArrayList<Recipe>());
-		
-		// add new recipe to master list
-		recipeMap.get(newRecipe.name).add(newRecipe);
 	}
 	
 	/**
