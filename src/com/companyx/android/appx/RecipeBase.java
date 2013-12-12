@@ -19,9 +19,9 @@ import java.util.TreeMap;
  * @author James Chin <JamesLChin@gmail.com>
  */
 public class RecipeBase {
-	Map<String, List<Recipe>> recipeMap; // maps recipe name to List of recipes that match that name
-	Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeID's
-	Map<Integer, Recipe> idMap; // maps unique integer ID to corresponding recipe
+	private Map<String, List<Recipe>> recipeMap; // maps recipe name to List of recipes that match that name
+	private Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeID's
+	private Map<Integer, Recipe> idMap; // maps unique integer ID to corresponding recipe
 	private int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
 	
 	@SuppressLint("UseSparseArrays")
@@ -143,7 +143,6 @@ public class RecipeBase {
 	
 	/**
 	 * Returns a list of all recipes matching the specified search String, sorted by name.
-	 * TODO repeated words in search String
 	 * @param searchString String containing the specified search term(s).
 	 * @return a list of all recipes matching the specified search String, sorted by name.
 	 */

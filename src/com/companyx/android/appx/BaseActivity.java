@@ -10,6 +10,9 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// enable "type-to-search", activates the search dialog when the user starts typing on the keyboard
+		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 	}
 
 	@Override
@@ -33,8 +36,14 @@ public class BaseActivity extends Activity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(intent);
 			break;
+		case R.id.menu_search:
+			onSearchRequested();
+			break;
 		case R.id.menu_settings:
-			// Nothing yet
+			// TODO
+			break;
+		case R.id.menu_info:
+			// TODO
 			break;
 		case R.id.menu_quit:
 			intent = new Intent(this, MainActivity.class);

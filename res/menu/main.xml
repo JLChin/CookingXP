@@ -6,9 +6,19 @@
         android:showAsAction="always"
         android:title="@string/menu_recipes"/>
     <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_action_search"
+        android:orderInCategory="4"
+        android:showAsAction="always"
+        android:title="@string/menu_search"/>
+    <item
         android:id="@+id/menu_settings"
-        android:orderInCategory="7"
+        android:orderInCategory="6"
         android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/menu_info"
+        android:orderInCategory="7"
+        android:title="@string/menu_info"/>
     <item
         android:id="@+id/menu_quit"
         android:orderInCategory="8"

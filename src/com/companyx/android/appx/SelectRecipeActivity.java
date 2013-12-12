@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,13 @@ import android.widget.TextView;
 import com.companyx.android.appx.RecipeBase.Recipe;
 import com.companyx.android.appx.RecipeBase.RecipeIngredient;
 
+/**
+ * Search/Select Recipe Activity
+ * 
+ * TODO http://developer.android.com/guide/topics/search/adding-recent-query-suggestions.html
+ * 
+ * @author James Chin <JamesLChin@gmail.com>
+ */
 public class SelectRecipeActivity extends BaseListActivity {
 	RecipeBase recipeBase;
 	private List<Recipe> recipes;
@@ -25,26 +34,56 @@ public class SelectRecipeActivity extends BaseListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_select_recipe);
-
+		
 		initialize();
+		handleIntent(getIntent());
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		
+		// singleTop flag set in manifest; handle when the user searches from this Activity and sends new search Intent to itself without restarting
+		setIntent(intent);
+		handleIntent(intent);
+	}
+	
+	/**
+	 * Perform search if user arrived at this activity via Search, return complete recipe list otherwise.
+	 * @param intent the Intent passed to this Activity.
+	 */
+	private void handleIntent(Intent intent) {
+		String action = intent.getAction();
+		
+		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			recipes = recipeBase.searchRecipes(query);
+		} else
+			recipes = recipeBase.getRecipes();
+		
+		// post results
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
 	}
 
 	private void initialize() {
 		initializeListView();
+		
+		// test recipes, get rid of this
 		loadRecipes();
-
-		setListAdapter(new RecipeListViewAdapter(this, recipes));
 	}
 
 	private void initializeListView() {
 		ListView listView = getListView();
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// TODO Recipe selected, now what?
+				// TODO start recipe activity
 			}
 		});
 	}
 	
+	/**
+	 * Test recipes, get rid of this
+	 */
 	private void loadRecipes() {
 		recipeBase = new RecipeBase();
 		
@@ -61,10 +100,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 		recipeBase.addRecipe(new Recipe("Curry Pork 1", emptyList, null));
 		recipeBase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
 		recipeBase.addRecipe(new Recipe("Mystery Sandwich", list1, null));
-		
-		
-		//recipes = recipeBase.getRecipes();
-		recipes = recipeBase.searchRecipes("sandwich pork");
 	}
 	
 	/**
