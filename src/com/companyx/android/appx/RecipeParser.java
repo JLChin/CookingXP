@@ -164,6 +164,7 @@ public class RecipeParser {
 						 * DirectListArray - Directions
 						 */
 						Recipe newRecipe = new Recipe(title, riList, directListArray);
+						recipeDatabase.addRecipe(newRecipe);
 						break;
 					} else {
 						if (INPUT.equals(Blank)) {
