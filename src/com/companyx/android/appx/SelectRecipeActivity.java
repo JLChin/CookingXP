@@ -1,6 +1,5 @@
 package com.companyx.android.appx;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -17,18 +16,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.companyx.android.appx.RecipeBase.Recipe;
-import com.companyx.android.appx.RecipeBase.RecipeIngredient;
+import com.companyx.android.appx.RecipeDatabase.Recipe;
 
 /**
  * Search/Select Recipe Activity
+ * 
+ * TODO Add Recipe, custom options menu
  * 
  * TODO http://developer.android.com/guide/topics/search/adding-recent-query-suggestions.html
  * 
  * @author James Chin <JamesLChin@gmail.com>
  */
 public class SelectRecipeActivity extends BaseListActivity {
-	RecipeBase recipeBase;
+	private RecipeDatabase recipeBase;
 	private List<Recipe> recipes;
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,38 +68,23 @@ public class SelectRecipeActivity extends BaseListActivity {
 	private void initialize() {
 		initializeListView();
 		
-		// test recipes, get rid of this
-		loadRecipes();
+		recipeBase = RecipeDatabase.getInstance();
+		
+		// TODO
 	}
 
 	private void initializeListView() {
 		ListView listView = getListView();
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// TODO start recipe activity
+				int recipeID = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeID;
+				
+				Intent intent = new Intent(SelectRecipeActivity.this, RecipeActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+				intent.putExtra("recipeID", recipeID);
+				startActivity(intent);
 			}
 		});
-	}
-	
-	/**
-	 * Test recipes, get rid of this
-	 */
-	private void loadRecipes() {
-		recipeBase = new RecipeBase();
-		
-		RecipeIngredient ri1 = new RecipeIngredient((float) 2.5, "pounds", "Roasted Pork");
-		List<RecipeIngredient> emptyList = new ArrayList<RecipeIngredient>();
-		List<RecipeIngredient> list1 = new ArrayList<RecipeIngredient>();
-		list1.add(ri1);
-		
-		recipeBase.addRecipe(new Recipe("Curry Pie", emptyList, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
-		recipeBase.addRecipe(new Recipe("Baked Salmon", emptyList, null));
-		recipeBase.addRecipe(new Recipe("Apple Pie", emptyList, null));
-		recipeBase.addRecipe(new Recipe("Pulled Pork Sandwich", list1, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork 1", emptyList, null));
-		recipeBase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
-		recipeBase.addRecipe(new Recipe("Mystery Sandwich", list1, null));
 	}
 	
 	/**
@@ -133,15 +118,17 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        } else
 	        	recipeView = (RecipeView) view.getTag();
 	 
-	        // set up view
+	        // set up view, store unique ID to retrieve recipe from database when selected
 	        Recipe recipe = recipes.get(position);
 	        recipeView.textViewName.setText(recipe.name);
+	        recipeView.recipeID = recipe.recipeID;
 	 
 	        return view;
 	    }
 		
 		class RecipeView {
 			TextView textViewName;
+			int recipeID;
 		}
 	}
 }

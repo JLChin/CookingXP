@@ -18,14 +18,19 @@ import java.util.TreeMap;
  * 
  * @author James Chin <JamesLChin@gmail.com>
  */
-public class RecipeBase {
-	private Map<String, List<Recipe>> recipeMap; // maps recipe name to List of recipes that match that name
-	private Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeID's
-	private Map<Integer, Recipe> idMap; // maps unique integer ID to corresponding recipe
-	private int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
+public class RecipeDatabase {
+	// STATE VARIABLES
+	private static Map<String, List<Recipe>> recipeMap; // maps recipe name to List of recipes that match that name
+	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeID's
+	private static Map<Integer, Recipe> idMap; // maps unique integer ID to corresponding recipe
+	private static int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
+	
+	// SINGLETON CLASS
+	private static final RecipeDatabase HOLDER = new RecipeDatabase();
+	static RecipeDatabase getInstance() {return HOLDER;}
 	
 	@SuppressLint("UseSparseArrays")
-	RecipeBase() {
+	RecipeDatabase() {
 		recipeMap = new TreeMap<String, List<Recipe>>();
 		indexMap = new HashMap<String, Set<Integer>>();
 		idMap = new HashMap<Integer, Recipe>();
@@ -143,6 +148,7 @@ public class RecipeBase {
 	
 	/**
 	 * Returns a list of all recipes matching the specified search String, sorted by name.
+	 * All search terms must match to return a recipe.
 	 * @param searchString String containing the specified search term(s).
 	 * @return a list of all recipes matching the specified search String, sorted by name.
 	 */

@@ -36,6 +36,12 @@ public class BaseListActivity extends ListActivity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(intent);
 			break;
+		case R.id.menu_shopping_list:
+			// TODO
+			break;
+		case R.id.menu_favorites:
+			// TODO
+			break;
 		case R.id.menu_search:
 			onSearchRequested();
 			break;
