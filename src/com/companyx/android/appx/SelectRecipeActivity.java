@@ -22,13 +22,13 @@ import com.companyx.android.appx.RecipeDatabase.Recipe;
  * Search/Select Recipe Activity
  * 
  * TODO Add Recipe, custom options menu
- * 
  * TODO http://developer.android.com/guide/topics/search/adding-recent-query-suggestions.html
  * 
  * @author James Chin <JamesLChin@gmail.com>
  */
 public class SelectRecipeActivity extends BaseListActivity {
-	private RecipeDatabase recipeBase;
+	// STATE VARIABLES
+	private RecipeDatabase recipeDatabase;
 	private List<Recipe> recipes;
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,9 +57,9 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			recipes = recipeBase.searchRecipes(query);
+			recipes = recipeDatabase.searchRecipes(query);
 		} else
-			recipes = recipeBase.getRecipes();
+			recipes = recipeDatabase.getRecipes();
 		
 		// post results
 		setListAdapter(new RecipeListViewAdapter(this, recipes));
@@ -68,7 +68,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	private void initialize() {
 		initializeListView();
 		
-		recipeBase = RecipeDatabase.getInstance();
+		recipeDatabase = RecipeDatabase.getInstance();
 		
 		// TODO
 	}
@@ -77,11 +77,11 @@ public class SelectRecipeActivity extends BaseListActivity {
 		ListView listView = getListView();
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				int recipeID = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeID;
+				int recipeId = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeId;
 				
 				Intent intent = new Intent(SelectRecipeActivity.this, RecipeActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-				intent.putExtra("recipeID", recipeID);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				intent.putExtra("recipeId", recipeId);
 				startActivity(intent);
 			}
 		});
@@ -121,14 +121,14 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        // set up view, store unique ID to retrieve recipe from database when selected
 	        Recipe recipe = recipes.get(position);
 	        recipeView.textViewName.setText(recipe.name);
-	        recipeView.recipeID = recipe.recipeID;
+	        recipeView.recipeId = recipe.recipeId;
 	 
 	        return view;
 	    }
 		
 		class RecipeView {
 			TextView textViewName;
-			int recipeID;
+			int recipeId;
 		}
 	}
 }

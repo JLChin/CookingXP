@@ -18,23 +18,28 @@ import java.util.TreeMap;
  * 
  * @author James Chin <JamesLChin@gmail.com>
  */
-public class RecipeDatabase {
+public final class RecipeDatabase {
 	// STATE VARIABLES
 	private static Map<String, List<Recipe>> recipeMap; // maps recipe name to List of recipes that match that name
-	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeID's
+	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeId's
 	private static Map<Integer, Recipe> idMap; // maps unique integer ID to corresponding recipe
 	private static int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
+
+	// SINGLETON
+	private static RecipeDatabase holder;
+
+	private RecipeDatabase() {
+		clearDatabase();
+	}
 	
-	// SINGLETON CLASS
-	private static final RecipeDatabase HOLDER = new RecipeDatabase();
-	static RecipeDatabase getInstance() {return HOLDER;}
-	
-	@SuppressLint("UseSparseArrays")
-	RecipeDatabase() {
-		recipeMap = new TreeMap<String, List<Recipe>>();
-		indexMap = new HashMap<String, Set<Integer>>();
-		idMap = new HashMap<Integer, Recipe>();
-		recipeCounter = 0;
+	/**
+	 * Returns the single instance of the Recipe database.
+	 * @return the single instance of the Recipe database.
+	 */
+	public static RecipeDatabase getInstance() {
+		if (holder == null)
+			holder = new RecipeDatabase();
+		return holder;
 	}
 	
 	/**
@@ -42,14 +47,15 @@ public class RecipeDatabase {
 	 */
 	static class Recipe {
 		String name;
-		int recipeID;
-		int timeRequiredInMin; // TODO
-		List<RecipeIngredient> recipeIngredients;
-		List<Direction> directions;
+		int recipeId;
+		short timeRequiredInMin; // TODO
+		byte difficultyLevel; // TODO
+		List<RecipeIngredient> ingredients;
+		List<RecipeDirection> directions;
 		
-		Recipe (String name, List<RecipeIngredient> recipeIngredients, List<Direction> directions) {
+		Recipe (String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions) {
 			this.name = name;
-			this.recipeIngredients = recipeIngredients;
+			this.ingredients = ingredients;
 			this.directions = directions;
 		}
 	}
@@ -59,11 +65,11 @@ public class RecipeDatabase {
 	 * Example: 1-1/4 Tablespoon Sugar
 	 */
 	static class RecipeIngredient {
-		float amount;
+		String amount;
 		String measurement;
 		String ingredientName;
 
-		RecipeIngredient (float amount, String measurement, String ingredientName) {
+		RecipeIngredient (String amount, String measurement, String ingredientName) {
 			this.amount = amount;
 			this.measurement = measurement;
 			this.ingredientName = ingredientName;
@@ -73,12 +79,23 @@ public class RecipeDatabase {
 	/**
 	 * Class representing one instruction or action of the recipe.
 	 */
-	static class Direction {
+	static class RecipeDirection {
 		String direction;
 		
-		Direction (String direction) {
+		RecipeDirection (String direction) {
 			this.direction = direction;
 		}
+	}
+	
+	/**
+	 * Resets the database.
+	 */
+	@SuppressLint("UseSparseArrays")
+	public void clearDatabase() {
+		recipeMap = new TreeMap<String, List<Recipe>>();
+		indexMap = new HashMap<String, Set<Integer>>();
+		idMap = new HashMap<Integer, Recipe>();
+		recipeCounter = 0;
 	}
 	
 	/**
@@ -91,16 +108,16 @@ public class RecipeDatabase {
 			return;
 		
 		// ASSIGN UNIQUE ID
-		newRecipe.recipeID = recipeCounter++;
+		newRecipe.recipeId = recipeCounter++;
 		
 		// INDEX ID
-		idMap.put(newRecipe.recipeID, newRecipe);
+		idMap.put(newRecipe.recipeId, newRecipe);
 		
 		// INDEX RECIPE NAME
 		index(newRecipe.name, newRecipe);
 		
 		// INDEX INGREDIENT NAMES
-		for (RecipeIngredient ri : newRecipe.recipeIngredients)
+		for (RecipeIngredient ri : newRecipe.ingredients)
 			index(ri.ingredientName, newRecipe);
 		
 		// ADD TO MASTER RECIPE MAP
@@ -126,8 +143,8 @@ public class RecipeDatabase {
 			if (!indexMap.containsKey(word))
 				indexMap.put(word, new HashSet<Integer>());
 
-			// add recipeID to search index
-			indexMap.get(word).add(recipe.recipeID);
+			// add recipeId to search index
+			indexMap.get(word).add(recipe.recipeId);
 		}
 	}
 	
@@ -182,10 +199,10 @@ public class RecipeDatabase {
 				for (int i : set) {
 					Recipe r = idMap.get(i); // retrieve recipe
 					
-					if (!hitTable.containsKey(r.recipeID))
-						hitTable.put(r.recipeID, 1);
+					if (!hitTable.containsKey(r.recipeId))
+						hitTable.put(r.recipeId, 1);
 					else
-						hitTable.put(r.recipeID, hitTable.get(r.recipeID) + 1);
+						hitTable.put(r.recipeId, hitTable.get(r.recipeId) + 1);
 				}
 			}
 		}
@@ -213,5 +230,17 @@ public class RecipeDatabase {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Returns the Recipe corresponding to the unique Id, null if non-existent or invalid Id.
+	 * @param recipeId the unique Id to retrieve the Recipe for.
+	 * @return the Recipe corresponding to the unique Id, null if non-existent or invalid Id.
+	 */
+	public Recipe findRecipeById (int recipeId) {
+		if (recipeId < 0)
+			return null;
+		
+		return idMap.get(recipeId);
 	}
 }
