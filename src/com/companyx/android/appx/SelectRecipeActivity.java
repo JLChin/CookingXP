@@ -90,7 +90,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 * Return favorite recipes from the RecipeDatabase, sorted by Recipe name.
 	 */
 	private void loadFavoriteRecipes() {
-		recipes = recipeDatabase.getFavorites();
+		recipes = recipeDatabase.getFavoriteRecipes();
 	}
 
 	private void initializeListView() {

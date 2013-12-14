@@ -17,7 +17,6 @@ import com.companyx.android.appx.RecipeDatabase.RecipeIngredient;
 /**
  * Recipe Activity
  * 
- * TODO Add/Remove from Favorites
  * TODO Add/Remove from Shopping List
  * TODO Step-by-Step Walkthrough
  * 

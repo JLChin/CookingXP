@@ -1,7 +1,5 @@
 package com.companyx.android.appx;
 
-import android.annotation.SuppressLint;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,8 +19,9 @@ import java.util.TreeMap;
 public final class RecipeDatabase {
 	// STATE VARIABLES
 	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeId's
-	private static Map<Integer, Recipe> idMap; // maps unique ID to corresponding recipe
-	private static Set<Integer> favorites; // set containing unique ID's of favorite recipes
+	private static Map<Integer, Recipe> idMap; // maps recipeId to corresponding recipe
+	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
+	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
 	private static int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
 
 	// SINGLETON
@@ -35,11 +34,10 @@ public final class RecipeDatabase {
 	/**
 	 * Resets the database.
 	 */
-	@SuppressLint("UseSparseArrays")
 	public void resetDatabase() {
 		indexMap = new HashMap<String, Set<Integer>>();
 		idMap = new HashMap<Integer, Recipe>();
-		favorites = new HashSet<Integer>();
+		favoriteRecipes = new HashSet<Integer>();
 		recipeCounter = 0;
 	}
 	
@@ -63,7 +61,7 @@ public final class RecipeDatabase {
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
 		
-		Recipe (String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions) {
+		Recipe(String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions) {
 			this.name = name;
 			this.ingredients = ingredients;
 			this.directions = directions;
@@ -79,7 +77,7 @@ public final class RecipeDatabase {
 		String measurement;
 		String ingredientName;
 
-		RecipeIngredient (String amount, String measurement, String ingredientName) {
+		RecipeIngredient(String amount, String measurement, String ingredientName) {
 			this.amount = amount;
 			this.measurement = measurement;
 			this.ingredientName = ingredientName;
@@ -92,7 +90,7 @@ public final class RecipeDatabase {
 	static class RecipeDirection {
 		String direction;
 		
-		RecipeDirection (String direction) {
+		RecipeDirection(String direction) {
 			this.direction = direction;
 		}
 	}
@@ -143,30 +141,42 @@ public final class RecipeDatabase {
 	}
 	
 	/**
+	 * Helper function which takes a Set of recipeId's and returns the corresponding List of Recipes, sorted by name.
+	 * @param recipeIdSet the Set of recipeId's to retrieve the sorted List for.
+	 * @return the List of Recipes corresponding to the Set of recipeId's, sorted by name.
+	 */
+	private List<Recipe> getRecipesById(Set<Integer> recipeIdSet) {
+		List<Recipe> result = new ArrayList<Recipe>();
+		
+		if (recipeIdSet != null) {
+			Map<String, Set<Recipe>> resultTree = new TreeMap<String, Set<Recipe>>();
+			
+			for (int i : recipeIdSet) {
+				Recipe recipe = idMap.get(i);
+				String recipeName = recipe.name;
+				
+				// sort recipes by name, duplicate names OK
+				if (!resultTree.containsKey(recipeName))
+					resultTree.put(recipeName, new HashSet<Recipe>());
+				resultTree.get(recipeName).add(recipe);
+			}
+			
+			// transfer sorted results from Map to List
+			for (Map.Entry<String, Set<Recipe>> entry : resultTree.entrySet()) {
+				for (Recipe r : entry.getValue())
+					result.add(r);
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Returns a list of all recipes, sorted by name.
 	 * @return a list of all recipes, sorted by name.
 	 */
 	public List<Recipe> allRecipes() {
-		List<Recipe> result = new ArrayList<Recipe>();
-		
-		// maps Recipe name to Set of Recipe Id's, used to sort recipes by name
-		Map<String, Set<Integer>> sortedMap = new TreeMap<String, Set<Integer>>();
-		
-		for (Map.Entry<Integer, Recipe> entry : idMap.entrySet()) {
-			String recipeName = entry.getValue().name;
-			
-			if (!sortedMap.containsKey(recipeName))
-				sortedMap.put(recipeName, new HashSet<Integer>());
-			sortedMap.get(recipeName).add(entry.getKey());
-		}
-		
-		// now that recipes are sorted, return as a List
-		for (Map.Entry<String, Set<Integer>> entry : sortedMap.entrySet()) {
-			for (Integer i : entry.getValue())
-				result.add(idMap.get(i));
-		}
-		
-		return result;
+		return getRecipesById(idMap.keySet());
 	}
 	
 	/**
@@ -175,7 +185,6 @@ public final class RecipeDatabase {
 	 * @param searchString String containing the specified search term(s).
 	 * @return a list of all recipes matching the specified search String, sorted by name.
 	 */
-	@SuppressLint("UseSparseArrays")
 	public List<Recipe> searchRecipes(String searchString) {
 		if (searchString == null)
 			return null;
@@ -201,41 +210,26 @@ public final class RecipeDatabase {
 			// get all recipes containing the current word in the name or ingredient list
 			Set<Integer> set = indexMap.get(s);
 			
+			// fill out hitTable
 			if (set != null) {
 				for (int i : set) {
-					Recipe r = idMap.get(i); // retrieve recipe
+					Integer count = hitTable.get(i);
+					count = (count == null) ? 1 : (count + 1);
 					
-					if (!hitTable.containsKey(r.recipeId))
-						hitTable.put(r.recipeId, 1);
-					else
-						hitTable.put(r.recipeId, hitTable.get(r.recipeId) + 1);
+					hitTable.put(i, count);
 				}
 			}
 		}
 		
-		// get results and sort by recipe name
-		Map<String, List<Recipe>> resultTree = new TreeMap<String, List<Recipe>>();
+		// get Set of matches
+		Set<Integer> resultSet = new HashSet<Integer>();
 		for (Map.Entry<Integer, Integer> entry : hitTable.entrySet()) {
-			// if all terms matched, add the recipe to the result
-			if (entry.getValue() == numMatchesRequired) {
-				Recipe recipe = idMap.get(entry.getKey());
-				
-				// new recipe name
-				if (!resultTree.containsKey(recipe.name))
-					resultTree.put(recipe.name, new ArrayList<Recipe>());
-				
-				resultTree.get(recipe.name).add(recipe);
-			}
+			if (entry.getValue() == numMatchesRequired)
+				resultSet.add(entry.getKey());
 		}
 		
-		// return results as a List
-		List<Recipe> result = new ArrayList<Recipe>();
-		for (Map.Entry<String, List<Recipe>> entry : resultTree.entrySet()) {
-			for (Recipe r : entry.getValue())
-				result.add(r);
-		}
-		
-		return result;
+		// convert Set of recipeId's to List of sorted Recipes and return 
+		return getRecipesById(resultSet);
 	}
 	
 	/**
@@ -251,7 +245,7 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Load favorites into database from a serialized String containing the recipe indexes.
+	 * Load favorite Recipes into database from a serialized String containing the recipe indexes.
 	 * @param serializedFavorites serialized String containing the recipe indexes.
 	 */
 	public void loadFavorites(String serializedFavorites) {
@@ -261,44 +255,27 @@ public final class RecipeDatabase {
 		String[] deserialized = serializedFavorites.split(" ");
 		
 		for (String s : deserialized)
-			favorites.add(Integer.valueOf(s));
+			favoriteRecipes.add(Integer.valueOf(s));
 	}
 	
 	/**
 	 * Returns a List of favorite Recipes, sorted by name.
 	 * @return a List of favorite Recipes, sorted by name.
 	 */
-	public List<Recipe> getFavorites() {
-		List<Recipe> result = new ArrayList<Recipe>();
-		Map<String, Set<Recipe>> resultMap = new TreeMap<String, Set<Recipe>>();
-		
-		for (int i : favorites) {
-			Recipe recipe = idMap.get(i);
-			String recipeName = recipe.name;
-			
-			if (!resultMap.containsKey(recipeName))
-				resultMap.put(recipeName, new HashSet<Recipe>());
-			resultMap.get(recipeName).add(recipe);
-		}
-		
-		for (Map.Entry<String, Set<Recipe>> entry : resultMap.entrySet()) {
-			for (Recipe r : entry.getValue())
-				result.add(r);
-		}
-		
-		return result;
+	public List<Recipe> getFavoriteRecipes() {
+		return getRecipesById(favoriteRecipes);
 	}
 	
 	/**
-	 * Returns a serialized string containing all the favorites recipeId's.
-	 * Used to conveniently store favorites in the preferences file.
-	 * @return a serialized string containing all the favorites recipeId's.
+	 * Returns a serialized string containing all the favoriteRecipes recipeId's.
+	 * Used to conveniently store favoriteRecipes in the preferences file.
+	 * @return a serialized string containing all the favoriteRecipes recipeId's.
 	 */
 	public String getSerializedFavorites() {
 		String result = "";
 		
-		if (!favorites.isEmpty()) {
-			for (int i : favorites)
+		if (!favoriteRecipes.isEmpty()) {
+			for (int i : favoriteRecipes)
 				result += String.valueOf(i) + " ";
 			
 			result = result.substring(0, result.length() - 1); // remove trailing space
@@ -308,19 +285,19 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Add Recipe to favorites.
-	 * @param recipeId the unique ID of the Recipe to add to favorites. 
+	 * Add Recipe to favoriteRecipes.
+	 * @param recipeId the unique identifier of the Recipe to add to favoriteRecipes. 
 	 */
 	public void addFavorite(int recipeId) {
-		favorites.add(recipeId);
+		favoriteRecipes.add(recipeId);
 	}
 	
 	/**
-	 * Remove Recipe from favorites.
-	 * @param recipeId the unique ID of the Recipe to remove from favorites.
+	 * Remove Recipe from favoriteRecipes.
+	 * @param recipeId the unique identifier of the Recipe to remove from favoriteRecipes.
 	 */
 	public void removeFavorite(int recipeId) {
-		favorites.remove(recipeId);
+		favoriteRecipes.remove(recipeId);
 	}
 	
 	/**
@@ -329,10 +306,31 @@ public final class RecipeDatabase {
 	 * @return true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
 	 */
 	public boolean isFavorite(int recipeId) {
-		if (favorites.contains(recipeId))
+		if (favoriteRecipes.contains(recipeId))
 			return true;
 		
 		return false;
 	}
+	
+	/**
+	 * Updates the shopping list quantity of the specified Recipe.
+	 * @param recipeId the unique identifier for the Recipe whose shopping list quantity is to be updated.
+	 * @param quantity the new quantity of the Recipe to be saved to the shopping list.
+	 */
+	public void updateQuantity(int recipeId, byte quantity) {
+		if (quantity == 0)
+			shoppingListRecipes.remove(recipeId);
+		else
+			shoppingListRecipes.put(recipeId, quantity);
+	}
+	
+	/**
+	 * Returns a List of shopping list Recipes, sorted by name.
+	 * @return a List of shopping list Recipes, sorted by name.
+	 */
+	public List<Recipe> getShoppingListRecipes() {
+		return getRecipesById(shoppingListRecipes.keySet());
+	}
+	
 	
 }

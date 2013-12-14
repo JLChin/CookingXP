@@ -6,8 +6,8 @@
     <string name="preference_file_key">com.companyx.android.appx.PREFERENCE_FILE_KEY</string>
 
     <!-- MENU -->
-    <string name="menu_recipes">Recipe</string>
-    <string name="menu_shopping_list">Shop</string>
+    <string name="menu_recipes">Recipes</string>
+    <string name="menu_shopping_list">Shopping List</string>
     <string name="menu_favorites">Favorites</string>
     <string name="menu_search">Search</string>
     <string name="menu_settings">Settings</string>
