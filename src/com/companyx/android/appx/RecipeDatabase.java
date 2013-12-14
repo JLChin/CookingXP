@@ -14,7 +14,7 @@ import java.util.TreeMap;
 /**
  * Recipe Database
  * 
- * Manages recipe data.
+ * Manages all recipe data.
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
@@ -47,7 +47,7 @@ public final class RecipeDatabase {
 	 * Returns the singleton instance of the Recipe database.
 	 * @return the singleton instance of the Recipe database.
 	 */
-	public static RecipeDatabase getInstance() {
+	public synchronized static RecipeDatabase getInstance() {
 		if (holder == null)
 			holder = new RecipeDatabase();
 		return holder;
@@ -95,91 +95,6 @@ public final class RecipeDatabase {
 		RecipeDirection (String direction) {
 			this.direction = direction;
 		}
-	}
-	
-	/**
-	 * Load favorites into database from a serialized String containing the recipe indexes.
-	 * @param serializedFavorites serialized String containing the recipe indexes.
-	 */
-	public void loadFavorites(String serializedFavorites) {
-		if (serializedFavorites == null)
-			return;
-		
-		String[] deserialized = serializedFavorites.split(" ");
-		
-		for (String s : deserialized)
-			favorites.add(Integer.valueOf(s));
-	}
-	
-	/**
-	 * Returns a List of favorite Recipes, sorted by name.
-	 * @return a List of favorite Recipes, sorted by name.
-	 */
-	public List<Recipe> getFavorites() {
-		List<Recipe> result = new ArrayList<Recipe>();
-		Map<String, Set<Recipe>> resultMap = new TreeMap<String, Set<Recipe>>();
-		
-		for (int i : favorites) {
-			Recipe recipe = idMap.get(i);
-			String recipeName = recipe.name;
-			
-			if (!resultMap.containsKey(recipeName))
-				resultMap.put(recipeName, new HashSet<Recipe>());
-			resultMap.get(recipeName).add(recipe);
-		}
-		
-		for (Map.Entry<String, Set<Recipe>> entry : resultMap.entrySet()) {
-			for (Recipe r : entry.getValue())
-				result.add(r);
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Returns a serialized string containing all the favorites recipeId's.
-	 * Used to conveniently store favorites in the preferences file.
-	 * @return a serialized string containing all the favorites recipeId's.
-	 */
-	public String getSerializedFavorites() {
-		String result = "";
-		
-		if (!favorites.isEmpty()) {
-			for (int i : favorites)
-				result += String.valueOf(i) + " ";
-			
-			result = result.substring(0, result.length() - 1); // remove trailing space
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Add Recipe to favorites.
-	 * @param recipeId the unique ID of the Recipe to add to favorites. 
-	 */
-	public void addFavorite(int recipeId) {
-		favorites.add(recipeId);
-	}
-	
-	/**
-	 * Remove Recipe from favorites.
-	 * @param recipeId the unique ID of the Recipe to remove from favorites.
-	 */
-	public void removeFavorite(int recipeId) {
-		favorites.remove(recipeId);
-	}
-	
-	/**
-	 * Returns true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
-	 * @param recipeId unique identifier for the Recipe being queried.
-	 * @return true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
-	 */
-	public boolean isFavorite(int recipeId) {
-		if (favorites.contains(recipeId))
-			return true;
-		
-		return false;
 	}
 	
 	/**
@@ -334,4 +249,90 @@ public final class RecipeDatabase {
 		
 		return idMap.get(recipeId);
 	}
+	
+	/**
+	 * Load favorites into database from a serialized String containing the recipe indexes.
+	 * @param serializedFavorites serialized String containing the recipe indexes.
+	 */
+	public void loadFavorites(String serializedFavorites) {
+		if (serializedFavorites == null)
+			return;
+		
+		String[] deserialized = serializedFavorites.split(" ");
+		
+		for (String s : deserialized)
+			favorites.add(Integer.valueOf(s));
+	}
+	
+	/**
+	 * Returns a List of favorite Recipes, sorted by name.
+	 * @return a List of favorite Recipes, sorted by name.
+	 */
+	public List<Recipe> getFavorites() {
+		List<Recipe> result = new ArrayList<Recipe>();
+		Map<String, Set<Recipe>> resultMap = new TreeMap<String, Set<Recipe>>();
+		
+		for (int i : favorites) {
+			Recipe recipe = idMap.get(i);
+			String recipeName = recipe.name;
+			
+			if (!resultMap.containsKey(recipeName))
+				resultMap.put(recipeName, new HashSet<Recipe>());
+			resultMap.get(recipeName).add(recipe);
+		}
+		
+		for (Map.Entry<String, Set<Recipe>> entry : resultMap.entrySet()) {
+			for (Recipe r : entry.getValue())
+				result.add(r);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Returns a serialized string containing all the favorites recipeId's.
+	 * Used to conveniently store favorites in the preferences file.
+	 * @return a serialized string containing all the favorites recipeId's.
+	 */
+	public String getSerializedFavorites() {
+		String result = "";
+		
+		if (!favorites.isEmpty()) {
+			for (int i : favorites)
+				result += String.valueOf(i) + " ";
+			
+			result = result.substring(0, result.length() - 1); // remove trailing space
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Add Recipe to favorites.
+	 * @param recipeId the unique ID of the Recipe to add to favorites. 
+	 */
+	public void addFavorite(int recipeId) {
+		favorites.add(recipeId);
+	}
+	
+	/**
+	 * Remove Recipe from favorites.
+	 * @param recipeId the unique ID of the Recipe to remove from favorites.
+	 */
+	public void removeFavorite(int recipeId) {
+		favorites.remove(recipeId);
+	}
+	
+	/**
+	 * Returns true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
+	 * @param recipeId unique identifier for the Recipe being queried.
+	 * @return true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
+	 */
+	public boolean isFavorite(int recipeId) {
+		if (favorites.contains(recipeId))
+			return true;
+		
+		return false;
+	}
+	
 }

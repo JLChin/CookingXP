@@ -64,19 +64,19 @@ public class RecipeActivity extends BaseActivity {
 		// FAVORITE BUTTON
 		buttonFavorite = (ImageButton) findViewById(R.id.imagebutton_recipe_favorite);
 		if (recipeDatabase.isFavorite(recipeId)) {
-			// TODO set favorite background color
+			buttonFavorite.setBackgroundResource(R.drawable.button_background_amber);
 		} else {
-			// TODO set ordinary background color
+			buttonFavorite.setBackgroundResource(R.drawable.button_background_gray);
 		}
 		buttonFavorite.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				synchronized(recipeDatabase) {
 					if (recipeDatabase.isFavorite(recipeId)) {
 						recipeDatabase.removeFavorite(recipeId);
-						// set ordinary background color
+						buttonFavorite.setBackgroundResource(R.drawable.button_background_gray);
 					} else {
 						recipeDatabase.addFavorite(recipeId);
-						// set favorite background color
+						buttonFavorite.setBackgroundResource(R.drawable.button_background_amber);
 					}
 					
 					sharedPrefEditor.putString("SERIALIZED_FAVORITES", recipeDatabase.getSerializedFavorites());

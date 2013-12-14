@@ -2,11 +2,13 @@
 
     <item
         android:id="@+id/menu_recipes"
+        android:icon="@drawable/ic_action_select_all"
         android:orderInCategory="0"
         android:showAsAction="always"
         android:title="@string/menu_recipes"/>
     <item
         android:id="@+id/menu_shopping_list"
+        android:icon="@drawable/ic_action_shopping_cart"
         android:orderInCategory="2"
         android:showAsAction="always"
         android:title="@string/menu_shopping_list"/>
