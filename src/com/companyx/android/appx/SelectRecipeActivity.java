@@ -24,12 +24,14 @@ import com.companyx.android.appx.RecipeDatabase.Recipe;
  * TODO Add Recipe, custom options menu
  * TODO http://developer.android.com/guide/topics/search/adding-recent-query-suggestions.html
  * 
- * @author James Chin <JamesLChin@gmail.com>
+ * @author James Chin <jameslchin@gmail.com>
  */
 public class SelectRecipeActivity extends BaseListActivity {
 	// STATE VARIABLES
-	private RecipeDatabase recipeDatabase;
 	private List<Recipe> recipes;
+	
+	// SYSTEM
+	private RecipeDatabase recipeDatabase;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,13 +55,19 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 * @param intent the Intent passed to this Activity.
 	 */
 	private void handleIntent(Intent intent) {
+		// receive search action
 		String action = intent.getAction();
+		
+		// other operations
+		String operation = intent.getStringExtra("operation");
 		
 		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			recipes = recipeDatabase.searchRecipes(query);
-		} else
-			recipes = recipeDatabase.getRecipes();
+		} else if (operation.equals("Favorites"))
+			loadFavoriteRecipes();
+		else
+			loadAllRecipes();
 		
 		// post results
 		setListAdapter(new RecipeListViewAdapter(this, recipes));
@@ -69,8 +77,20 @@ public class SelectRecipeActivity extends BaseListActivity {
 		initializeListView();
 		
 		recipeDatabase = RecipeDatabase.getInstance();
-		
-		// TODO
+	}
+	
+	/**
+	 * Return all recipes in the RecipeDatabase, sorted by Recipe name.
+	 */
+	private void loadAllRecipes() {
+		recipes = recipeDatabase.allRecipes();
+	}
+	
+	/**
+	 * Return favorite recipes from the RecipeDatabase, sorted by Recipe name.
+	 */
+	private void loadFavoriteRecipes() {
+		recipes = recipeDatabase.getFavorites();
 	}
 
 	private void initializeListView() {

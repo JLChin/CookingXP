@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * BaseListActivity
+ * 
+ * @author James Chin <jameslchin@gmail.com>
+ */
 public class BaseListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,10 @@ public class BaseListActivity extends ListActivity {
 			// TODO
 			break;
 		case R.id.menu_favorites:
-			// TODO
+			intent = new Intent(this, SelectRecipeActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			intent.putExtra("operation", "Favorites");
+			startActivity(intent);
 			break;
 		case R.id.menu_search:
 			onSearchRequested();

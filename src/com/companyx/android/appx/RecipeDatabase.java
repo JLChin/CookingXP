@@ -16,25 +16,36 @@ import java.util.TreeMap;
  * 
  * Manages recipe data.
  * 
- * @author James Chin <JamesLChin@gmail.com>
+ * @author James Chin <jameslchin@gmail.com>
  */
 public final class RecipeDatabase {
 	// STATE VARIABLES
-	private static Map<String, List<Recipe>> recipeMap; // maps recipe name to List of recipes that match that name
 	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeId's
-	private static Map<Integer, Recipe> idMap; // maps unique integer ID to corresponding recipe
+	private static Map<Integer, Recipe> idMap; // maps unique ID to corresponding recipe
+	private static Set<Integer> favorites; // set containing unique ID's of favorite recipes
 	private static int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
 
 	// SINGLETON
 	private static RecipeDatabase holder;
 
 	private RecipeDatabase() {
-		clearDatabase();
+		resetDatabase();
 	}
 	
 	/**
-	 * Returns the single instance of the Recipe database.
-	 * @return the single instance of the Recipe database.
+	 * Resets the database.
+	 */
+	@SuppressLint("UseSparseArrays")
+	public void resetDatabase() {
+		indexMap = new HashMap<String, Set<Integer>>();
+		idMap = new HashMap<Integer, Recipe>();
+		favorites = new HashSet<Integer>();
+		recipeCounter = 0;
+	}
+	
+	/**
+	 * Returns the singleton instance of the Recipe database.
+	 * @return the singleton instance of the Recipe database.
 	 */
 	public static RecipeDatabase getInstance() {
 		if (holder == null)
@@ -44,12 +55,11 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Class representing a recipe.
+	 * TODO int index, List<RecipeCategory>, short timeRequiredInMin, byte difficultyLevel
 	 */
 	static class Recipe {
 		String name;
 		int recipeId;
-		short timeRequiredInMin; // TODO
-		byte difficultyLevel; // TODO
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
 		
@@ -88,14 +98,54 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Resets the database.
+	 * Load favorites into database from a serialized String containing the recipe indexes.
+	 * @param serializedFavorites serialized String containing the recipe indexes.
 	 */
-	@SuppressLint("UseSparseArrays")
-	public void clearDatabase() {
-		recipeMap = new TreeMap<String, List<Recipe>>();
-		indexMap = new HashMap<String, Set<Integer>>();
-		idMap = new HashMap<Integer, Recipe>();
-		recipeCounter = 0;
+	public void loadFavorites(String serializedFavorites) {
+		if (serializedFavorites == null)
+			return;
+		
+		String[] deserialized = serializedFavorites.split(" ");
+		
+		for (String s : deserialized)
+			favorites.add(Integer.valueOf(s));
+	}
+	
+	/**
+	 * Returns a List of favorite Recipes, sorted by name.
+	 * @return a List of favorite Recipes, sorted by name.
+	 */
+	public List<Recipe> getFavorites() {
+		List<Recipe> result = new ArrayList<Recipe>();
+		Map<String, Set<Recipe>> resultMap = new TreeMap<String, Set<Recipe>>();
+		
+		for (int i : favorites) {
+			Recipe recipe = idMap.get(i);
+			String recipeName = recipe.name;
+			
+			if (!resultMap.containsKey(recipeName))
+				resultMap.put(recipeName, new HashSet<Recipe>());
+			resultMap.get(recipeName).add(recipe);
+		}
+		
+		for (Map.Entry<String, Set<Recipe>> entry : resultMap.entrySet()) {
+			for (Recipe r : entry.getValue())
+				result.add(r);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Returns true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
+	 * @param recipeId unique identifier for the Recipe being queried.
+	 * @return true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
+	 */
+	public boolean isFavorite(int recipeId) {
+		if (favorites.contains(recipeId))
+			return true;
+		
+		return false;
 	}
 	
 	/**
@@ -119,11 +169,6 @@ public final class RecipeDatabase {
 		// INDEX INGREDIENT NAMES
 		for (RecipeIngredient ri : newRecipe.ingredients)
 			index(ri.ingredientName, newRecipe);
-		
-		// ADD TO MASTER RECIPE MAP
-		if (!recipeMap.containsKey(newRecipe.name))
-			recipeMap.put(newRecipe.name, new ArrayList<Recipe>());
-		recipeMap.get(newRecipe.name).add(newRecipe);
 	}
 	
 	/**
@@ -152,12 +197,24 @@ public final class RecipeDatabase {
 	 * Returns a list of all recipes, sorted by name.
 	 * @return a list of all recipes, sorted by name.
 	 */
-	public List<Recipe> getRecipes() {
+	public List<Recipe> allRecipes() {
 		List<Recipe> result = new ArrayList<Recipe>();
 		
-		for (Map.Entry<String, List<Recipe>> entry : recipeMap.entrySet()) {
-			for (Recipe r : entry.getValue())
-				result.add(r);
+		// maps Recipe name to Set of Recipe Id's, used to sort recipes by name
+		Map<String, Set<Integer>> sortedMap = new TreeMap<String, Set<Integer>>();
+		
+		for (Map.Entry<Integer, Recipe> entry : idMap.entrySet()) {
+			String recipeName = entry.getValue().name;
+			
+			if (!sortedMap.containsKey(recipeName))
+				sortedMap.put(recipeName, new HashSet<Integer>());
+			sortedMap.get(recipeName).add(entry.getKey());
+		}
+		
+		// now that recipes are sorted, return as a List
+		for (Map.Entry<String, Set<Integer>> entry : sortedMap.entrySet()) {
+			for (Integer i : entry.getValue())
+				result.add(idMap.get(i));
 		}
 		
 		return result;
@@ -186,7 +243,7 @@ public final class RecipeDatabase {
 			searchWordSet.add(s);
 		
 		// number of matches required
-		int numTerms = searchWordSet.size();
+		int numMatchesRequired = searchWordSet.size();
 		
 		// create structure to hold unique recipes and count the number of hits for each
 		Map<Integer, Integer> hitTable = new HashMap<Integer, Integer>();
@@ -211,7 +268,7 @@ public final class RecipeDatabase {
 		Map<String, List<Recipe>> resultTree = new TreeMap<String, List<Recipe>>();
 		for (Map.Entry<Integer, Integer> entry : hitTable.entrySet()) {
 			// if all terms matched, add the recipe to the result
-			if (entry.getValue() == numTerms) {
+			if (entry.getValue() == numMatchesRequired) {
 				Recipe recipe = idMap.get(entry.getKey());
 				
 				// new recipe name

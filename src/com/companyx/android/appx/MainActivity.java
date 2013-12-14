@@ -7,10 +7,17 @@ import java.io.InputStream;
 import com.companyx.android.appx.RecipeDatabase.Recipe;
 import com.companyx.android.appx.RecipeDatabase.RecipeIngredient;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 
+/**
+ * MainActivity
+ * 
+ * @author James Chin <jameslchin@gmail.com>
+ */
 public class MainActivity extends BaseActivity {
 	
 	@Override
@@ -26,11 +33,16 @@ public class MainActivity extends BaseActivity {
 	 */
 	private void loadDatabase() {
 		RecipeDatabase recipeDatabase = RecipeDatabase.getInstance();
-		recipeDatabase.clearDatabase();
+		recipeDatabase.resetDatabase(); // in case singleton RecipeDatabase was not destroyed (i.e. exit/re-enter app quickly)
 		
-		// PARSE
-		InputStream inputStream = getResources().openRawResource(R.raw.si);
-		RecipeParser parser = new RecipeParser(inputStream, recipeDatabase);
+		// LOAD FAVORITES
+		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		String serializedFavorites = sharedPref.getString("SERIALIZED_FAVORITES", null);
+		recipeDatabase.loadFavorites(serializedFavorites);
+		
+		// LOAD DATA FROM FILE
+		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
+		RecipeLoader parser = new RecipeLoader(inputStream, recipeDatabase);
 		parser.loadData();
 		
 		

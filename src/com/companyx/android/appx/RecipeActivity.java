@@ -16,7 +16,7 @@ import android.widget.TextView;
  * TODO Add/Remove from Shopping List
  * TODO Step-by-Step Walkthrough
  * 
- *  @author James Chin <JamesLChin@gmail.com>
+ *  @author James Chin <jameslchin@gmail.com>
  */
 public class RecipeActivity extends BaseActivity {
 	// VIEW HOLDERS
@@ -24,8 +24,10 @@ public class RecipeActivity extends BaseActivity {
 	private TextView textViewName;
 	
 	// STATE VARIABLES
-	private RecipeDatabase recipeDatabase;
 	private Recipe recipe;
+	
+	// SYSTEM
+	private RecipeDatabase recipeDatabase;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

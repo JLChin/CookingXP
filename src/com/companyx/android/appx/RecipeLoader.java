@@ -15,12 +15,12 @@ import com.companyx.android.appx.RecipeDatabase.RecipeIngredient;
 @SuppressWarnings("unused")
 // Recipe Parser
 // @author Adam Hackbarth <adam.hackbarth@gmail.com>
-public class RecipeParser {
+public class RecipeLoader {
 	InputStream inputStream;
 	RecipeDatabase recipeDatabase;
 
 	// constructor
-	RecipeParser(InputStream inputStream, RecipeDatabase recipeDatabase) {
+	RecipeLoader(InputStream inputStream, RecipeDatabase recipeDatabase) {
 		this.inputStream = inputStream;
 		this.recipeDatabase = recipeDatabase;
 	}
