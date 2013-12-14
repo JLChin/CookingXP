@@ -64,7 +64,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			recipes = recipeDatabase.searchRecipes(query);
-		} else if (operation.equals("Favorites"))
+		} else if (operation != null && operation.equals("Favorites"))
 			loadFavoriteRecipes();
 		else
 			loadAllRecipes();

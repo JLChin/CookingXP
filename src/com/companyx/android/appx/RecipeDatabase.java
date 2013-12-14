@@ -137,6 +137,40 @@ public final class RecipeDatabase {
 	}
 	
 	/**
+	 * Returns a serialized string containing all the favorites recipeId's.
+	 * Used to conveniently store favorites in the preferences file.
+	 * @return a serialized string containing all the favorites recipeId's.
+	 */
+	public String getSerializedFavorites() {
+		String result = "";
+		
+		if (!favorites.isEmpty()) {
+			for (int i : favorites)
+				result += String.valueOf(i) + " ";
+			
+			result = result.substring(0, result.length() - 1); // remove trailing space
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Add Recipe to favorites.
+	 * @param recipeId the unique ID of the Recipe to add to favorites. 
+	 */
+	public void addFavorite(int recipeId) {
+		favorites.add(recipeId);
+	}
+	
+	/**
+	 * Remove Recipe from favorites.
+	 * @param recipeId the unique ID of the Recipe to remove from favorites.
+	 */
+	public void removeFavorite(int recipeId) {
+		favorites.remove(recipeId);
+	}
+	
+	/**
 	 * Returns true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
 	 * @param recipeId unique identifier for the Recipe being queried.
 	 * @return true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
