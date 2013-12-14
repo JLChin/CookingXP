@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * BaseActivity
+ * 
+ * @author James Chin <jameslchin@gmail.com>
+ */
 public class BaseActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,15 @@ public class BaseActivity extends Activity {
 		case R.id.menu_recipes:
 			intent = new Intent(this, SelectRecipeActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			startActivity(intent);
+			break;
+		case R.id.menu_shopping_list:
+			// TODO
+			break;
+		case R.id.menu_favorites:
+			intent = new Intent(this, SelectRecipeActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			intent.putExtra("operation", "Favorites");
 			startActivity(intent);
 			break;
 		case R.id.menu_search:
