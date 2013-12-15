@@ -1,5 +1,6 @@
 package com.companyx.android.appx;
 
+import android.annotation.SuppressLint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,10 +35,12 @@ public final class RecipeDatabase {
 	/**
 	 * Resets the database.
 	 */
+	@SuppressLint("UseSparseArrays")
 	public void resetDatabase() {
 		indexMap = new HashMap<String, Set<Integer>>();
 		idMap = new HashMap<Integer, Recipe>();
 		favoriteRecipes = new HashSet<Integer>();
+		shoppingListRecipes = new HashMap<Integer, Byte>();
 		recipeCounter = 0;
 	}
 	
@@ -185,6 +188,7 @@ public final class RecipeDatabase {
 	 * @param searchString String containing the specified search term(s).
 	 * @return a list of all recipes matching the specified search String, sorted by name.
 	 */
+	@SuppressLint("UseSparseArrays")
 	public List<Recipe> searchRecipes(String searchString) {
 		if (searchString == null)
 			return null;
@@ -246,30 +250,22 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Load favorite Recipes into database from a serialized String containing the recipe indexes.
-	 * @param serializedFavorites serialized String containing the recipe indexes.
+	 * @param serialized serialized String containing the recipe indexes.
 	 */
-	public void loadFavorites(String serializedFavorites) {
-		if (serializedFavorites == null)
+	public void loadFavoriteRecipes(String serialized) {
+		if (serialized == null || serialized.length() == 0)
 			return;
 		
-		String[] deserialized = serializedFavorites.split(" ");
+		String[] deserialized = serialized.split(" ");
 		
 		for (String s : deserialized)
 			favoriteRecipes.add(Integer.valueOf(s));
 	}
 	
 	/**
-	 * Returns a List of favorite Recipes, sorted by name.
-	 * @return a List of favorite Recipes, sorted by name.
-	 */
-	public List<Recipe> getFavoriteRecipes() {
-		return getRecipesById(favoriteRecipes);
-	}
-	
-	/**
-	 * Returns a serialized string containing all the favoriteRecipes recipeId's.
+	 * Returns a serialized string containing all the favorite recipe indexes.
 	 * Used to conveniently store favoriteRecipes in the preferences file.
-	 * @return a serialized string containing all the favoriteRecipes recipeId's.
+	 * @return a serialized string containing all the favorite recipe indexes.
 	 */
 	public String getSerializedFavorites() {
 		String result = "";
@@ -282,6 +278,14 @@ public final class RecipeDatabase {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Returns a List of favorite Recipes, sorted by name.
+	 * @return a List of favorite Recipes, sorted by name.
+	 */
+	public List<Recipe> getFavoriteRecipes() {
+		return getRecipesById(favoriteRecipes);
 	}
 	
 	/**
@@ -302,7 +306,7 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Returns true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
-	 * @param recipeId unique identifier for the Recipe being queried.
+	 * @param recipeId the unique identifier for the Recipe being queried.
 	 * @return true if the recipeId corresponds to a Recipe currently marked as a favorite, false otherwise.
 	 */
 	public boolean isFavorite(int recipeId) {
@@ -310,6 +314,56 @@ public final class RecipeDatabase {
 			return true;
 		
 		return false;
+	}
+	
+	/**
+	 * Load shopping list Recipes into database from a serialized String containing the recipe indexes and respective quantities.
+	 * @param serialized serialized String containing the recipe indexes and respective quantities.
+	 */
+	public void loadShoppingListRecipes(String serialized) {
+		if (serialized == null || serialized.length() == 0)
+			return;
+		
+		// deserialize data
+		String[] deserialized = serialized.split(" ");
+		int length = deserialized.length / 2;
+		Integer[] recipeIds = new Integer[length];
+		Byte[] recipeQuantities = new Byte[length];
+		
+		for (int i = 0; i < deserialized.length; i += 2) {
+			recipeIds[i] = Integer.valueOf(deserialized[i]);
+			recipeQuantities[i] = Byte.valueOf(deserialized[i + 1]);
+		}
+		
+		// load data
+		for (int i = 0; i < length; i++)
+			shoppingListRecipes.put(recipeIds[i], recipeQuantities[i]);
+	}
+	
+	/**
+	 * Returns a serialized string containing all the shopping list recipe indexes and respective quantities.
+	 * Used to conveniently store shoppingListRecipes in the preferences file.
+	 * @return a serialized string containing all the shopping list recipe indexes and respective quantities.
+	 */
+	public String getSerializedShoppingList() {
+		String result = "";
+		
+		if (!shoppingListRecipes.isEmpty()) {
+			for (Map.Entry<Integer, Byte> entry : shoppingListRecipes.entrySet())
+				result += String.valueOf(entry.getKey()) + " " + String.valueOf(entry.getValue()) + " ";
+			
+			result = result.substring(0, result.length() - 1); // remove trailing space
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Returns a List of shopping list Recipes, sorted by name.
+	 * @return a List of shopping list Recipes, sorted by name.
+	 */
+	public List<Recipe> getShoppingListRecipes() {
+		return getRecipesById(shoppingListRecipes.keySet());
 	}
 	
 	/**
@@ -325,12 +379,13 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Returns a List of shopping list Recipes, sorted by name.
-	 * @return a List of shopping list Recipes, sorted by name.
+	 * Returns the quantity of the specified Recipe stored in the shopping list.
+	 * @param recipeId the unique identifier for the Recipe being queried.
+	 * @return the quantity of the specified Recipe stored in the shopping list.
 	 */
-	public List<Recipe> getShoppingListRecipes() {
-		return getRecipesById(shoppingListRecipes.keySet());
+	public byte getQuantity(int recipeId) {
+		Byte result = shoppingListRecipes.get(recipeId);
+		
+		return (result == null) ? 0 : result;
 	}
-	
-	
 }

@@ -42,7 +42,10 @@ public class BaseActivity extends Activity {
 			startActivity(intent);
 			break;
 		case R.id.menu_shopping_list:
-			// TODO
+			intent = new Intent(this, SelectRecipeActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			intent.putExtra("operation", "Shopping List");
+			startActivity(intent);
 			break;
 		case R.id.menu_favorites:
 			intent = new Intent(this, SelectRecipeActivity.class);
