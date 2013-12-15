@@ -35,18 +35,23 @@ public class MainActivity extends BaseActivity {
 		RecipeDatabase recipeDatabase = RecipeDatabase.getInstance();
 		recipeDatabase.resetDatabase(); // in case singleton RecipeDatabase was not destroyed (i.e. exit/re-enter app quickly)
 		
-		// LOAD FAVORITES
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		
+		// LOAD FAVORITES
 		String serializedFavorites = sharedPref.getString("SERIALIZED_FAVORITES", null);
-		recipeDatabase.loadFavorites(serializedFavorites);
+		recipeDatabase.loadFavoriteRecipes(serializedFavorites);
+		
+		// LOAD SHOPPING LIST
+		String serializedShoppingList = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
+		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
 		
 		// LOAD DATA FROM FILE
 		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
-		RecipeLoader parser = new RecipeLoader(inputStream, recipeDatabase);
-		parser.loadData();
+		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
+		loader.loadData();
 		
 		
-		// TEST, GET RID OF THIS
+		// TEST CASES, GET RID OF THIS
 		List<RecipeIngredient> emptyList = new ArrayList<RecipeIngredient>();
 		List<RecipeIngredient> list1 = new ArrayList<RecipeIngredient>();
 		RecipeIngredient ri1 = new RecipeIngredient("2 1/2", "pounds", "Roasted Pork");
@@ -62,7 +67,6 @@ public class MainActivity extends BaseActivity {
 		recipeDatabase.addRecipe(new Recipe("Curry Pork 1", emptyList, null));
 		recipeDatabase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
 		recipeDatabase.addRecipe(new Recipe("Mystery Sandwich", list1, null));
-		
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.companyx.android.appx;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.companyx.android.appx.RecipeDatabase.Recipe;
 
@@ -64,9 +66,12 @@ public class SelectRecipeActivity extends BaseListActivity {
 		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			recipes = recipeDatabase.searchRecipes(query);
-		} else if (operation != null && operation.equals("Favorites"))
-			loadFavoriteRecipes();
-		else
+		} else if (operation != null) {
+			if (operation.equals("Favorites"))
+				loadFavoriteRecipes();
+			else if (operation.equals("Shopping List"))
+				loadShoppingListRecipes();
+		} else
 			loadAllRecipes();
 		
 		// post results
@@ -84,13 +89,29 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 */
 	private void loadAllRecipes() {
 		recipes = recipeDatabase.allRecipes();
+		
+		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
 	 * Return favorite recipes from the RecipeDatabase, sorted by Recipe name.
 	 */
 	private void loadFavoriteRecipes() {
-		recipes = recipeDatabase.getFavorites();
+		recipes = recipeDatabase.getFavoriteRecipes();
+		
+		if (recipes.size() == 0)
+			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_favorites_alert_title).setMessage(R.string.select_recipe_favorites_empty).setPositiveButton(R.string.select_recipe_favorites_empty_ok, null).show();
+	}
+	
+	/**
+	 * Return favorite recipes from the RecipeDatabase, sorted by Recipe name.
+	 */
+	private void loadShoppingListRecipes() {
+		recipes = recipeDatabase.getShoppingListRecipes();
+		
+		if (recipes.size() == 0)
+			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
+		// TODO
 	}
 
 	private void initializeListView() {

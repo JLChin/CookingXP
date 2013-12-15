@@ -25,15 +25,21 @@
             android:id="@+id/imagebutton_recipe_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/recipe_button_favorite_description"
+            android:contentDescription="@string/recipe_favorites_button_description"
             android:src="@drawable/ic_action_star" />
 
         <ImageButton
             android:id="@+id/imagebutton_recipe_shopping_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/recipe_button_shopping_list_description"
-            android:src="@drawable/ic_action_star" />
+            android:contentDescription="@string/recipe_shopping_list_button_description"
+            android:src="@drawable/ic_action_shopping_cart" />
+
+        <Spinner
+            android:id="@+id/spinner_recipe_shopping_list"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background_gray" />
     </LinearLayout>
 
 </LinearLayout>
