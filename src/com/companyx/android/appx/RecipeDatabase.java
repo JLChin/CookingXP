@@ -258,8 +258,13 @@ public final class RecipeDatabase {
 		
 		String[] deserialized = serialized.split(" ");
 		
-		for (String s : deserialized)
-			favoriteRecipes.add(Integer.valueOf(s));
+		for (String s : deserialized) {
+			int recipeId = Integer.valueOf(s);
+			
+			// in case recipe no longer exists
+			if (idMap.containsKey(recipeId))
+				favoriteRecipes.add(recipeId);
+		}
 	}
 	
 	/**
@@ -336,8 +341,11 @@ public final class RecipeDatabase {
 		}
 		
 		// load data
-		for (int i = 0; i < length; i++)
-			shoppingListRecipes.put(recipeIds[i], recipeQuantities[i]);
+		for (int i = 0; i < length; i++) {
+			// in case recipe no longer exists
+			if (idMap.containsKey(recipeIds[i]))
+				shoppingListRecipes.put(recipeIds[i], recipeQuantities[i]);
+		}
 	}
 	
 	/**

@@ -101,14 +101,23 @@ public class RecipeActivity extends BaseActivity {
 		List<Byte> spinnerChoices = new ArrayList<Byte>();
 		for (byte i = 0; i <= MAX_QUANTITY; i++)
 			spinnerChoices.add(i);
-		spinnerShoppingList.setAdapter(new ArrayAdapter<Byte>(this, android.R.layout.simple_spinner_dropdown_item, spinnerChoices));
+		ArrayAdapter<Byte> shoppingListAdapter = new ArrayAdapter<Byte>(this, R.layout.spinner_item, spinnerChoices);
+		shoppingListAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+		spinnerShoppingList.setAdapter(shoppingListAdapter);
 		spinnerShoppingList.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				synchronized(recipeDatabase) {
+					byte currentQty = recipeDatabase.getQuantity(recipeId);
+					
 					recipeDatabase.updateQuantity(recipeId, (byte) position); 
 					sharedPrefEditor.putString("SERIALIZED_SHOPPING_LIST", recipeDatabase.getSerializedShoppingList());
 					sharedPrefEditor.commit();
+					
+					if (position > currentQty)
+						Toast.makeText(getApplicationContext(), getString(R.string.recipe_shopping_list_added) + " " + (position - currentQty) + " " + recipe.name + " " + getString(R.string.recipe_shopping_list_to_shopping_list), Toast.LENGTH_SHORT).show();
+					else if (position < currentQty)
+						Toast.makeText(getApplicationContext(), getString(R.string.recipe_shopping_list_removed) + " " + (currentQty - position) + " " + recipe.name + " " + getString(R.string.recipe_shopping_list_from_shopping_list), Toast.LENGTH_SHORT).show();
 				}
 			}
 
