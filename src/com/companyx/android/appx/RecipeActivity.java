@@ -37,7 +37,6 @@ public class RecipeActivity extends BaseActivity {
 	private LinearLayout layoutBody;
 	private TextView textViewName;
 	private ImageButton buttonFavorite;
-	private ImageButton buttonShoppingList;
 	private Spinner spinnerShoppingList;
 	
 	// STATE VARIABLES
@@ -97,10 +96,6 @@ public class RecipeActivity extends BaseActivity {
 			}
 		});
 		
-		// SHOPPING LIST BUTTON
-		buttonShoppingList = (ImageButton) findViewById(R.id.imagebutton_recipe_shopping_list);
-		buttonShoppingList.setBackgroundResource(R.drawable.button_background_dark);
-		
 		// SHOPPING LIST SPINNER
 		spinnerShoppingList = (Spinner) findViewById(R.id.spinner_recipe_shopping_list);
 		List<Byte> spinnerChoices = new ArrayList<Byte>();
@@ -109,15 +104,19 @@ public class RecipeActivity extends BaseActivity {
 		spinnerShoppingList.setAdapter(new ArrayAdapter<Byte>(this, android.R.layout.simple_spinner_dropdown_item, spinnerChoices));
 		spinnerShoppingList.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				// TODO Auto-generated method stub
-				
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				synchronized(recipeDatabase) {
+					recipeDatabase.updateQuantity(recipeId, (byte) position); 
+					sharedPrefEditor.putString("SERIALIZED_SHOPPING_LIST", recipeDatabase.getSerializedShoppingList());
+					sharedPrefEditor.commit();
+				}
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
+		spinnerShoppingList.setSelection(recipeDatabase.getQuantity(recipeId), true);
 		
 		// TODO
 		layoutBody = (LinearLayout) findViewById(R.id.layout_recipe_body);
