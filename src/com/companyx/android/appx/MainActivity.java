@@ -36,7 +36,14 @@ public class MainActivity extends BaseActivity {
 		recipeDatabase.resetDatabase(); // in case singleton RecipeDatabase was not destroyed (i.e. exit/re-enter app quickly)
 		
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-		
+
+		// LOAD DATA FROM FILE
+		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
+		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
+		loader.loadData();
+
+		loadTestData(recipeDatabase);
+
 		// LOAD FAVORITES
 		String serializedFavorites = sharedPref.getString("SERIALIZED_FAVORITES", null);
 		recipeDatabase.loadFavoriteRecipes(serializedFavorites);
@@ -44,13 +51,6 @@ public class MainActivity extends BaseActivity {
 		// LOAD SHOPPING LIST
 		String serializedShoppingList = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
 		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
-		
-		// LOAD DATA FROM FILE
-		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
-		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
-		loader.loadData();
-		
-		loadTestData(recipeDatabase);
 	}
 	
 	private void loadTestData(RecipeDatabase recipeDatabase) {
