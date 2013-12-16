@@ -39,6 +39,10 @@
     <string name="recipe_favorites_to_favorites">to Favorites</string>
     <string name="recipe_favorites_removed">Removed</string>
     <string name="recipe_favorites_from_favorites">from Favorites</string>
+    <string name="recipe_shopping_list_added">Added</string>
+    <string name="recipe_shopping_list_to_shopping_list">to Shopping List</string>
+    <string name="recipe_shopping_list_removed">Removed</string>
+    <string name="recipe_shopping_list_from_shopping_list">from Shopping List</string>
     
     
     

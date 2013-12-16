@@ -50,8 +50,10 @@ public class MainActivity extends BaseActivity {
 		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
 		loader.loadData();
 		
-		
-		// TEST CASES, GET RID OF THIS
+		loadTestData(recipeDatabase);
+	}
+	
+	private void loadTestData(RecipeDatabase recipeDatabase) {
 		List<RecipeIngredient> emptyList = new ArrayList<RecipeIngredient>();
 		List<RecipeIngredient> list1 = new ArrayList<RecipeIngredient>();
 		RecipeIngredient ri1 = new RecipeIngredient("2 1/2", "pounds", "Roasted Pork");

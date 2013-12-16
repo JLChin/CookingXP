@@ -30,8 +30,8 @@
 
         <Spinner
             android:id="@+id/spinner_recipe_shopping_list"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:background="@drawable/button_background_gray" />
     </LinearLayout>
 
