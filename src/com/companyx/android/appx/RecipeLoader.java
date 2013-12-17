@@ -93,8 +93,8 @@ public class RecipeLoader {
                         dirList.add(new RecipeDirection(s));
                 }
 
-                Recipe newRecipe = new Recipe(title, riList, dirList);
-                recipeDatabase.addRecipe(newRecipe);
+                //Recipe newRecipe = new Recipe(title, riList, dirList);
+                //recipeDatabase.addRecipe(newRecipe);
 
 
                         } else {
