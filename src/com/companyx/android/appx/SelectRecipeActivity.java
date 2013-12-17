@@ -136,7 +136,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		private final Context activity;
 		
 		RecipeListViewAdapter(Context activity, List<Recipe> recipes) {
-			super(activity, R.layout.list_item, recipes);
+			super(activity, R.layout.recipe_list_item, recipes);
 			this.activity = activity;
 			this.recipes = recipes;
 		}
@@ -148,11 +148,13 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 
 	        if (view == null) {
 	        	LayoutInflater inflater = ((Activity) activity).getLayoutInflater();
-	            view = inflater.inflate(R.layout.list_item, null);
+	            view = inflater.inflate(R.layout.recipe_list_item, null);
 	 
 	            // hold the view objects in an object, so they don't need to be re-fetched
 	            recipeView = new RecipeView();
-	            recipeView.textViewName = (TextView) view.findViewById(R.id.textview_list_item);
+	            recipeView.textViewName = (TextView) view.findViewById(R.id.recipe_list_name);
+	            recipeView.textViewDescription = (TextView) view.findViewById(R.id.recipe_list_description);
+	            recipeView.textViewTime = (TextView) view.findViewById(R.id.recipe_list_time);
 	 
 	            // cache the view objects in the tag, so they can be re-accessed later
 	            view.setTag(recipeView);
@@ -162,6 +164,8 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        // set up view, store unique ID to retrieve recipe from database when selected
 	        Recipe recipe = recipes.get(position);
 	        recipeView.textViewName.setText(recipe.name);
+	        recipeView.textViewDescription.setText("Put something cool here.");
+	        recipeView.textViewTime.setText(getTime(recipe.timeRequiredInMin));
 	        recipeView.recipeId = recipe.recipeId;
 	 
 	        return view;
@@ -169,7 +173,24 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		class RecipeView {
 			TextView textViewName;
+			TextView textViewDescription;
+			TextView textViewTime;
 			int recipeId;
+		}
+		
+		/**
+		 * Helper function that generates a string containing the formatted hour and minute representation of the recipe cooking time.
+		 * @param timeRequiredInMin the time required in minutes for the Recipe.
+		 * @return a string containing the formatted hour and minute representation of the recipe cooking time.
+		 */
+		private String getTime(short timeRequiredInMin) {
+			// construct hours string
+			short hours = (short) (timeRequiredInMin / 60);
+			String hoursStr = "";
+			if (hours != 0)
+				hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
+			
+			return hoursStr + (timeRequiredInMin % 60) + " " + getString(R.string.select_recipe_min);
 		}
 	}
 }
