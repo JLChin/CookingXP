@@ -32,6 +32,9 @@
     <string name="select_recipe_shopping_list_empty_ok">All good.</string>
     <string name="select_recipe_showing">Showing</string>
     <string name="select_recipe_recipes">recipes</string>
+    <string name="select_recipe_image_description">Image.</string>
+    <string name="select_recipe_hours">hrs</string>
+    <string name="select_recipe_min">min</string>
     
     <!-- RECIPE -->
     <string name="recipe_favorites_button_description">Add/Remove Favorite</string>
@@ -43,9 +46,6 @@
     <string name="recipe_shopping_list_to_shopping_list">to Shopping List</string>
     <string name="recipe_shopping_list_removed">Removed</string>
     <string name="recipe_shopping_list_from_shopping_list">from Shopping List</string>
-    
-    
-    
     
     <string name="welcome">Welcome to the new cooking app</string>
 
