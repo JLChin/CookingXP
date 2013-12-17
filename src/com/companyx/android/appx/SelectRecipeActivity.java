@@ -187,8 +187,13 @@ public class SelectRecipeActivity extends BaseListActivity {
 			// construct hours string
 			short hours = (short) (timeRequiredInMin / 60);
 			String hoursStr = "";
-			if (hours != 0)
-				hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
+			if (hours != 0) {
+				if (hours == 1)
+					hoursStr += hours + " " + getString(R.string.select_recipe_hour) + " ";
+				else
+					hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
+			}
+				
 			
 			return hoursStr + (timeRequiredInMin % 60) + " " + getString(R.string.select_recipe_min);
 		}
