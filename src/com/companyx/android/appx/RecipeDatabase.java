@@ -23,7 +23,6 @@ public final class RecipeDatabase {
 	private static Map<Integer, Recipe> idMap; // maps recipeId to corresponding recipe
 	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
 	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
-	private static int recipeCounter; // gives each recipe a unique number, current value represents the next available ID
 
 	// SINGLETON
 	private static RecipeDatabase holder;
@@ -41,7 +40,6 @@ public final class RecipeDatabase {
 		idMap = new HashMap<Integer, Recipe>();
 		favoriteRecipes = new HashSet<Integer>();
 		shoppingListRecipes = new HashMap<Integer, Byte>();
-		recipeCounter = 0;
 	}
 	
 	/**
@@ -56,18 +54,23 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Class representing a recipe.
-	 * TODO int index, List<RecipeCategory>, short timeRequiredInMin, byte difficultyLevel
+	 * TODO List<RecipeCategory>
 	 */
 	static class Recipe {
-		String name;
 		int recipeId;
+		String name;
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
+		short timeRequiredInMin;
+		byte difficultyLevel;
 		
-		Recipe(String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions) {
+		Recipe(int recipeId, String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, short timeRequiredInMin, byte difficultyLevel) {
+			this.recipeId = recipeId;
 			this.name = name;
 			this.ingredients = ingredients;
 			this.directions = directions;
+			this.timeRequiredInMin = timeRequiredInMin;
+			this.difficultyLevel = difficultyLevel;
 		}
 	}
 	
@@ -100,33 +103,32 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Adds a new recipe to the recipe map and index map.
-	 * Assumes recipe is well-formed.
 	 * @param newRecipe the new recipe to be added to the database.
 	 */
 	public void addRecipe(Recipe newRecipe) {
 		if (newRecipe == null)
 			return;
 		
-		// ASSIGN UNIQUE ID
-		newRecipe.recipeId = recipeCounter++;
+		// GET UNIQUE ID
+		int recipeId = newRecipe.recipeId;
 		
 		// INDEX ID
-		idMap.put(newRecipe.recipeId, newRecipe);
+		idMap.put(recipeId, newRecipe);
 		
 		// INDEX RECIPE NAME
-		index(newRecipe.name, newRecipe);
+		index(newRecipe.name, recipeId);
 		
 		// INDEX INGREDIENT NAMES
 		for (RecipeIngredient ri : newRecipe.ingredients)
-			index(ri.ingredientName, newRecipe);
+			index(ri.ingredientName, recipeId);
 	}
 	
 	/**
 	 * Helper function that indexes the given recipe by the words contained in the specified String.
 	 * @param string String containing the words to index the given recipe by.
-	 * @param recipe the given recipe.
+	 * @param recipeId the unique identifier for the Recipe being indexed.
 	 */
-	private void index(String string, Recipe recipe) {
+	private void index(String string, int recipeId) {
 		String[] words = string.split(" ");
 
 		// convert words to lowercase for indexing
@@ -139,7 +141,7 @@ public final class RecipeDatabase {
 				indexMap.put(word, new HashSet<Integer>());
 
 			// add recipeId to search index
-			indexMap.get(word).add(recipe.recipeId);
+			indexMap.get(word).add(recipeId);
 		}
 	}
 	

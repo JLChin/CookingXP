@@ -40,9 +40,9 @@ public class MainActivity extends BaseActivity {
 		// LOAD DATA FROM FILE
 		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
 		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
-		loader.loadData();
+		//loader.loadData();
 
-		loadTestData(recipeDatabase);
+		loadTestData(recipeDatabase); // TODO REMOVE
 
 		// LOAD FAVORITES
 		String serializedFavorites = sharedPref.getString("SERIALIZED_FAVORITES", null);
@@ -53,6 +53,10 @@ public class MainActivity extends BaseActivity {
 		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
 	}
 	
+	/**
+	 * REMOVE
+	 * @param recipeDatabase
+	 */
 	private void loadTestData(RecipeDatabase recipeDatabase) {
 		List<RecipeIngredient> emptyList = new ArrayList<RecipeIngredient>();
 		List<RecipeIngredient> list1 = new ArrayList<RecipeIngredient>();
@@ -61,14 +65,14 @@ public class MainActivity extends BaseActivity {
 		list1.add(ri1);
 		list1.add(ri2);
 		
-		recipeDatabase.addRecipe(new Recipe("Curry Pie", emptyList, null));
-		recipeDatabase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
-		recipeDatabase.addRecipe(new Recipe("Baked Salmon", emptyList, null));
-		recipeDatabase.addRecipe(new Recipe("Apple Pie", emptyList, null));
-		recipeDatabase.addRecipe(new Recipe("Pulled Pork Sandwich", list1, null));
-		recipeDatabase.addRecipe(new Recipe("Curry Pork 1", emptyList, null));
-		recipeDatabase.addRecipe(new Recipe("Curry Pork 2", emptyList, null));
-		recipeDatabase.addRecipe(new Recipe("Mystery Sandwich", list1, null));
+		recipeDatabase.addRecipe(new Recipe(321001, "Curry Pie", emptyList, null, (short) 30, (byte) 2));
+		recipeDatabase.addRecipe(new Recipe(321002, "Curry Pork 2", emptyList, null, (short) 60, (byte) 3));
+		recipeDatabase.addRecipe(new Recipe(321003, "Baked Salmon", emptyList, null, (short) 80, (byte) 4));
+		recipeDatabase.addRecipe(new Recipe(321004, "Apple Pie", emptyList, null, (short) 1, (byte) 1));
+		recipeDatabase.addRecipe(new Recipe(321005, "Pulled Pork Sandwich", list1, null, (short) 240, (byte) 25));
+		recipeDatabase.addRecipe(new Recipe(321006, "Curry Pork 1", emptyList, null, (short) 115, (byte) 32));
+		recipeDatabase.addRecipe(new Recipe(321007, "Curry Pork 2", emptyList, null, (short) 182, (byte) 43));
+		recipeDatabase.addRecipe(new Recipe(321008, "Mystery Sandwich", list1, null, (short) 3630, (byte) 120));
 	}
 
 	@Override

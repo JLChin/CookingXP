@@ -58,11 +58,12 @@ public class RecipeActivity extends BaseActivity {
 	}
 	
 	private void initialize() {
+		// LOAD SYSTEM VARIABLES
 		recipeDatabase = RecipeDatabase.getInstance();
-		
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		sharedPrefEditor = sharedPref.edit();
 		
+		// GET RECIPE INFO
 		recipeId = getIntent().getIntExtra("recipeId", -1);
 		recipe = recipeDatabase.findRecipeById(recipeId);
 		
@@ -98,10 +99,10 @@ public class RecipeActivity extends BaseActivity {
 		
 		// SHOPPING LIST SPINNER
 		spinnerShoppingList = (Spinner) findViewById(R.id.spinner_recipe_shopping_list);
-		List<Byte> spinnerChoices = new ArrayList<Byte>();
+		List<String> spinnerChoices = new ArrayList<String>();
 		for (byte i = 0; i <= MAX_QUANTITY; i++)
-			spinnerChoices.add(i);
-		ArrayAdapter<Byte> shoppingListAdapter = new ArrayAdapter<Byte>(this, R.layout.spinner_item, spinnerChoices);
+			spinnerChoices.add(" " + String.valueOf(i));
+		ArrayAdapter<String> shoppingListAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, spinnerChoices);
 		shoppingListAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 		spinnerShoppingList.setAdapter(shoppingListAdapter);
 		spinnerShoppingList.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -127,7 +128,7 @@ public class RecipeActivity extends BaseActivity {
 		});
 		spinnerShoppingList.setSelection(recipeDatabase.getQuantity(recipeId), true);
 		
-		// TODO
+		// RECIPE BODY
 		layoutBody = (LinearLayout) findViewById(R.id.layout_recipe_body);
 		
 		for (RecipeIngredient ri : recipe.ingredients) {
