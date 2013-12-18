@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,10 @@ import com.companyx.android.appx.RecipeDatabase.Recipe;
 public class SelectRecipeActivity extends BaseListActivity {
 	// STATE VARIABLES
 	private List<Recipe> recipes;
+	private String operation;
+	
+	// VIEW HOLDERS
+	private LinearLayout layoutIngredients;
 	
 	// SYSTEM
 	private RecipeDatabase recipeDatabase;
@@ -61,7 +66,10 @@ public class SelectRecipeActivity extends BaseListActivity {
 		String action = intent.getAction();
 		
 		// other operations
-		String operation = intent.getStringExtra("operation");
+		operation = intent.getStringExtra("operation");
+		
+		// reset views
+		layoutIngredients.removeAllViews();
 		
 		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
@@ -79,6 +87,8 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 
 	private void initialize() {
+		layoutIngredients = (LinearLayout) findViewById(R.id.layout_select_recipe_ingredients);
+		
 		initializeListView();
 		
 		recipeDatabase = RecipeDatabase.getInstance();
@@ -105,13 +115,20 @@ public class SelectRecipeActivity extends BaseListActivity {
 	
 	/**
 	 * Return favorite recipes from the RecipeDatabase, sorted by Recipe name.
+	 * Show list of aggregated recipe ingredients.
 	 */
 	private void loadShoppingListRecipes() {
 		recipes = recipeDatabase.getShoppingListRecipes();
 		
+		List<String> ingredients = recipeDatabase.getShoppingList();
+		for (String s : ingredients) {
+			TextView tv = new TextView(this);
+			tv.setText(s);
+			layoutIngredients.addView(tv);
+		}
+		
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
-		// TODO
 	}
 
 	private void initializeListView() {
@@ -154,7 +171,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	            recipeView = new RecipeView();
 	            recipeView.textViewName = (TextView) view.findViewById(R.id.recipe_list_name);
 	            recipeView.textViewDescription = (TextView) view.findViewById(R.id.recipe_list_description);
-	            recipeView.textViewTime = (TextView) view.findViewById(R.id.recipe_list_time);
+	            recipeView.textViewInfoRight = (TextView) view.findViewById(R.id.recipe_list_info_right);
 	 
 	            // cache the view objects in the tag, so they can be re-accessed later
 	            view.setTag(recipeView);
@@ -163,19 +180,24 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 
 	        // set up view, store unique ID to retrieve recipe from database when selected
 	        Recipe recipe = recipes.get(position);
+	        int recipeId = recipe.recipeId;
+	        
+	        recipeView.recipeId = recipeId;
 	        recipeView.textViewName.setText(recipe.name);
 	        recipeView.textViewDescription.setText("Put something cool here.");
-	        recipeView.textViewTime.setText(getTime(recipe.timeRequiredInMin));
-	        recipeView.recipeId = recipe.recipeId;
-	 
+	        if (operation != null && operation.equals("Shopping List"))
+	        	recipeView.textViewInfoRight.setText(String.valueOf(recipeDatabase.getQuantity(recipeId)));
+	        else
+	        	recipeView.textViewInfoRight.setText(getTime(recipe.timeRequiredInMin));
+	        
 	        return view;
 	    }
 		
 		class RecipeView {
+			int recipeId;
 			TextView textViewName;
 			TextView textViewDescription;
-			TextView textViewTime;
-			int recipeId;
+			TextView textViewInfoRight;
 		}
 		
 		/**
@@ -187,9 +209,13 @@ public class SelectRecipeActivity extends BaseListActivity {
 			// construct hours string
 			short hours = (short) (timeRequiredInMin / 60);
 			String hoursStr = "";
-			if (hours != 0)
-				hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
-			
+			if (hours != 0) {
+				if (hours == 1)
+					hoursStr += hours + " " + getString(R.string.select_recipe_hour) + " ";
+				else
+					hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
+			}
+				
 			return hoursStr + (timeRequiredInMin % 60) + " " + getString(R.string.select_recipe_min);
 		}
 	}

@@ -33,6 +33,7 @@
     <string name="select_recipe_showing">Showing</string>
     <string name="select_recipe_recipes">recipes</string>
     <string name="select_recipe_image_description">Image.</string>
+    <string name="select_recipe_hour">hr</string>
     <string name="select_recipe_hours">hrs</string>
     <string name="select_recipe_min">min</string>
     

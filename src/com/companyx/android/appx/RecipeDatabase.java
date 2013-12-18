@@ -1,6 +1,5 @@
 package com.companyx.android.appx;
 
-import android.annotation.SuppressLint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import android.annotation.SuppressLint;
+
 /**
  * Recipe Database
  * 
@@ -18,15 +19,20 @@ import java.util.TreeMap;
  * @author James Chin <jameslchin@gmail.com>
  */
 public final class RecipeDatabase {
+	// MEASUREMENT ALIASES
+	public static final String[] POUNDS_ALIAS = {"lb", "lbs", "pound", "pounds"};
+	public static final String POUNDS = "pounds";
+	
 	// STATE VARIABLES
 	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeId's
 	private static Map<Integer, Recipe> idMap; // maps recipeId to corresponding recipe
 	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
 	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
+	private static Map<String, String> measurementAliases; // maps measurement alias to the preferred measurement name, i.e. "lbs" to "pounds"
 
 	// SINGLETON
 	private static RecipeDatabase holder;
-
+	
 	private RecipeDatabase() {
 		resetDatabase();
 	}
@@ -40,6 +46,9 @@ public final class RecipeDatabase {
 		idMap = new HashMap<Integer, Recipe>();
 		favoriteRecipes = new HashSet<Integer>();
 		shoppingListRecipes = new HashMap<Integer, Byte>();
+		measurementAliases = new HashMap<String, String>();
+		
+		loadMeasurementAliases();
 	}
 	
 	/**
@@ -76,7 +85,7 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Class representing one itemized ingredient consisting of the number amount, unit of measurement, and ingredient.
-	 * Example: 1-1/4 Tablespoon Sugar
+	 * Example: 1 1/4 Tablespoon Sugar
 	 */
 	static class RecipeIngredient {
 		String amount;
@@ -338,8 +347,8 @@ public final class RecipeDatabase {
 		Byte[] recipeQuantities = new Byte[length];
 		
 		for (int i = 0; i < deserialized.length; i += 2) {
-			recipeIds[i] = Integer.valueOf(deserialized[i]);
-			recipeQuantities[i] = Byte.valueOf(deserialized[i + 1]);
+			recipeIds[i / 2] = Integer.valueOf(deserialized[i]);
+			recipeQuantities[i / 2] = Byte.valueOf(deserialized[i + 1]);
 		}
 		
 		// load data
@@ -369,14 +378,6 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Returns a List of shopping list Recipes, sorted by name.
-	 * @return a List of shopping list Recipes, sorted by name.
-	 */
-	public List<Recipe> getShoppingListRecipes() {
-		return getRecipesById(shoppingListRecipes.keySet());
-	}
-	
-	/**
 	 * Updates the shopping list quantity of the specified Recipe.
 	 * @param recipeId the unique identifier for the Recipe whose shopping list quantity is to be updated.
 	 * @param quantity the new quantity of the Recipe to be saved to the shopping list.
@@ -397,5 +398,111 @@ public final class RecipeDatabase {
 		Byte result = shoppingListRecipes.get(recipeId);
 		
 		return (result == null) ? 0 : result;
+	}
+	
+	/**
+	 * Returns a List of shopping list Recipes, sorted by name.
+	 * @return a List of shopping list Recipes, sorted by name.
+	 */
+	public List<Recipe> getShoppingListRecipes() {
+		return getRecipesById(shoppingListRecipes.keySet());
+	}
+	
+	/**
+	 * Returns a List of aggregated shopping list ingredients.
+	 * @return a List of aggregated shopping list ingredients.
+	 */
+	public List<String> getShoppingList() {
+		List<String> result = new ArrayList<String>();
+		
+		Map<String, Double> amountMap = new HashMap<String, Double>(); // maps the ingredient name to the amount
+		Map<String, String> measurementMap = new HashMap<String, String>(); // maps the ingredient name to the measurement type
+		Set<String> amountless = new HashSet<String>(); // set of ingredient names where the amount and measurement is ignored for the shopping list
+		 
+		// for each recipe on the shopping list
+		for (Map.Entry<Integer, Byte> entry : shoppingListRecipes.entrySet()) {
+			Recipe recipe = findRecipeById(entry.getKey());
+			List<RecipeIngredient> recipeIngredients = recipe.ingredients;
+			
+			// for each ingredient of each recipe
+			for (RecipeIngredient ri : recipeIngredients) {
+				Double amount = entry.getValue() * stringToDouble(ri.amount); // recipe quantity * ingredient quantity
+				String measurementAlias = measurementAliases.get(measurementCleaner(ri.measurement));
+				String name = ri.ingredientName;
+				
+				if (measurementAlias != null) { // "4 Apples" or "5-1/2 Lbs. Chicken"
+					if (!amountMap.containsKey(name)) {
+						measurementMap.put(name, measurementAlias);
+						amountMap.put(name, amount);
+					} else
+						amountMap.put(name, amountMap.get(name) + amount);
+				} else // 5 Tbsps. Pepper
+					amountless.add(name);
+			}
+		}
+		
+		// add aggregated ingredients to result list
+		for (Map.Entry<String, Double> entry : amountMap.entrySet()) {
+			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + entry.getKey();
+			s = s.replace(".0", ""); // US
+			s = s.replace(",0", ""); // Euro
+			result.add(s);
+		}
+		
+		// add amountless ingredients to result list
+		for (String s : amountless)
+			result.add(s);
+		
+		return result;
+	}
+	
+	/**
+	 * Helper function to convert a string to a double.
+	 * Example: 1-1/4 --> 1.25
+	 * @param string the String representing an ingredient amount.
+	 * @return the double value of the String ingredient amount.
+	 */
+	private double stringToDouble(String string) {
+		double result = 0;
+		
+		// split on whitespace or hyphen
+		String[] terms = string.split("[\\s\\-]");
+		
+		for (String s : terms)
+			result += (s.contains("/")) ? (Double.valueOf(s.substring(0, 1)) / Double.valueOf(s.substring(2, 3))) : Double.valueOf(s);
+			
+		return result;
+	}
+	
+	/**
+	 * Helper function which cleans up the measurement term.
+	 * @param string the original string to clean up.
+	 * @return the cleaned string.
+	 */
+	private String measurementCleaner(String string) {
+		if (string == null || string.equals(""))
+			return "";
+		
+		// convert to lowercase
+		string = string.toLowerCase(Locale.US);
+		
+		// remove trailing period if any
+		if (string.charAt(string.length() - 1) == '.')
+			string = string.substring(0, string.length() - 1);
+		
+		return string;
+	}
+	
+	/**
+	 * Load aliases into the measurementAliases Map.
+	 * Note: any entry in the alias table corresponds to an ingredient to be aggregated in the shopping list.
+	 */
+	private void loadMeasurementAliases() {
+		// EMPTY
+		measurementAliases.put("", "");
+		
+		// POUNDS
+		for (String s : POUNDS_ALIAS)
+			measurementAliases.put(s, POUNDS);
 	}
 }
