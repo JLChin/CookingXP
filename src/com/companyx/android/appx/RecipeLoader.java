@@ -83,8 +83,8 @@ public class RecipeLoader {
                                         regex = ":";
                                         Pattern p = Pattern.compile(regex);
                                         String[] ami = p.split(z);
-                                        RecipeIngredient newIngredient = new RecipeIngredient(ami[0], ami[1], ami[2]);
-                                        riList.add(newIngredient);
+                                        //RecipeIngredient newIngredient = new RecipeIngredient(ami[0], ami[1], ami[2]);
+                                        //riList.add(newIngredient);
                                 }
 
                                 

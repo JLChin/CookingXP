@@ -60,18 +60,20 @@ public class MainActivity extends BaseActivity {
 	private void loadTestData(RecipeDatabase recipeDatabase) {
 		List<RecipeIngredient> emptyList = new ArrayList<RecipeIngredient>();
 		List<RecipeIngredient> list1 = new ArrayList<RecipeIngredient>();
-		RecipeIngredient ri1 = new RecipeIngredient("2 1/2", "pounds", "Roasted Pork");
-		RecipeIngredient ri2 = new RecipeIngredient("1 1/4", "Pounds", "Huge Duck");
-		RecipeIngredient ri3 = new RecipeIngredient("2", "pinches", "salt");
-		RecipeIngredient ri4 = new RecipeIngredient("3", "", "apples");
-		RecipeIngredient ri5 = new RecipeIngredient("1", null, "banana");  // TODO handle plural
-		RecipeIngredient ri6 = new RecipeIngredient("4", "bunches", "celery");
+		RecipeIngredient ri1 = new RecipeIngredient("2 1/2", "pounds", "Roasted Pork", "");
+		RecipeIngredient ri2 = new RecipeIngredient("1 1/4", "Pounds", "Huge Duck", "");
+		RecipeIngredient ri3 = new RecipeIngredient("2", "pinches", "salt", null);
+		RecipeIngredient ri4 = new RecipeIngredient("3", "", "apples", "");
+		RecipeIngredient ri5 = new RecipeIngredient("1", null, "banana", "");  // TODO enforce plural "bananas", not "banana"
+		RecipeIngredient ri6 = new RecipeIngredient("4", "bunches", "celery", "");
+		RecipeIngredient ri7 = new RecipeIngredient("4", "", "flour tortillas", "grilled, cut into thin strips");
 		list1.add(ri1);
 		list1.add(ri2);
 		list1.add(ri3);
 		list1.add(ri4);
 		list1.add(ri5);
 		list1.add(ri6);
+		list1.add(ri7);
 		
 		recipeDatabase.addRecipe(new Recipe(321001, "Curry Pie", emptyList, null, (short) 30, (byte) 2));
 		recipeDatabase.addRecipe(new Recipe(321002, "Curry Pork 2", emptyList, null, (short) 60, (byte) 3));
