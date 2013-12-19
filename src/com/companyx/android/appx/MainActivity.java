@@ -64,9 +64,10 @@ public class MainActivity extends BaseActivity {
 		RecipeIngredient ri2 = new RecipeIngredient("1 1/4", "Pounds", "Huge Duck", "");
 		RecipeIngredient ri3 = new RecipeIngredient("2", "pinches", "salt", null);
 		RecipeIngredient ri4 = new RecipeIngredient("3", "", "apples", "");
-		RecipeIngredient ri5 = new RecipeIngredient("1", null, "banana", "");  // TODO enforce plural "bananas", not "banana"
+		RecipeIngredient ri5 = new RecipeIngredient("1", null, "bananas", "");
 		RecipeIngredient ri6 = new RecipeIngredient("4", "bunches", "celery", "");
 		RecipeIngredient ri7 = new RecipeIngredient("4", "", "flour tortillas", "grilled, cut into thin strips");
+		RecipeIngredient ri8 = new RecipeIngredient("1/4", "lbs.", "tuna", "");
 		list1.add(ri1);
 		list1.add(ri2);
 		list1.add(ri3);
@@ -74,6 +75,7 @@ public class MainActivity extends BaseActivity {
 		list1.add(ri5);
 		list1.add(ri6);
 		list1.add(ri7);
+		list1.add(ri8);
 		
 		recipeDatabase.addRecipe(new Recipe(321001, "Curry Pie", emptyList, null, (short) 30, (byte) 2));
 		recipeDatabase.addRecipe(new Recipe(321002, "Curry Pork 2", emptyList, null, (short) 60, (byte) 3));

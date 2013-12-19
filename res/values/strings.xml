@@ -36,6 +36,10 @@
     <string name="select_recipe_hour">hr</string>
     <string name="select_recipe_hours">hrs</string>
     <string name="select_recipe_min">min</string>
+    <string name="select_recipe_meat">Meat</string>
+    <string name="select_recipe_seafood">Seafood</string>
+    <string name="select_recipe_produce">Produce</string>
+    <string name="select_recipe_other">Other</string>
     
     <!-- RECIPE -->
     <string name="recipe_favorites_button_description">Add/Remove Favorite</string>
