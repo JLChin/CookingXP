@@ -20,7 +20,7 @@ import android.annotation.SuppressLint;
  */
 public final class RecipeDatabase {
 	// MEASUREMENT ALIASES
-	public static final String[] POUNDS_ALIAS = {"lb", "lbs", "pound", "pounds"};
+	public static final String[] POUNDS_ALIASES = {"lb", "lbs", "pound", "pounds"};
 	public static final String POUNDS = "pounds";
 	
 	// STATE VARIABLES
@@ -85,17 +85,19 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Class representing one itemized ingredient consisting of the number amount, unit of measurement, and ingredient.
-	 * Example: 1 1/4 Tablespoon Sugar
+	 * Example: 1 1/4 tablespoon sugar, slightly charred
 	 */
 	static class RecipeIngredient {
 		String amount;
 		String measurement;
 		String ingredientName;
+		String notes;
 
-		RecipeIngredient(String amount, String measurement, String ingredientName) {
+		RecipeIngredient(String amount, String measurement, String ingredientName, String notes) {
 			this.amount = amount;
 			this.measurement = measurement;
 			this.ingredientName = ingredientName;
+			this.notes = notes;
 		}
 	}
 	
@@ -430,13 +432,13 @@ public final class RecipeDatabase {
 				String measurementAlias = measurementAliases.get(measurementCleaner(ri.measurement));
 				String name = ri.ingredientName;
 				
-				if (measurementAlias != null) { // "4 Apples" or "5-1/2 Lbs. Chicken"
+				if (measurementAlias != null) { // "4 apples" or "5-1/2 lbs. chicken"
 					if (!amountMap.containsKey(name)) {
 						measurementMap.put(name, measurementAlias);
 						amountMap.put(name, amount);
 					} else
 						amountMap.put(name, amountMap.get(name) + amount);
-				} else // 5 Tbsps. Pepper
+				} else // 5 tbsps. pepper
 					amountless.add(name);
 			}
 		}
@@ -502,7 +504,7 @@ public final class RecipeDatabase {
 		measurementAliases.put("", "");
 		
 		// POUNDS
-		for (String s : POUNDS_ALIAS)
+		for (String s : POUNDS_ALIASES)
 			measurementAliases.put(s, POUNDS);
 	}
 }
