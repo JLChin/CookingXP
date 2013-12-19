@@ -19,16 +19,25 @@ import android.annotation.SuppressLint;
  * @author James Chin <jameslchin@gmail.com>
  */
 public final class RecipeDatabase {
+	// FOOD TYPES
+	public static final String[] MEAT = {"bacon", "beef",  "chicken", "duck", "eel", "ham", "pork", "steak", "turkey"};
+	public static final String[] SEAFOOD = {"carp", "clam", "crab", "fish", "herring", "lobster", "oyster", "salmon", "tilapia", "tuna"};
+	public static final String[] PRODUCE = {"apples", "avocado", "bananas", "cabbage", "carrots", "celery", "cucumbers", "eggplants", "eggs", "lettuce", "onions", "peas", "potatoes", "spinach"};
+	public static final byte TYPE_MEAT = 0;
+	public static final byte TYPE_SEAFOOD = 1;
+	public static final byte TYPE_PRODUCE = 2;
+	private static Map<String, Byte> foodTypeMap; // maps ingredient keywords to their type category
+	
 	// MEASUREMENT ALIASES
 	public static final String[] POUNDS_ALIASES = {"lb", "lbs", "pound", "pounds"};
 	public static final String POUNDS = "pounds";
+	private static Map<String, String> measurementAliases; // maps measurement alias to the preferred measurement name, i.e. "lbs" to "pounds"
 	
 	// STATE VARIABLES
 	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeId's
 	private static Map<Integer, Recipe> idMap; // maps recipeId to corresponding recipe
 	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
 	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
-	private static Map<String, String> measurementAliases; // maps measurement alias to the preferred measurement name, i.e. "lbs" to "pounds"
 
 	// SINGLETON
 	private static RecipeDatabase holder;
@@ -46,9 +55,13 @@ public final class RecipeDatabase {
 		idMap = new HashMap<Integer, Recipe>();
 		favoriteRecipes = new HashSet<Integer>();
 		shoppingListRecipes = new HashMap<Integer, Byte>();
+		
 		measurementAliases = new HashMap<String, String>();
 		
+		foodTypeMap = new HashMap<String, Byte>();
+		
 		loadMeasurementAliases();
+		loadFoodTypes();
 	}
 	
 	/**
@@ -109,6 +122,23 @@ public final class RecipeDatabase {
 		
 		RecipeDirection(String direction) {
 			this.direction = direction;
+		}
+	}
+	
+	/**
+	 * Class which holds shopping list information to be displayed, separated into food types.
+	 */
+	static class ShoppingList {
+		List<String> meat;
+		List<String> seafood;
+		List<String> produce;
+		List<String> other;
+		
+		ShoppingList() {
+			meat = new ArrayList<String>();
+			seafood = new ArrayList<String>();
+			produce = new ArrayList<String>();
+			other = new ArrayList<String>();
 		}
 	}
 	
@@ -411,11 +441,11 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Returns a List of aggregated shopping list ingredients.
-	 * @return a List of aggregated shopping list ingredients.
+	 * Returns a ShoppingList object containing the aggregated shopping list ingredients.
+	 * @return a ShoppingList object containing the aggregated shopping list ingredients.
 	 */
-	public List<String> getShoppingList() {
-		List<String> result = new ArrayList<String>();
+	public ShoppingList getShoppingList() {
+		ShoppingList result = new ShoppingList();
 		
 		Map<String, Double> amountMap = new HashMap<String, Double>(); // maps the ingredient name to the amount
 		Map<String, String> measurementMap = new HashMap<String, String>(); // maps the ingredient name to the measurement type
@@ -445,15 +475,36 @@ public final class RecipeDatabase {
 		
 		// add aggregated ingredients to result list
 		for (Map.Entry<String, Double> entry : amountMap.entrySet()) {
-			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + entry.getKey();
+			String ingredientName = entry.getKey();
+			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + ingredientName;
 			s = s.replace(".0", ""); // US
 			s = s.replace(",0", ""); // Euro
-			result.add(s);
+			
+			// determine which list this ingredient goes in (meat, seafood, other, etc)
+			Byte category = null;
+			String name[] = ingredientName.split("[\\s\\-]"); // whitespace or hyphen
+			for (String n: name) {
+				category = foodTypeMap.get(n.toLowerCase(Locale.US));
+				if (category != null)
+					break;
+			}
+
+			// add to appropriate list
+			if (category == null)
+				result.other.add(s);
+			else if (category == TYPE_MEAT)
+				result.meat.add(s);
+			else if (category == TYPE_SEAFOOD)
+				result.seafood.add(s);
+			else if (category == TYPE_PRODUCE)
+				result.produce.add(s);
+			else
+				result.other.add(s);
 		}
 		
-		// add amountless ingredients to result list
+		// add remaining amountless ingredients to other list
 		for (String s : amountless)
-			result.add(s);
+			result.other.add(s);
 		
 		return result;
 	}
@@ -506,5 +557,19 @@ public final class RecipeDatabase {
 		// POUNDS
 		for (String s : POUNDS_ALIASES)
 			measurementAliases.put(s, POUNDS);
+	}
+	
+	/**
+	 * Loads food types into the foodType Map
+	 */
+	private void loadFoodTypes() {
+		for (String s : MEAT)
+			foodTypeMap.put(s, TYPE_MEAT);
+		
+		for (String s : SEAFOOD)
+			foodTypeMap.put(s, TYPE_SEAFOOD);
+		
+		for (String s : PRODUCE)
+			foodTypeMap.put(s, TYPE_PRODUCE);
 	}
 }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.companyx.android.appx.RecipeDatabase.Recipe;
+import com.companyx.android.appx.RecipeDatabase.ShoppingList;
 
 /**
  * Search/Select Recipe Activity
@@ -93,6 +94,20 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		recipeDatabase = RecipeDatabase.getInstance();
 	}
+
+	private void initializeListView() {
+		ListView listView = getListView();
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				int recipeId = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeId;
+				
+				Intent intent = new Intent(SelectRecipeActivity.this, RecipeActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				intent.putExtra("recipeId", recipeId);
+				startActivity(intent);
+			}
+		});
+	}
 	
 	/**
 	 * Return all recipes in the RecipeDatabase, sorted by Recipe name.
@@ -120,29 +135,55 @@ public class SelectRecipeActivity extends BaseListActivity {
 	private void loadShoppingListRecipes() {
 		recipes = recipeDatabase.getShoppingListRecipes();
 		
-		List<String> ingredients = recipeDatabase.getShoppingList();
-		for (String s : ingredients) {
+		ShoppingList list = recipeDatabase.getShoppingList();
+		
+		// MEAT
+		if (!list.meat.isEmpty()) {
 			TextView tv = new TextView(this);
-			tv.setText(s);
+			tv.setText(R.string.select_recipe_meat);
 			layoutIngredients.addView(tv);
+			addIngredientViews(list.meat, layoutIngredients);
+		}
+		
+		// SEAFOOD
+		if (!list.seafood.isEmpty()) {
+			TextView tv = new TextView(this);
+			tv.setText(R.string.select_recipe_seafood);
+			layoutIngredients.addView(tv);
+			addIngredientViews(list.seafood, layoutIngredients);
+		}
+		
+		// PRODUCE
+		if (!list.produce.isEmpty()) {
+			TextView tv = new TextView(this);
+			tv.setText(R.string.select_recipe_produce);
+			layoutIngredients.addView(tv);
+			addIngredientViews(list.produce, layoutIngredients);
+		}
+		
+		// OTHER
+		if (!list.other.isEmpty()) {
+			TextView tv = new TextView(this);
+			tv.setText(R.string.select_recipe_other);
+			layoutIngredients.addView(tv);
+			addIngredientViews(list.other, layoutIngredients);
 		}
 		
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
 	}
-
-	private void initializeListView() {
-		ListView listView = getListView();
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				int recipeId = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeId;
-				
-				Intent intent = new Intent(SelectRecipeActivity.this, RecipeActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-				intent.putExtra("recipeId", recipeId);
-				startActivity(intent);
-			}
-		});
+	
+	/**
+	 * Helper function which adds child views displaying ingredients to a parent ViewGroup.
+	 * @param ingredients the List of Strings representing ingredients.
+	 * @param viewGroup the parent ViewGroup to add the child views to.
+	 */
+	private void addIngredientViews(List<String> ingredients, ViewGroup viewGroup) {
+		for (String s : ingredients) {
+			TextView tv = new TextView(this);
+			tv.setText(s);
+			viewGroup.addView(tv);
+		}
 	}
 	
 	/**
