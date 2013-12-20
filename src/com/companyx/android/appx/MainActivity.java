@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import com.companyx.android.appx.RecipeDatabase.Recipe;
 import com.companyx.android.appx.RecipeDatabase.RecipeIngredient;
+import com.companyx.android.appx.RecipeDatabase.RecipeTime;
 
 import android.content.Context;
 import android.content.Intent;
@@ -76,15 +77,16 @@ public class MainActivity extends BaseActivity {
 		list1.add(ri6);
 		list1.add(ri7);
 		list1.add(ri8);
+		RecipeTime time1 = new RecipeTime((short) 30, (short) 30, (short) 24);
 		
-		recipeDatabase.addRecipe(new Recipe(321001, "Curry Pie", emptyList, null, (short) 30, (byte) 2));
-		recipeDatabase.addRecipe(new Recipe(321002, "Curry Pork 2", emptyList, null, (short) 60, (byte) 3));
-		recipeDatabase.addRecipe(new Recipe(321003, "Baked Salmon", emptyList, null, (short) 80, (byte) 4));
-		recipeDatabase.addRecipe(new Recipe(321004, "Apple Pie", emptyList, null, (short) 1, (byte) 1));
-		recipeDatabase.addRecipe(new Recipe(321005, "Pulled Pork Sandwich", list1, null, (short) 240, (byte) 25));
-		recipeDatabase.addRecipe(new Recipe(321006, "Curry Pork 1", emptyList, null, (short) 115, (byte) 32));
-		recipeDatabase.addRecipe(new Recipe(321007, "Curry Pork 2", emptyList, null, (short) 182, (byte) 43));
-		recipeDatabase.addRecipe(new Recipe(321008, "Mystery Sandwich", list1, null, (short) 3630, (byte) 120));
+		recipeDatabase.addRecipe(new Recipe(321001, "Curry Pie", emptyList, null, time1, (byte) 2));
+		recipeDatabase.addRecipe(new Recipe(321002, "Curry Pork 2", emptyList, null, time1, (byte) 3));
+		recipeDatabase.addRecipe(new Recipe(321003, "Baked Salmon", emptyList, null, time1, (byte) 4));
+		recipeDatabase.addRecipe(new Recipe(321004, "Apple Pie", emptyList, null, time1, (byte) 1));
+		recipeDatabase.addRecipe(new Recipe(321005, "Pulled Pork Sandwich", list1, null, time1, (byte) 25));
+		recipeDatabase.addRecipe(new Recipe(321006, "Curry Pork 1", emptyList, null, time1, (byte) 32));
+		recipeDatabase.addRecipe(new Recipe(321007, "Curry Pork 2", emptyList, null, time1, (byte) 43));
+		recipeDatabase.addRecipe(new Recipe(321008, "Mystery Sandwich", list1, null, time1, (byte) 120));
 	}
 
 	@Override

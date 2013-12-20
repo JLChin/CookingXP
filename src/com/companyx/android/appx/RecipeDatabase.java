@@ -83,15 +83,15 @@ public final class RecipeDatabase {
 		String name;
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
-		short timeRequiredInMin;
+		RecipeTime recipeTime;
 		byte difficultyLevel;
 		
-		Recipe(int recipeId, String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, short timeRequiredInMin, byte difficultyLevel) {
+		Recipe(int recipeId, String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, RecipeTime recipeTime, byte difficultyLevel) {
 			this.recipeId = recipeId;
 			this.name = name;
 			this.ingredients = ingredients;
 			this.directions = directions;
-			this.timeRequiredInMin = timeRequiredInMin;
+			this.recipeTime = recipeTime;
 			this.difficultyLevel = difficultyLevel;
 		}
 	}
@@ -122,6 +122,21 @@ public final class RecipeDatabase {
 		
 		RecipeDirection(String direction) {
 			this.direction = direction;
+		}
+	}
+	
+	/**
+	 * Class representing the different cooking times involved in each recipe.
+	 */
+	static class RecipeTime {
+		short prepTimeInMin;
+		short inactivePrepTimeInMin;
+		short cookTimeInMin;
+		
+		RecipeTime(short prepTimeInMin, short inactivePrepTimeInMin, short cookTimeInMin) {
+			this.prepTimeInMin = prepTimeInMin;
+			this.inactivePrepTimeInMin = inactivePrepTimeInMin;
+			this.cookTimeInMin = cookTimeInMin;
 		}
 	}
 	

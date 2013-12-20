@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.companyx.android.appx.RecipeDatabase.Recipe;
+import com.companyx.android.appx.RecipeDatabase.RecipeTime;
 import com.companyx.android.appx.RecipeDatabase.ShoppingList;
 
 /**
@@ -229,7 +230,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        if (operation != null && operation.equals("Shopping List"))
 	        	recipeView.textViewInfoRight.setText(String.valueOf(recipeDatabase.getQuantity(recipeId)));
 	        else
-	        	recipeView.textViewInfoRight.setText(getTime(recipe.timeRequiredInMin));
+	        	recipeView.textViewInfoRight.setText(getTime(recipe.recipeTime));
 	        
 	        return view;
 	    }
@@ -246,9 +247,12 @@ public class SelectRecipeActivity extends BaseListActivity {
 		 * @param timeRequiredInMin the time required in minutes for the Recipe.
 		 * @return a string containing the formatted hour and minute representation of the recipe cooking time.
 		 */
-		private String getTime(short timeRequiredInMin) {
+		private String getTime(RecipeTime recipeTime) {
+			// retrieve total time
+			short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
+			
 			// construct hours string
-			short hours = (short) (timeRequiredInMin / 60);
+			short hours = (short) (totalTimeInMin / 60);
 			String hoursStr = "";
 			if (hours != 0) {
 				if (hours == 1)
@@ -257,7 +261,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 					hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
 			}
 				
-			return hoursStr + (timeRequiredInMin % 60) + " " + getString(R.string.select_recipe_min);
+			return hoursStr + (totalTimeInMin % 60) + " " + getString(R.string.select_recipe_min);
 		}
 	}
 }
