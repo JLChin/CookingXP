@@ -1,7 +1,7 @@
 0:E
 Baked Potato
 0:0:60:1
-1:large: russet potato: 
+1:large:russet potato: 
  : :canola oil: 
  : :kosher salt: 
 _1. Heat oven to 350°F and position racks in top and bottom thirds.:2. Wash potato (or potatoes. thoroughly with a stiff brush and cold running water.:3. Dry, then using a standard fork poke 8 to 12 deep holes all over the spud so that moisture can escape during cooking.:4. Place in a bowl and coat lightly with oil.:5. Sprinkle with kosher salt and place potato directly on rack in middle of oven.:6. Place a baking sheet (I put a piece of aluminum foil. on the lower rack to catch any drippings.:7. Bake 1 hour or until skin feels crisp but flesh beneath feels soft.:8. Serve by creating a dotted line from end to end with your fork, then crack the spud open by squeezing the ends towards one another.:9. It will pop right open.:10. But watch out, there will be some steam.:11. NOTE: If you're cooking more than 4 potatoes, you'll need to extend the cooking time by up to 15 minutes.
@@ -10,11 +10,11 @@ Stove Top Mac-n-Cheese - Recipe courtesy Alton Brown
 10:0:25:7
 1/2:pound:elbow macaroni: 
 4:tablespoons:butter: 
-2:null:eggs: 
+2: :eggs: 
 6:ounces:evaporated milk: 
 1/2:teaspoon:hot sauce: 
 1:teaspoon:kosher salt: 
-null:null:black pepper:(Fresh)
+ : :black pepper:(Fresh)
 3/4:teaspoon:dry mustard: 
 10:ounces:sharp cheddar:(shredded)
 _1. In a large pot of boiling, salted water cook the pasta to al dente and drain. Return to the pot and melt in the butter. Toss to coat.:2. Whisk together the eggs, milk, hot sauce, salt, pepper, and mustard. Stir into the pasta and add the cheese. Over low heat continue to stir for 3 minutes or until creamy.
@@ -46,7 +46,7 @@ Chicken Tortilla Soup Recipe courtesy Danny Boome
 6:cups:low-sodium chicken broth: 
 1:14.5-ounce can:fire roasted diced tomatoes: 
 1:14.5-ounce can:black beans:(rinsed and drained)
-3: : chicken breasts:(boneless and skinless)
+3: :chicken breasts:(boneless and skinless)
 2: :limes:(juiced, plus wedges for garnish)
  : :Salt: 
  : :black pepper:(freshly ground)
@@ -61,7 +61,7 @@ Guacamole The Barefoot Contessa Cookbook
 4: :avocados:(ripe Haas)
 3:tablespoons:lemon juice:(1 lemon - freshly squeezed)
 8:dashes:hot pepper sauce: 
-1/2:cup: red onion:(1 small onion - Diced)
+1/2:cup:red onion:(1 small onion - Diced)
 1: :large garlic clove:(minced)
 1:teaspoon:kosher salt: 
 1:teaspoon:black pepper:(freshly ground)
