@@ -115,7 +115,7 @@ public class RecipeLoader {
 					dirList.add(new RecipeDirection(s));
 				}
 
-				Recipe newRecipe = new Recipe(recipeNumber, title, riList, dirList, timeC, diff); // serveSize,
+				Recipe newRecipe = new Recipe(recipeNumber, title, riList, dirList, timeC, serveSize, diff);
 				recipeDatabase.addRecipe(newRecipe);
 
 				recipeNumber++; // increment recipe numbering system
