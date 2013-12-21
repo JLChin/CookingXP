@@ -41,7 +41,7 @@ public class MainActivity extends BaseActivity {
 		// LOAD DATA FROM FILE
 		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
 		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
-		//loader.loadData();
+		loader.loadData();
 
 		loadTestData(recipeDatabase); // TODO REMOVE
 
