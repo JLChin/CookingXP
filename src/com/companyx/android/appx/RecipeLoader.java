@@ -33,7 +33,7 @@ public class RecipeLoader {
 		Scanner scanner = new Scanner(inputStream);
 		scanner.useDelimiter(System.getProperty("line.separator"));
 
-		String bV = "\\b\\d:\\D"; // BreakValue - New Entry DISCOVERY Text
+		String bV = "\\b\\d:\\D"; // New Entry DISCOVERY Text
 		String INPUT = scanner.next();
 		String keyLine = "";
 		int recipeNumber = 0;
@@ -77,7 +77,7 @@ public class RecipeLoader {
 
 				ArrayList<String> ingredListArray = new ArrayList<String>();
 				List<String> directList = new ArrayList<String>();
-
+				// Grabbing Recipe Ingredients
 				while (scanner.hasNext()) {
 					ingredListArray.add(INPUT);
 					INPUT = scanner.next();
@@ -85,8 +85,7 @@ public class RecipeLoader {
 						break;
 					}
 				}
-
-				// Adding Directions Here
+				// Grabbing Recipe Directions/Instructions
 				String dirL[] = INPUT.substring(1, INPUT.length()).split("\\:");
 				directList = Arrays.asList(dirL);
 
@@ -97,18 +96,18 @@ public class RecipeLoader {
 						INPUT = scanner.next();
 					}
 				}
-
+				// Separating the Ingredients for Database import
 				List<RecipeIngredient> riList = new
 				ArrayList<RecipeIngredient>();
 				for (String z : ingredListArray) {
-					regex = "\\:"; // Small Expression Change done HERE
+					regex = "\\:"; 
 					Pattern p = Pattern.compile(regex);
 					String[] ami = p.split(z.toLowerCase());
 					RecipeIngredient newIngredient = new
-					RecipeIngredient(ami[0], ami[1], ami[2], ami[3]);
+					RecipeIngredient(ami[0].trim(), ami[1].trim(), ami[2].trim(), ami[3].trim());
 					riList.add(newIngredient);
 				}
-
+			
 				List<RecipeDirection> dirList = new
 				ArrayList<RecipeDirection>();
 				for (String s : directList){
