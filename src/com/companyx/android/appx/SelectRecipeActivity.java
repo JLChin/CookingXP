@@ -1,5 +1,6 @@
 package com.companyx.android.appx;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -32,6 +33,9 @@ import com.companyx.android.appx.RecipeDatabase.ShoppingList;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class SelectRecipeActivity extends BaseListActivity {
+	// CONSTANTS
+	private static final int[] RECIPE_CATEGORIES = {R.string.select_recipe_all_recipes, R.string.select_recipe_pork };
+	
 	// STATE VARIABLES
 	private List<Recipe> recipes;
 	private String operation;
@@ -81,11 +85,14 @@ public class SelectRecipeActivity extends BaseListActivity {
 				loadFavoriteRecipes();
 			else if (operation.equals("Shopping List"))
 				loadShoppingListRecipes();
+			else if (operation.equals("Categories"))
+				loadCategories();
 		} else
 			loadAllRecipes();
 		
 		// post results
-		setListAdapter(new RecipeListViewAdapter(this, recipes));
+		if (!operation.equals("Categories"))
+			setListAdapter(new RecipeListViewAdapter(this, recipes));
 	}
 
 	private void initialize() {
@@ -100,18 +107,22 @@ public class SelectRecipeActivity extends BaseListActivity {
 		ListView listView = getListView();
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				int recipeId = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeId;
-				
-				Intent intent = new Intent(SelectRecipeActivity.this, RecipeActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-				intent.putExtra("recipeId", recipeId);
-				startActivity(intent);
+				if (operation.equals("Categories")) { // CATEGORIES
+					loadCategory(getString(RECIPE_CATEGORIES[position]));
+				} else { // RECIPES, SEARCH, FAVORITES, OR SHOPPING LIST
+					int recipeId = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeId;
+					
+					Intent intent = new Intent(SelectRecipeActivity.this, RecipeActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+					intent.putExtra("recipeId", recipeId);
+					startActivity(intent);
+				}
 			}
 		});
 	}
 	
 	/**
-	 * Return all recipes in the RecipeDatabase, sorted by Recipe name.
+	 * Load all recipes in the RecipeDatabase, sorted by Recipe name.
 	 */
 	private void loadAllRecipes() {
 		recipes = recipeDatabase.allRecipes();
@@ -120,7 +131,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
-	 * Return favorite recipes from the RecipeDatabase, sorted by Recipe name.
+	 * Load favorite recipes from the RecipeDatabase, sorted by Recipe name.
 	 */
 	private void loadFavoriteRecipes() {
 		recipes = recipeDatabase.getFavoriteRecipes();
@@ -130,7 +141,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
-	 * Return favorite recipes from the RecipeDatabase, sorted by Recipe name.
+	 * Load favorite recipes from the RecipeDatabase, sorted by Recipe name.
 	 * Show list of aggregated recipe ingredients.
 	 */
 	private void loadShoppingListRecipes() {
@@ -172,6 +183,32 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
+	}
+	
+	/**
+	 * 
+	 */
+	private void loadCategories() {
+		List<String> recipeCategories = new ArrayList<String>();
+		for (int i : RECIPE_CATEGORIES)
+			recipeCategories.add(getString(i));
+		
+		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, recipeCategories));
+	}
+	
+	/**
+	 * Load the Recipe List based on the category selected by the user.
+	 * @param category the user-selected category to load the recipes for.
+	 */
+	private void loadCategory(String category) {
+		if (category.equals(getString(R.string.select_recipe_all_recipes)))
+			recipes = recipeDatabase.allRecipes();
+		else
+			recipes = recipeDatabase.searchRecipes(category);
+		
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
+		
+		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
