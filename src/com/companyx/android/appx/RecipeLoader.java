@@ -66,11 +66,7 @@ public class RecipeLoader {
 				int pr = Integer.valueOf(timeL[0].trim());
 				int ipr = Integer.valueOf(timeL[1].trim());
 				int c = Integer.valueOf(timeL[2].trim());
-				// short pr1 = (short)pr;
-				// short ipr1 = (short)ipr;
-				// short c1 = (short)c;
 
-				// UNCOMMENT THIS
 				RecipeTime timeC = new RecipeTime((short)pr, (short)ipr, (short)c);
 
 				// Serving size byte (serveSize)
