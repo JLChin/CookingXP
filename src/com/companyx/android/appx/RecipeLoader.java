@@ -105,7 +105,7 @@ public class RecipeLoader {
 				List<RecipeIngredient> riList = new
 				ArrayList<RecipeIngredient>();
 				for (String z : ingredListArray) {
-					regex = "\\b:"; // Small Expression Change done HERE
+					regex = "\\:"; // Small Expression Change done HERE
 					Pattern p = Pattern.compile(regex);
 					String[] ami = p.split(z.toLowerCase());
 					RecipeIngredient newIngredient = new

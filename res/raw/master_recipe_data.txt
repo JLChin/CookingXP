@@ -133,7 +133,7 @@ Chicken Enchiladas Recipe courtesy of Emeril Lagasse
 1: :onion:(chopped)
 10:corn:tortillas: 
 1:cup:sour cream:( for garnish)
-1/2:cup:scallions (chopped, for garnish)
+1/2:cup:scallions:(chopped, for garnish)
 _1.Preheat oven to 350 degrees F.:2.Make sauce: In a saucepan heat 3 tablespoons oil, add flour and cook, whisking, 1 minute. Add chili powder and cook 30 seconds. Stir in stock, tomato puree, oregano and cumin and bring to a boil. Reduce heat and simmer 15 minutes until flavors are well-blended. Season to taste with salt.:3.Combine cheese, chicken and onion for filling. Heat remaining 1/2 cup oil in a skillet until hot. Using tongs dip in tortillas, one at a time, to soften, and drain on paper towels. Dip each tortilla in sauce. On a plate fill with a generous spoonful of filling and roll up; place enchilada seam-side down in a baking dish and repeat until all ingredients are used up. Top with remaining sauce. Bake 30 minutes. To serve, top with sour cream and scallions.
 0:E
 Creamy Poblano Pepper Strips (Rajas) Recipe courtesy Marcela Valladolid, 2009
@@ -283,7 +283,7 @@ _1.Put the potatoes in a large saucepan and add enough cold water to cover. Seas
 0:E
 Basic Edamame Recipe courtesy Alton Brown, 2008
 5:0:6:4
-1:pound:edamame(fresh or frozen, in or out of shell)
+1:pound:edamame:(fresh or frozen, in or out of shell)
 1/4:cup:water: 
  : :Kosher salt:(optional)
 _Place the edamame and water into a large microwave-safe bowl. Microwave on high for 4 to 6 minutes. Drain any excess water and serve as is or with salt.
@@ -301,7 +301,7 @@ _Preheat oven to 350 degrees F. In a large bowl, stir together the 2 cans of cor
 Sweet Chicken Bacon Wraps Recipe courtesy Paula Deen
 25:0:30:14
 1 1/4:pounds:boneless, skinless, chicken breasts:(about 4 breasts)
-1:(1-pound) package:sliced bacon
+1:(1-pound) package:sliced bacon: 
 2/3:cup:brown sugar: 
 2:tablespoons:chili powder: 
 _Preheat oven to 350 degrees F.  Cut chicken breasts into 1-inch cubes. Cut each bacon slice into thirds. Wrap each chicken cube with bacon and secure with a wooden pick. Stir together brown sugar and chili powder. Dredge wrapped chicken in mixture. Coat a rack and broiler pan with nonstick cooking spray. Place chicken wrap on rack in broiler pan. Bake 350 for 30 to 35 minutes or until bacon is crisp.
