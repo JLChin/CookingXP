@@ -1,60 +1,307 @@
 0:E
-All-South Barbecue Rub
-:2:tablespoons:salt
-:2:tablespoons:sugar
-:2:tablespoons:brown Sugar
-:2:tablespoons:ground cumin
-:2:tablespoons:chile powder
-:2:tablespoons:freshly cracked black pepper
-:1:tablespoon:cayenne pepper
-:4:tablespoon:paprika
-_Simply mix together.  I usually double or quadruple the recipe since it is used liberally.
+Baked Potato
+0:0:60:1
+1:large: russet potato: 
+ : :canola oil: 
+ : :kosher salt: 
+_1. Heat oven to 350°F and position racks in top and bottom thirds.:2. Wash potato (or potatoes. thoroughly with a stiff brush and cold running water.:3. Dry, then using a standard fork poke 8 to 12 deep holes all over the spud so that moisture can escape during cooking.:4. Place in a bowl and coat lightly with oil.:5. Sprinkle with kosher salt and place potato directly on rack in middle of oven.:6. Place a baking sheet (I put a piece of aluminum foil. on the lower rack to catch any drippings.:7. Bake 1 hour or until skin feels crisp but flesh beneath feels soft.:8. Serve by creating a dotted line from end to end with your fork, then crack the spud open by squeezing the ends towards one another.:9. It will pop right open.:10. But watch out, there will be some steam.:11. NOTE: If you're cooking more than 4 potatoes, you'll need to extend the cooking time by up to 15 minutes.
 0:E
-Poultry Perfect Rub
-:3/4:cup:Hungarian paprika
-:1/4:cup:black pepper
-:1/4:cup:celery salt
-:1/4:cup:sugar
-:2:tablespoons:onion powder
-:2:tablespoons:dry mustard
-:2:teaspoons:cayenne
-:2:tablespoons:lemon zest 
-_Mix ingredients in a bowl.  Store in a tightly sealed jar in a cool dark place.
+Stove Top Mac-n-Cheese - Recipe courtesy Alton Brown
+10:0:25:7
+1/2:pound:elbow macaroni: 
+4:tablespoons:butter: 
+2:null:eggs: 
+6:ounces:evaporated milk: 
+1/2:teaspoon:hot sauce: 
+1:teaspoon:kosher salt: 
+null:null:black pepper:(Fresh)
+3/4:teaspoon:dry mustard: 
+10:ounces:sharp cheddar:(shredded)
+_1. In a large pot of boiling, salted water cook the pasta to al dente and drain. Return to the pot and melt in the butter. Toss to coat.:2. Whisk together the eggs, milk, hot sauce, salt, pepper, and mustard. Stir into the pasta and add the cheese. Over low heat continue to stir for 3 minutes or until creamy.
 0:E
-Barbecue Spice Mixture
-:1/2:cup:Chili powder
-:1/4:cup:Hickory flavored salt
-:3:tablespoons:Onion powder
-:2:tablespoons:Cumin
-:1:tablespoon:Paprika
-:1:tablespoon:Garlic
-:1:tablespoon:Brown sugar
-:1:teaspoon:Cayenne pepper
-:1/2:teaspoon:Dry mustard
-:1/2:teaspoon:Lemon zest
-_Mix ingredients thoroughly.
+Potato Salad Recipe courtesy Tyler Florence
+10:15:15:5
+2:pounds:Yukon gold potatoes:(small)
+2: :large eggs: 
+ : :Kosher salt: 
+1/2:bunch:scallions:(sliced, white and green parts)
+2:tablespoons:capers:(drained)
+2:cups:mayonnaise: 
+1/4:cup:Dijon mustard: 
+1/4:cup:dill pickles:(finely chopped with 1/4 cup juice, about 2 pickles)
+1/2: :red onion:(small, chopped)
+2:tablespoons:flat-leaf parsley:(chopped fresh)
+1/2:bunch:dill:(chopped)
+1/2: :lemon:(juiced)
+ : :black pepper:(Freshly ground)
+ : :Extra-virgin olive oil:(for drizzling)
+_1.Put the potatoes and eggs into a big saucepan of cold salted water. Bring to a simmer. After 12 minutes remove the eggs with a slotted spoon and let cool. Continue cooking the potatoes until a paring knife poked into them goes in without resistance, about 3 minutes longer. Drain the potatoes in a colander and let them cool.:2.Reserve some scallion greens and capers for garnish. Meanwhile, stir together the mayonnaise, mustard, pickles and their juice, onion, remaining scallions and capers, parsley, and lemon juice in a bowl large enough to hold the potatoes. Peel the cool eggs and grate them into the bowl. Stick a fork into the potatoes and lift them 1 at a time out of the colander. Break up the potatoes by hand into rough chunks, add them to the bowl and toss to coat with the dressing. Season, to taste, with salt and pepper. Drizzle with a little olive oil before serving.
 0:E
-Dry Rub No. 1
-:1:tablespoon:paprika
-:1/2:teaspoon:celery salt
-:1/2:teaspoon:sugar
-:1/2:teaspoon:sage
-:1/2:teaspoon:mustard
-:1/2:teaspoon:Chipotle powder
-_Mix all ingredients well and reserve in refrigerator, covered tightly.  Will keep for up to 2 weeks.
+Chicken Tortilla Soup Recipe courtesy Danny Boome
+10:0:25:5
+2:tablespoons:vegetable oil: 
+1: :small onion:(diced)
+2:tablespoons:minced garlic: 
+2: :jalapenos:(finely diced)
+6:cups:low-sodium chicken broth: 
+1:14.5-ounce can:fire roasted diced tomatoes: 
+1:14.5-ounce can:black beans:(rinsed and drained)
+3: : chicken breasts:(boneless and skinless)
+2: :limes:(juiced, plus wedges for garnish)
+ : :Salt: 
+ : :black pepper:(freshly ground)
+1:cup:cilantro:(roughly chopped fresh leaves)
+1:8-inch:flour tortilla:(grilled, cut into thin strips)
+1: :avocado:(pitted, sliced)
+1:cup:Monterrey cheese:(shredded)
+_In a large saucepan heat the vegetable oil. Add the onions and cook for 2 minutes. Once the onions have softened add the garlic and jalepenos and cook for another minute. Pour the chicken broth, tomatoes and beans into the pot and bring to a boil. Once at a boil lower heat to simmer and add your chicken breasts. Cook the chicken for 20 to 25 minutes. Once chicken is cooked remove from pot. When cool enough to handle shred it and set it aside. Add lime juice and fresh cilantro to the pot. In a serving bowl add a mound of shredded chicken. Ladle soup over chicken and top with a lime wedge, grilled tortilla strips, avocado slices and cheese.
 0:E
-Bear's Brisket Rub
-:2:tablespoons:garlic powder
-:2:tablespoons:onion powder
-:2:tablespoons:salt
-:2:tablespoons:pepper
-:1:tablespoon:thyme
-:1:cup:dark brown sugar
-_Mix ingredients well and rub on.
+Guacamole The Barefoot Contessa Cookbook
+15:0:0:3
+4: :avocados:(ripe Haas)
+3:tablespoons:lemon juice:(1 lemon - freshly squeezed)
+8:dashes:hot pepper sauce: 
+1/2:cup: red onion:(1 small onion - Diced)
+1: :large garlic clove:(minced)
+1:teaspoon:kosher salt: 
+1:teaspoon:black pepper:(freshly ground)
+1: :medium tomato:(seeded, and diced)
+_Cut the avocados in 1/2, remove the pits, and scoop the flesh out of their shells into a large bowl. (I use my hands.) Immediately add the lemon juice, hot pepper sauce, onion, garlic, salt, and pepper and toss well. Using a sharp knife, slice through the avocados in the bowl until they are finely diced. Add the tomatoes. Mix well and taste for salt and pepper.
 0:E
-Jack's Dry Rub
-:1:teaspoon:sage
-:1:teaspoon:salt
-:1:teaspoon:pepper
-:1/2:teaspoon:ground cumin
-_Combine all ingredients, and mix well.
+Rosemary Chips Recipe courtesy Food Network Magazine
+10:0:20:4
+1 1/2:pounds:russet potatoes:(thinly sliced)
+2:teaspoons:rosemary:(chopped)
+1: :garlic clove:(grated)
+3:tablespoons:olive oil: 
+3/4:teaspoon:salt: 
+ :pinch:cayenne: 
+_Toss 1 1/2 pounds thinly sliced russet potatoes with 2 teaspoons chopped rosemary, 1 grated garlic clove, 3 tablespoons olive oil, 3/4 teaspoon salt and a pinch of cayenne. Spread on a baking sheet; roast in a 500 degrees F oven until golden, about 20 minutes. Flip the potatoes and cook until golden and crisp, 8 more minutes. Season with salt.
+0:E
+Spiced Pita Chips 2007, Ellie Krieger, All Rights Reserved
+5:0:15:6
+2:tablespoon:olive oil: 
+1:teaspoon:ground cumin: 
+1/2:teaspoon:ground coriander: 
+1/4:teaspoon:cayenne pepper: 
+1/2:teaspoon:garlic powder: 
+1/4:teaspoon:black pepper:(fresh ground)
+1/4:teaspoon:salt: 
+3: :whole-wheat pitas:(cut into 1/8's)
+_Preheat oven to 350 degrees F.  Combine olive oil and all spices in a large bowl. Add pita wedges and toss to coat, Spread in 1 layer on a baking sheet and bake for about 15 minutes, tossing once, or until pita is brown and crisp. Cool completely before serving.
+0:E
+Chicken Noodle Soup Recipe courtesy Alton Brown
+30:0:7:4
+4:cups:chicken stock:(home made or store bought)
+3/4:cup:onion:(diced)
+3/4:cup:celery:(diced)
+1:tablespoon:minced garlic: 
+2:ounces:dried egg noodles:(cooked to al dente)
+1/2:teaspoon:tarragon:(finely chopped fresh leaves)
+2:teaspoons:parsley:(finely chopped fresh leaves)
+ : :Lemon halves:(for serving)
+_Bring stock to boil for 2 minutes in a large, non-reactive stockpot with lid on, over high heat. Add onion, celery, and garlic. Lower heat and simmer for 2 minutes. Add noodles and cook 5 more minutes. Remove from heat and add herbs and salt and pepper, to taste. Serve with lemon halves and add squeeze of lemon juice if desired. 
+0:E
+Mexican Lasagna Recipe courtesy Rachael Ray
+10:0:20:4
+3:tablespoons:extra-virgin olive oil: 
+2:pounds:ground chicken breast: 
+2:tablespoons:chili powder: 
+2:teaspoons:ground cumin: 
+1/2: :red onion:(chopped)
+1:(15-ounce) can:black beans:(drained)
+1:cup:medium heat taco sauce:(or 1 (14-oz) can stewed or fire roasted tomatoes)
+1:cup:frozen corn kernels: 
+ : :Salt: 
+8:(8 inch):spinach flour tortillas: 
+2 1/2:cups:shredded Cheddar or shredded pepper jack: 
+2: :scallions:(finely chopped)
+_1.Preheat the oven to 425 degrees F.:2.Preheat a large skillet over medium high heat. Add 2 tablespoons extra-virgin olive oil - twice around the pan. Add chicken and season with chili powder, cumin, and red onion. Brown the meat, 5 minutes. Add taco sauce or stewed or fire roasted tomatoes. Add black beans and corn. Heat the mixture through, 2 to 3 minutes then season with salt, to your taste.:3.Coat a shallow baking dish with remaining extra-virgin olive oil, about 1 tablespoon oil. Cut the tortillas in half or quarters to make them easy to layer with. Build lasagna in layers of meat and beans, then tortillas, then cheese. Repeat: meat, tortilla, cheese again. Bake lasagna 12 to 15 minutes until cheese is brown and bubbly. Top with the scallions and serve.
+0:E
+Chicken Enchiladas Recipe courtesy of Emeril Lagasse
+0:0:0:5
+3:tablespoons:oil:(plus 1/2 cup, divided)
+1:tablespoon:flour: 
+1/4:cup:New Mexican chili powder: 
+16:ounces:chicken stock: 
+10:ounces:tomato puree: 
+1:teaspoon:dried oregano: 
+1/2:teaspoon:ground cumin: 
+ : :Salt: 
+3:cups:cheddar cheese:(grated)
+2:cups:chicken:(cooked and shredded)
+1: :onion:(chopped)
+10:corn:tortillas: 
+1:cup:sour cream:( for garnish)
+1/2:cup:scallions (chopped, for garnish)
+_1.Preheat oven to 350 degrees F.:2.Make sauce: In a saucepan heat 3 tablespoons oil, add flour and cook, whisking, 1 minute. Add chili powder and cook 30 seconds. Stir in stock, tomato puree, oregano and cumin and bring to a boil. Reduce heat and simmer 15 minutes until flavors are well-blended. Season to taste with salt.:3.Combine cheese, chicken and onion for filling. Heat remaining 1/2 cup oil in a skillet until hot. Using tongs dip in tortillas, one at a time, to soften, and drain on paper towels. Dip each tortilla in sauce. On a plate fill with a generous spoonful of filling and roll up; place enchilada seam-side down in a baking dish and repeat until all ingredients are used up. Top with remaining sauce. Bake 30 minutes. To serve, top with sour cream and scallions.
+0:E
+Creamy Poblano Pepper Strips (Rajas) Recipe courtesy Marcela Valladolid, 2009
+10:10:25:5
+6: :poblano chiles:(peeled)
+3:tablespoons:vegetable oil: 
+1: :white onion:(medium, thinly sliced)
+2: :corn ears:(kernels removed)
+1/4:cup:heavy cream: 
+1/4:cup:Mexican crema:(or creme fraiche)
+1/2:cup:shredded Monterrey jack cheese: 
+ : :Kosher salt: 
+ : :black pepper:(Ground Fresh)
+_1.Char the poblano chiles directly over the gas flame on the stove or under the broiler until blackened on all sides. Enclose in a plastic bag and let steam for about 10 minutes.:2.Add the oil to a heavy large skillet over medium heat. When the oil is hot, add the onion and saute until translucent, about 5 minutes. Add the corn and cook for an additional 3 minutes. Set aside.:3.Peel and seed the chiles. Cut the chiles into 1/4 to 1/2-inch strips (rajas. and add the strips to the onion and corn mixture and saute until the corn is tender, about 5 minutes. Add the heavy cream and Mexican crema and cook until bubbling, about for 8 minutes. Add the cheese and stir until melted and smooth. Season the rajas with salt and pepper, to taste. Transfer to a serving dish and serve. Notes:4.*Cook's Note: The poblano chile is a fresh chile that ranges from mild to hot. It is a deep, dark green color and is large and wide with shiny skin. Ripened on the plant and dried it is known as "chile ancho" or "pasilla." They can also be found at most supermarkets or Latin specialty markets. Just keep your eye out, as some stores sell them fresh under the name "pasilla." A great filling for tacos or topping for grilled arrachera. You can use virtually any chile but a mild poblano adds the perfect amount of spice to any dish.
+0:E
+French Toast 2008, Robert Irvine, All Rights Reserved
+20:0:10:4
+1:teaspoon:ground cinnamon: 
+1/4:teaspoon:ground nutmeg: 
+2:tablespoons:sugar: 
+4:tablespoons:butter: 
+4: :eggs: 
+1/4: :cup milk: 
+1/2:teaspoon:vanilla extract: 
+8:slices:bread:(challah, brioche, or white)
+1/2:cup:maple syrup:(warmed)
+_1.In a small bowl, combine, cinnamon, nutmeg, and sugar and set aside briefly.:2.In a 10-inch or 12-inch skillet, melt butter over medium heat. Whisk together cinnamon mixture, eggs, milk, and vanilla and pour into a shallow container such as a pie plate. Dip bread in egg mixture. Fry slices until golden brown, then flip to cook the other side. Serve with syrup.
+0:E
+French Toast Recipe courtesy Alton Brown, 2003
+10:0:24:4
+1:cup:half-and-half: 
+3: :large eggs: 
+2:tablespoons:honey:(warmed in microwave for 20 seconds)
+1/4:teaspoon:salt: 
+8:(1/2-inch) slices:stale bread:(day-old or stale country loaf, brioche or challah bread)
+4:tablespoons:butter: 
+_1.In medium size mixing bowl, whisk together the half-and-half, eggs, honey, and salt. You may do this the night before. When ready to cook, pour custard mixture into a pie pan and set aside.:2.Preheat oven to 375 degrees F. Dip bread into mixture, allow to soak for 30 seconds on each side, and then remove to a cooling rack that is sitting in a sheet pan, and allow to sit for 1 to 2 minutes.:3.Over medium-low heat, melt 1 tablespoon of butter in a 10-inch nonstick saute pan. Place 2 slices of bread at a time into the pan and cook until golden brown, approximately 2 to 3 minutes per side. Remove from pan and place on rack in oven for 5 minutes. Repeat with all 8 slices. Serve immediately with maple syrup, whipped cream or fruit.
+0:E
+Blueberry Buttermilk Pancakes Recipe courtesy The Cookworks
+20:0:15:5
+2:cups:all-purpose flour: 
+1/4:cup:sugar: 
+2 1/4:teaspoons:baking powder: 
+1/2:teaspoon:baking soda: 
+1/2:teaspoon:salt: 
+2: :eggs: 
+2:cups:buttermilk: 
+1/4:cup:unsalted butter:(melted)
+1:cup:blueberries:(fresh or frozen)
+_1.In a large bowl sift together the flour, sugar, baking powder, baking soda, and salt.:2.Beat the eggs with the buttermilk and melted butter. Combine the dry and the wet ingredients into a lumpy batter, being careful not to over mix, see Cook's Note*.:3.Heat some butter in a skillet over medium heat. Spoon 1/3 cup of batter into the skillet and sprinkle the top with some of the blueberries. Cook for 2 to 3 minutes on each side.:4.Serve with a dollop of whipped cream and maple syrup. *Cook's Note - Over mixed batter will result in flat, heavy pancakes. Serving suggestions: whipped cream and maple syrup
+0:E
+Basic Waffle Recipe courtesy Alton Brown, 2005
+15:5:10:6
+4 3/4:ounces:all-purpose flour:(approximately 1 cup)
+4 3/4:ounces:whole-wheat flour:(approximately 1 cup)
+1/2:teaspoon:baking soda: 
+1:teaspoon:baking:powder: 
+1:teaspoon:salt: 
+3:tablespoons:sugar: 
+3: :eggs:(whole, beaten)
+2:ounces:unsalted butter:(melted)
+16:ounces:buttermilk:(room temperature)
+: :Vegetable spray:(for waffle iron)
+_1.Preheat waffle iron according to manufacturer's directions.:2.In a medium bowl whisk together the flours, soda, baking powder, salt, and sugar. In another bowl beat together eggs and melted butter, and then add the buttermilk. Add the wet ingredients to the dry and stir until combined. Allow to rest for 5 minutes.:3.Ladle the recommended amount of waffle batter onto the iron according to the manufacturer's recommendations. Close iron top and cook until the waffle is golden on both sides and is easily removed from iron. Serve immediately or keep warm in a 200 degree F oven until ready to serve.
+0:E2
+Chocolate Waffle Recipe courtesy Alton Brown, 2005
+15:5:10:6
+7:ounces:all-purpose flour:(approximately 1 1/2 cups)
+1 3/4:ounces:sugar:(approximately 3 tablespoons)
+1.5:ounces:cocoa powder:(approximately 1/2 cup)
+1:teaspoon:baking powder: 
+1:teaspoon:salt: 
+1/2:teaspoon:baking soda: 
+3: :eggs:(whole, beaten)
+2:ounces:unsalted butter:(melted and slightly cooled)
+1:teaspoon:pure vanilla extract: 
+16:ounces:buttermilk:(room temperature)
+4:ounces:chocolate chips:(approximately 3/4 cup)
+ : :Vegetable spray:(for waffle iron)
+_1.Preheat waffle iron according to manufacturer's directions.:2.In a medium bowl whisk together the flour, sugar, cocoa powder, baking powder, salt, and baking soda. In another bowl beat together the eggs and melted butter and vanilla, and then add the buttermilk. Add the wet ingredients to the dry and stir in the chocolate chips just until combined. Allow to rest for 5 minutes.:3.Ladle the recommended amount of waffle batter onto the center of the iron. Close the iron top and cook until the waffle is crispy on both sides and is easily removed from iron. Serve immediately or keep warm in a 200 degree F oven until ready to serve.
+0:E
+Cheese Grits Recipe courtesy Alton Brown, 2004
+5:0:30:4
+2:cups:whole milk: 
+2:cups:water: 
+1 1/2:teaspoons:kosher salt: 
+1:cup:coarse ground cornmeal: 
+1/2:teaspoon:black pepper:(freshly ground)
+4:tablespoons:unsalted butter: 
+4:ounces:sharp Cheddar:(shredded)
+_1.Place the milk, water, and salt into a large, heavy-bottomed pot over medium-high heat and bring to a boil. Once the milk mixture comes to a boil, gradually add the cornmeal while continually whisking. Once all of the cornmeal has been incorporated, decrease the heat to low and cover. Remove lid and whisk frequently, every 3 to 4 minutes, to prevent grits from sticking or forming lumps; make sure to get into corners of pot when whisking. Cook for 20 to 25 minutes or until mixture is creamy.:2.Remove from the heat, add the pepper and butter, and whisk to combine. Once the butter is melted, gradually whisk in the cheese a little at a time. Serve immediately.
+0:I
+Pecan, Sour Cream Waffles Recipe courtesy Alton Brown
+35:0:0:0
+1:cup:whole milk: 
+1:cup:sour cream: 
+2: :eggs: 
+3:tablespoons:butter:(melted)
+1:teaspoon:vanilla: 
+2:teaspoons:baking powder: 
+1 1/2:cups:all purpose flour: 
+1:teaspoon:baking soda: 
+1/2:teaspoon:cinnamon: 
+ :Pinch:kosher salt: 
+1/2:cup:pecans:(toasted and chopped fine)
+_1.Heat waffle iron. Combine wet ingredients and whisk well to combine. Sift dry ingredients into a large bowl and form a well in the center. Add the wet mixture to the well and fold in with the dry. Don't worry if there are a few lumps. Stir in pecans just before cooking.:2.When iron is hot, spray lightly with non-stick spray. Spoon 1/2 to 3/4 cup of batter onto the center of the iron and cook until a golden brown crust forms.:3.Serve warm with burnt peach ice cream
+0:E
+Basic Polenta Recipe courtesy Giada De Laurentiis
+5:0:25:6
+6:cups:water: 
+2:teaspoons:salt: 
+1 3/4:cups:yellow cornmeal: 
+3:tablespoons:unsalted butter: 
+_Bring 6 cups of water to a boil in a heavy large saucepan. Add 2 teaspoons of salt. Gradually whisk in the cornmeal. Reduce the heat to low and cook until the mixture thickens and the cornmeal is tender, stirring often, about 15 minutes. Turn off the heat. Add the butter, and stir until melted.
+0:E
+Best Basic White Rice Recipe courtesy Ingrid Hoffmann
+5:0:35:4
+2:cups:long-grain white rice: 
+1:tablespoon:unsalted butter: 
+1 1/2:teaspoons:olive oil: 
+1:teaspoon:salt: 
+4:cups:chicken broth:(homemade or canned low-sodium broth)
+_Place the rice in a large saucepan with the butter, olive oil, and salt, and chicken broth (or water). Bring to a boil, uncovered, and cook until you see holes forming that tunnel down into the rice forming on the surface, about 15 minutes. Reduce the heat to the lowest setting and cover the saucepan. Cook for 20 minutes, then fluff and serve.
+0:E
+Your Basic Tossed Salad Recipe courtesy Rachael Ray
+10:0:1:4
+2: :hearts romaine lettuce: 
+2: :small plum tomatoes:(diced)
+1: :Kirby cucumber:(or 1/4 European seedless cucumber, diced)
+1: :yellow onion:(small, or 1/2 red onion, chopped)
+1: :carrot:(peeled and shredded)
+1/4:cup:extra-virgin olive oil: 
+2-3:tablespoons:red wine vinegar: 
+1:teaspoon:sugar: 
+ : :Coarse salt: 
+ : :black pepper: 
+_Place salad greens in a salad bowl and top with tomatoes, cucumbers, onion, and carrot. Place oil, vinegar and sugar in a small plastic container. Put the lid on the container and shake dressing until sugar dissolves, about 1 minute. Pour dressing over salad. Season salad with salt and pepper, to taste, and toss to combine.
+0:E
+Perfect Mashed Potatoes Recipe courtesy Food Network Magazine
+20:0:45:6
+2:pounds:russet potatoes:(medium)
+ : :Kosher salt: 
+1/2 to 1:stick:unsalted butter:(room temperature)
+1:cup:whole milk:(warmed)
+ : :black pepper:(Freshly ground)
+_1.Put the potatoes in a large saucepan and add enough cold water to cover. Season with salt and bring to a simmer; cook, uncovered, until the potatoes are fork-tender, about 45 minutes.:2.Drain the potatoes. Hold with an oven mitt or kitchen towel and peel off the skins, then transfer the potatoes to a bowl.:3.Add the butter and warm milk to the bowl and mash with a potato masher or fork (or pass the potatoes through a ricer or food mill for a smoother mash.. Season with salt and pepper.:4.Plan on 1/3 to 1/2 pound potatoes per person for your feast.
+0:E
+Basic Edamame Recipe courtesy Alton Brown, 2008
+5:0:6:4
+1:pound:edamame(fresh or frozen, in or out of shell)
+1/4:cup:water: 
+ : :Kosher salt:(optional)
+_Place the edamame and water into a large microwave-safe bowl. Microwave on high for 4 to 6 minutes. Drain any excess water and serve as is or with salt.
+0:E
+Corn Casserole Recipe courtesy Paula Deen
+8:5:55:7
+1:(15 1/4-ounce)can:whole kernel corn:(drained)
+1:(14 3/4-ounce) can:cream-style corn: 
+1:(8-ounce) package:corn muffin mix:(recommended: Jiffy)
+1:cup:sour cream: 
+1/2:stick:butter:(melted)
+1 to 1 1/2:cups:shredded Cheddar: 
+_Preheat oven to 350 degrees F. In a large bowl, stir together the 2 cans of corn, corn muffin mix, sour cream, and melted butter. Pour into a greased 9 by 13-inch casserole dish. Bake for 45 minutes, or until golden brown. Remove from oven and top with Cheddar. Return to oven for 5 to 10 minutes, or until cheese is melted. Let stand for at least 5 minutes and then serve warm.
+0:E
+Sweet Chicken Bacon Wraps Recipe courtesy Paula Deen
+25:0:30:14
+1 1/4:pounds:boneless, skinless, chicken breasts:(about 4 breasts)
+1:(1-pound) package:sliced bacon
+2/3:cup:brown sugar: 
+2:tablespoons:chili powder: 
+_Preheat oven to 350 degrees F.  Cut chicken breasts into 1-inch cubes. Cut each bacon slice into thirds. Wrap each chicken cube with bacon and secure with a wooden pick. Stir together brown sugar and chili powder. Dredge wrapped chicken in mixture. Coat a rack and broiler pan with nonstick cooking spray. Place chicken wrap on rack in broiler pan. Bake 350 for 30 to 35 minutes or until bacon is crisp.
