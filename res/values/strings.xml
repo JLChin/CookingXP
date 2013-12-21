@@ -36,6 +36,8 @@
     <string name="select_recipe_hour">hr</string>
     <string name="select_recipe_hours">hrs</string>
     <string name="select_recipe_min">min</string>
+    <string name="select_recipe_all_recipes">All Recipes</string>
+    <string name="select_recipe_pork">Pork</string>
     <string name="select_recipe_meat">Meat</string>
     <string name="select_recipe_seafood">Seafood</string>
     <string name="select_recipe_produce">Produce</string>

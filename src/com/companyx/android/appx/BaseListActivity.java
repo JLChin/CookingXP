@@ -39,6 +39,7 @@ public class BaseListActivity extends ListActivity {
 		case R.id.menu_recipes:
 			intent = new Intent(this, SelectRecipeActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			intent.putExtra("operation", "Categories");
 			startActivity(intent);
 			break;
 		case R.id.menu_shopping_list:
