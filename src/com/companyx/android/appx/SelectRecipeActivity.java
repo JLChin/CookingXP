@@ -27,14 +27,13 @@ import com.companyx.android.appx.RecipeDatabase.ShoppingList;
 /**
  * Search/Select Recipe Activity
  * 
- * TODO Add Recipe, custom options menu
- * TODO http://developer.android.com/guide/topics/search/adding-recent-query-suggestions.html
+ * Multi-purposed recipe selection activity.
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
 public class SelectRecipeActivity extends BaseListActivity {
 	// CONSTANTS
-	private static final int[] RECIPE_CATEGORIES = {R.string.select_recipe_all_recipes, R.string.select_recipe_pork };
+	private static final int[] RECIPE_CATEGORIES = {R.string.select_recipe_all_recipes, R.string.select_recipe_chicken, R.string.select_recipe_pork };
 	
 	// STATE VARIABLES
 	private List<Recipe> recipes;
@@ -63,38 +62,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 		handleIntent(intent);
 	}
 	
-	/**
-	 * Perform search if user arrived at this activity via Search, return complete recipe list otherwise.
-	 * @param intent the Intent passed to this Activity.
-	 */
-	private void handleIntent(Intent intent) {
-		// receive search action
-		String action = intent.getAction();
-		
-		// other operations
-		operation = intent.getStringExtra("operation");
-		
-		// reset views
-		layoutIngredients.removeAllViews();
-		
-		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			recipes = recipeDatabase.searchRecipes(query);
-		} else if (operation != null) {
-			if (operation.equals("Favorites"))
-				loadFavoriteRecipes();
-			else if (operation.equals("Shopping List"))
-				loadShoppingListRecipes();
-			else if (operation.equals("Categories"))
-				loadCategories();
-		} else
-			loadAllRecipes();
-		
-		// post results
-		if (!operation.equals("Categories"))
-			setListAdapter(new RecipeListViewAdapter(this, recipes));
-	}
-
 	private void initialize() {
 		layoutIngredients = (LinearLayout) findViewById(R.id.layout_select_recipe_ingredients);
 		
@@ -102,12 +69,40 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		recipeDatabase = RecipeDatabase.getInstance();
 	}
+	
+	/**
+	 * Perform search if user arrived at this activity via Search, return complete recipe list otherwise.
+	 * @param intent the Intent passed to this Activity.
+	 */
+	private void handleIntent(Intent intent) {
+		// receive search action and other operations
+		String action = intent.getAction();
+		operation = intent.getStringExtra("operation");
+		
+		// reset views
+		layoutIngredients.removeAllViews();
+		
+		if (action != null && action.equals(Intent.ACTION_SEARCH)) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			loadSearchRecipes(query);
+		} else if (operation != null) {
+			if (operation.equals("Favorites"))
+				loadFavoriteRecipes();
+			else if (operation.equals("Shopping List"))
+				loadShoppingListRecipes();
+			else if (operation.equals("Categories"))
+				loadCategories();
+		}
+	}
 
+	/**
+	 * Set up the ListView and attach custom listener.
+	 */
 	private void initializeListView() {
 		ListView listView = getListView();
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if (operation.equals("Categories")) { // CATEGORIES
+				if (operation != null && operation.equals("Categories")) { // CATEGORIES
 					loadCategory(getString(RECIPE_CATEGORIES[position]));
 				} else { // RECIPES, SEARCH, FAVORITES, OR SHOPPING LIST
 					int recipeId = ((RecipeListViewAdapter.RecipeView) view.getTag()).recipeId;
@@ -122,11 +117,14 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
-	 * Load all recipes in the RecipeDatabase, sorted by Recipe name.
+	 * Load recipes from the database that match the search query.
+	 * @param query the user-specified search query.
 	 */
-	private void loadAllRecipes() {
-		recipes = recipeDatabase.allRecipes();
+	private void loadSearchRecipes(String query) {
+		recipes = recipeDatabase.searchRecipes(query);
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
 		
+		// TOAST COUNT
 		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
 	}
 	
@@ -135,17 +133,20 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 */
 	private void loadFavoriteRecipes() {
 		recipes = recipeDatabase.getFavoriteRecipes();
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
 		
+		// IF EMPTY
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_favorites_alert_title).setMessage(R.string.select_recipe_favorites_empty).setPositiveButton(R.string.select_recipe_favorites_empty_ok, null).show();
 	}
 	
 	/**
-	 * Load favorite recipes from the RecipeDatabase, sorted by Recipe name.
+	 * Load shopping list recipes from the RecipeDatabase, sorted by Recipe name.
 	 * Show list of aggregated recipe ingredients.
 	 */
 	private void loadShoppingListRecipes() {
 		recipes = recipeDatabase.getShoppingListRecipes();
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
 		
 		ShoppingList list = recipeDatabase.getShoppingList();
 		
@@ -181,12 +182,13 @@ public class SelectRecipeActivity extends BaseListActivity {
 			addIngredientViews(list.other, layoutIngredients);
 		}
 		
+		// IF EMPTY
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
 	}
 	
 	/**
-	 * 
+	 * Load recipe categories.
 	 */
 	private void loadCategories() {
 		List<String> recipeCategories = new ArrayList<String>();
@@ -201,6 +203,8 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 * @param category the user-selected category to load the recipes for.
 	 */
 	private void loadCategory(String category) {
+		operation = null; // remove "Categories" status
+		
 		if (category.equals(getString(R.string.select_recipe_all_recipes)))
 			recipes = recipeDatabase.allRecipes();
 		else
@@ -208,6 +212,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		setListAdapter(new RecipeListViewAdapter(this, recipes));
 		
+		// TOAST COUNT
 		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
 	}
 	
