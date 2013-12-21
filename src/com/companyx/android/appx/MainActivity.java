@@ -79,14 +79,14 @@ public class MainActivity extends BaseActivity {
 		list1.add(ri8);
 		RecipeTime time1 = new RecipeTime((short) 30, (short) 30, (short) 24);
 		
-		recipeDatabase.addRecipe(new Recipe(321001, "Curry Pie", emptyList, null, time1, (byte) 2));
-		recipeDatabase.addRecipe(new Recipe(321002, "Curry Pork 2", emptyList, null, time1, (byte) 3));
-		recipeDatabase.addRecipe(new Recipe(321003, "Baked Salmon", emptyList, null, time1, (byte) 4));
-		recipeDatabase.addRecipe(new Recipe(321004, "Apple Pie", emptyList, null, time1, (byte) 1));
-		recipeDatabase.addRecipe(new Recipe(321005, "Pulled Pork Sandwich", list1, null, time1, (byte) 25));
-		recipeDatabase.addRecipe(new Recipe(321006, "Curry Pork 1", emptyList, null, time1, (byte) 32));
-		recipeDatabase.addRecipe(new Recipe(321007, "Curry Pork 2", emptyList, null, time1, (byte) 43));
-		recipeDatabase.addRecipe(new Recipe(321008, "Mystery Sandwich", list1, null, time1, (byte) 120));
+		recipeDatabase.addRecipe(new Recipe(321001, "Curry Pie", emptyList, null, time1, (byte) 1, (byte) 2));
+		recipeDatabase.addRecipe(new Recipe(321002, "Curry Pork 2", emptyList, null, time1, (byte) 4, (byte) 3));
+		recipeDatabase.addRecipe(new Recipe(321003, "Baked Salmon", emptyList, null, time1, (byte) 4, (byte) 4));
+		recipeDatabase.addRecipe(new Recipe(321004, "Apple Pie", emptyList, null, time1, (byte) 4, (byte) 1));
+		recipeDatabase.addRecipe(new Recipe(321005, "Pulled Pork Sandwich", list1, null, time1, (byte) 4, (byte) 25));
+		recipeDatabase.addRecipe(new Recipe(321006, "Curry Pork 1", emptyList, null, time1, (byte) 4, (byte) 32));
+		recipeDatabase.addRecipe(new Recipe(321007, "Curry Pork 2", emptyList, null, time1, (byte) 4, (byte) 43));
+		recipeDatabase.addRecipe(new Recipe(321008, "Mystery Sandwich", list1, null, time1, (byte) 4, (byte) 120));
 	}
 
 	@Override

@@ -76,7 +76,6 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Class representing a recipe.
-	 * TODO List<RecipeCategory>
 	 */
 	static class Recipe {
 		int recipeId;
@@ -84,14 +83,16 @@ public final class RecipeDatabase {
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
 		RecipeTime recipeTime;
+		byte numOfServings;
 		byte difficultyLevel;
 		
-		Recipe(int recipeId, String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, RecipeTime recipeTime, byte difficultyLevel) {
+		Recipe(int recipeId, String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, RecipeTime recipeTime, byte numOfServings, byte difficultyLevel) {
 			this.recipeId = recipeId;
 			this.name = name;
 			this.ingredients = ingredients;
 			this.directions = directions;
 			this.recipeTime = recipeTime;
+			this.numOfServings = numOfServings;
 			this.difficultyLevel = difficultyLevel;
 		}
 	}
