@@ -532,11 +532,13 @@ public final class RecipeDatabase {
 	 * @return the double value of the String ingredient amount.
 	 */
 	private double stringToDouble(String string) {
-		double result = 0;
+		if (string == null || string.equals(""))
+			return 0.0;
 		
 		// split on whitespace or hyphen
 		String[] terms = string.split("[\\s\\-]");
 		
+		double result = 0;
 		for (String s : terms)
 			result += (s.contains("/")) ? (Double.valueOf(s.substring(0, 1)) / Double.valueOf(s.substring(2, 3))) : Double.valueOf(s);
 			
