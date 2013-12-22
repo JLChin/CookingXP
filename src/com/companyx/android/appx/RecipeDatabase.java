@@ -493,8 +493,11 @@ public final class RecipeDatabase {
 		for (Map.Entry<String, Double> entry : amountMap.entrySet()) {
 			String ingredientName = entry.getKey();
 			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + ingredientName;
-			s = s.replace(".0", ""); // US
-			s = s.replace(",0", ""); // Euro
+			
+			// massage final string
+			s = s.replace(".0", ""); // US trailing decimal
+			s = s.replace(",0", ""); // Euro trailing decimal
+			s = s.replaceFirst("0[\\s]+", ""); // zero quantity and leading space(s)
 			
 			// determine which list this ingredient goes in (meat, seafood, other, etc)
 			Byte category = null;
