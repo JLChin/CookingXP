@@ -478,7 +478,7 @@ public final class RecipeDatabase {
 				String measurementAlias = measurementAliases.get(measurementCleaner(ri.measurement));
 				String name = ri.ingredientName;
 				
-				if (measurementAlias != null) { // "4 apples" or "5-1/2 lbs. chicken"
+				if (measurementAlias != null) { // "4 apples" or "5 1/2 lbs. chicken"
 					if (!amountMap.containsKey(name)) {
 						measurementMap.put(name, measurementAlias);
 						amountMap.put(name, amount);
@@ -495,7 +495,7 @@ public final class RecipeDatabase {
 			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + ingredientName;
 			
 			// massage final string
-			s = s.replaceFirst("[.,][0]", ""); // US/Euro trailing decimal
+			s = s.replaceFirst("[.,]0", ""); // US/Euro trailing decimal
 			if (s.charAt(0) == '0')
 				s = s.replaceFirst("0[\\s]+", ""); // zero quantity and following space(s)
 			
