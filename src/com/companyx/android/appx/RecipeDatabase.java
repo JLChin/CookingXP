@@ -495,9 +495,9 @@ public final class RecipeDatabase {
 			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + ingredientName;
 			
 			// massage final string
-			s = s.replace(".0", ""); // US trailing decimal
-			s = s.replace(",0", ""); // Euro trailing decimal
-			s = s.replaceFirst("0[\\s]+", ""); // zero quantity and leading space(s)
+			s = s.replaceFirst("[.,][0]", ""); // US/Euro trailing decimal
+			if (s.charAt(0) == '0')
+				s = s.replaceFirst("0[\\s]+", ""); // zero quantity and following space(s)
 			
 			// determine which list this ingredient goes in (meat, seafood, other, etc)
 			Byte category = null;
