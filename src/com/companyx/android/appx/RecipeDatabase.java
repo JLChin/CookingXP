@@ -80,15 +80,17 @@ public final class RecipeDatabase {
 	static class Recipe {
 		int recipeId;
 		String name;
+		String author;
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
 		RecipeTime recipeTime;
 		byte numOfServings;
 		byte difficultyLevel;
 		
-		Recipe(int recipeId, String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, RecipeTime recipeTime, byte numOfServings, byte difficultyLevel) {
+		Recipe(int recipeId, String name, String author, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, RecipeTime recipeTime, byte numOfServings, byte difficultyLevel) {
 			this.recipeId = recipeId;
 			this.name = name;
+			this.author = author;
 			this.ingredients = ingredients;
 			this.directions = directions;
 			this.recipeTime = recipeTime;
@@ -478,7 +480,7 @@ public final class RecipeDatabase {
 				String measurementAlias = measurementAliases.get(measurementCleaner(ri.measurement));
 				String name = ri.ingredientName;
 				
-				if (measurementAlias != null) { // "4 apples" or "5-1/2 lbs. chicken"
+				if (measurementAlias != null) { // "4 apples" or "5 1/2 lbs. chicken"
 					if (!amountMap.containsKey(name)) {
 						measurementMap.put(name, measurementAlias);
 						amountMap.put(name, amount);
@@ -495,9 +497,9 @@ public final class RecipeDatabase {
 			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + ingredientName;
 			
 			// massage final string
-			s = s.replace(".0", ""); // US trailing decimal
-			s = s.replace(",0", ""); // Euro trailing decimal
-			s = s.replaceFirst("0[\\s]+", ""); // zero quantity and leading space(s)
+			s = s.replaceFirst("[.,]0", ""); // US/Euro trailing decimal
+			if (s.charAt(0) == '0')
+				s = s.replaceFirst("0[\\s]+", ""); // zero quantity and following space(s)
 			
 			// determine which list this ingredient goes in (meat, seafood, other, etc)
 			Byte category = null;

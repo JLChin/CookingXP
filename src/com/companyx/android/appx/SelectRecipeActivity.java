@@ -35,12 +35,12 @@ public class SelectRecipeActivity extends BaseListActivity {
 	// CONSTANTS
 	private static final int[] RECIPE_CATEGORIES = {R.string.select_recipe_all_recipes, R.string.select_recipe_chicken, R.string.select_recipe_pork };
 	
+	// VIEW HOLDERS
+	private LinearLayout layoutIngredients;
+		
 	// STATE VARIABLES
 	private List<Recipe> recipes;
 	private String operation;
-	
-	// VIEW HOLDERS
-	private LinearLayout layoutIngredients;
 	
 	// SYSTEM
 	private RecipeDatabase recipeDatabase;
