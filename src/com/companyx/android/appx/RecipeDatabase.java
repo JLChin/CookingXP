@@ -80,15 +80,17 @@ public final class RecipeDatabase {
 	static class Recipe {
 		int recipeId;
 		String name;
+		String author;
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
 		RecipeTime recipeTime;
 		byte numOfServings;
 		byte difficultyLevel;
 		
-		Recipe(int recipeId, String name, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, RecipeTime recipeTime, byte numOfServings, byte difficultyLevel) {
+		Recipe(int recipeId, String name, String author, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, RecipeTime recipeTime, byte numOfServings, byte difficultyLevel) {
 			this.recipeId = recipeId;
 			this.name = name;
+			this.author = author;
 			this.ingredients = ingredients;
 			this.directions = directions;
 			this.recipeTime = recipeTime;
