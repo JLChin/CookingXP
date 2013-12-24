@@ -83,9 +83,14 @@ public class RecipeLoader {
 				byte serveSize = (byte) q;
 
 				INPUT = scanner.next();
-
+				
+				List<Integer> recLink = new ArrayList<Integer>();
 				ArrayList<String> ingredListArray = new ArrayList<String>();
 				List<String> directList = new ArrayList<String>();
+				
+				//Recipe Linking list Placeholder.
+				recLink.add(recipeNumber);
+				
 				// Grabbing Recipe Ingredients
 				while (scanner.hasNext()) {
 					ingredListArray.add(INPUT);
@@ -123,7 +128,7 @@ public class RecipeLoader {
 					dirList.add(new RecipeDirection(s));
 				}
 
-				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, timeC, serveSize, diff);
+				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, recLink, timeC, serveSize, diff);
 				recipeDatabase.addRecipe(newRecipe);
 
 				recipeNumber++; // increment recipe numbering system
