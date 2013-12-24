@@ -112,9 +112,6 @@ public class RecipeLoader {
 					regex = "\\:"; 
 					Pattern p = Pattern.compile(regex);
 					String[] ami = p.split(z.toLowerCase());
-					if (ami[3].matches(" ")){
-						ami[3] = blank;
-					}
 					RecipeIngredient newIngredient = new
 					RecipeIngredient(ami[0].trim(), ami[1].trim(), ami[2].trim(), ami[3].trim());
 					riList.add(newIngredient);

@@ -133,12 +133,7 @@ public class RecipeActivity extends BaseActivity {
 		
 		for (RecipeIngredient ri : recipe.ingredients) {
 			TextView tv = new TextView(this);
-			String s = ri.amount + " " + ri.measurement + " " + ri.ingredientName;
-			
-			// additional ingredient notes
-			if (!ri.notes.equals(""))
-				s += ", " + ri.notes;
-			
+			String s = ri.amount + " " + ri.measurement + " " + ri.ingredientName + ", " + ri.notes;
 			tv.setText(s);
 			layoutBody.addView(tv);
 		}
