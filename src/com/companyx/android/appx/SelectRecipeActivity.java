@@ -293,6 +293,9 @@ public class SelectRecipeActivity extends BaseListActivity {
 			// retrieve total time
 			short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
 			
+			if (totalTimeInMin <= 0)
+				return "-";
+			
 			// construct hours string
 			short hours = (short) (totalTimeInMin / 60);
 			String hoursStr = "";
