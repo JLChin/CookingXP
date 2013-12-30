@@ -2,12 +2,14 @@ package com.companyx.android.appx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -141,53 +143,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
-	 * Load shopping list recipes from the RecipeDatabase, sorted by Recipe name.
-	 * Show list of aggregated recipe ingredients.
-	 */
-	private void loadShoppingListRecipes() {
-		recipes = recipeDatabase.getShoppingListRecipes();
-		setListAdapter(new RecipeListViewAdapter(this, recipes));
-		
-		ShoppingList list = recipeDatabase.getShoppingList();
-		
-		// MEAT
-		if (!list.meat.isEmpty()) {
-			TextView tv = new TextView(this);
-			tv.setText(R.string.select_recipe_meat);
-			layoutIngredients.addView(tv);
-			addIngredientViews(list.meat, layoutIngredients);
-		}
-		
-		// SEAFOOD
-		if (!list.seafood.isEmpty()) {
-			TextView tv = new TextView(this);
-			tv.setText(R.string.select_recipe_seafood);
-			layoutIngredients.addView(tv);
-			addIngredientViews(list.seafood, layoutIngredients);
-		}
-		
-		// PRODUCE
-		if (!list.produce.isEmpty()) {
-			TextView tv = new TextView(this);
-			tv.setText(R.string.select_recipe_produce);
-			layoutIngredients.addView(tv);
-			addIngredientViews(list.produce, layoutIngredients);
-		}
-		
-		// OTHER
-		if (!list.other.isEmpty()) {
-			TextView tv = new TextView(this);
-			tv.setText(R.string.select_recipe_other);
-			layoutIngredients.addView(tv);
-			addIngredientViews(list.other, layoutIngredients);
-		}
-		
-		// IF EMPTY
-		if (recipes.size() == 0)
-			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
-	}
-	
-	/**
 	 * Load recipe categories.
 	 */
 	private void loadCategories() {
@@ -217,16 +172,58 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
+	 * Load shopping list recipes from the RecipeDatabase, sorted by Recipe name.
+	 * Show list of aggregated recipe ingredients.
+	 */
+	private void loadShoppingListRecipes() {
+		recipes = recipeDatabase.getShoppingListRecipes();
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
+		
+		ShoppingList list = recipeDatabase.getShoppingList();
+		
+		// MEAT
+		if (!list.meat.isEmpty())
+			addIngredientViews(getString(R.string.select_recipe_meat) + " (" + list.meat.size() + ")", list.meat, layoutIngredients);
+		
+		// SEAFOOD
+		if (!list.seafood.isEmpty())
+			addIngredientViews(getString(R.string.select_recipe_seafood) + " (" + list.seafood.size() + ")", list.seafood, layoutIngredients);
+		
+		// PRODUCE
+		if (!list.produce.isEmpty())
+			addIngredientViews(getString(R.string.select_recipe_produce) + " (" + list.produce.size() + ")", list.produce, layoutIngredients);
+		
+		// OTHER
+		if (!list.other.isEmpty())
+			addIngredientViews(getString(R.string.select_recipe_other) + " (" + list.other.size() + ")", list.other, layoutIngredients);
+		
+		// IF EMPTY
+		if (recipes.size() == 0)
+			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
+	}
+	
+	/**
 	 * Helper function which adds child views displaying ingredients to a parent ViewGroup.
+	 * @param title the title String of the section, e.g. Meats, Produce, etc. 
 	 * @param ingredients the List of Strings representing ingredients.
 	 * @param viewGroup the parent ViewGroup to add the child views to.
 	 */
-	private void addIngredientViews(List<String> ingredients, ViewGroup viewGroup) {
+	private void addIngredientViews(String title, Set<String> ingredients, ViewGroup viewGroup) {
+		// add title TextView to layout
+		TextView titleView = new TextView(this);
+		titleView.setText(title);
+		titleView.setTypeface(null, Typeface.BOLD_ITALIC);
+		viewGroup.addView(titleView);
+		
+		// add ingredient Views to layout
 		for (String s : ingredients) {
 			TextView tv = new TextView(this);
 			tv.setText(s);
 			viewGroup.addView(tv);
 		}
+		
+		// add footer View TODO currently blank
+		viewGroup.addView(new TextView(this));
 	}
 	
 	/**
@@ -294,7 +291,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 			short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
 			
 			if (totalTimeInMin <= 0)
-				return "-";
+				return " - ";
 			
 			// construct hours string
 			short hours = (short) (totalTimeInMin / 60);
