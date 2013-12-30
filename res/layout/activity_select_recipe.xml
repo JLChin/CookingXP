@@ -10,11 +10,16 @@
         android:layout_height="wrap_content"
         android:dividerHeight="0dp" />
 
-    <LinearLayout
-        android:id="@+id/layout_select_recipe_ingredients"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-    </LinearLayout>
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/layout_select_recipe_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

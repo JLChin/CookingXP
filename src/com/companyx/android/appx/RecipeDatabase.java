@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import android.annotation.SuppressLint;
 
@@ -149,16 +150,16 @@ public final class RecipeDatabase {
 	 * Class which holds shopping list information to be displayed, separated into food types.
 	 */
 	static class ShoppingList {
-		List<String> meat;
-		List<String> seafood;
-		List<String> produce;
-		List<String> other;
+		Set<String> meat;
+		Set<String> seafood;
+		Set<String> produce;
+		Set<String> other;
 		
 		ShoppingList() {
-			meat = new ArrayList<String>();
-			seafood = new ArrayList<String>();
-			produce = new ArrayList<String>();
-			other = new ArrayList<String>();
+			meat = new TreeSet<String>();
+			seafood = new TreeSet<String>();
+			produce = new TreeSet<String>();
+			other = new TreeSet<String>();
 		}
 	}
 	
@@ -469,7 +470,7 @@ public final class RecipeDatabase {
 		
 		Map<String, Double> amountMap = new HashMap<String, Double>(); // maps the ingredient name to the amount
 		Map<String, String> measurementMap = new HashMap<String, String>(); // maps the ingredient name to the measurement type
-		Set<String> amountless = new HashSet<String>(); // set of ingredient names where the amount and measurement is ignored for the shopping list
+		Set<String> amountless = new TreeSet<String>(); // sorted set of ingredient names where the amount and measurement is ignored for the shopping list
 		 
 		// for each recipe on the shopping list
 		for (Map.Entry<Integer, Byte> entry : shoppingListRecipes.entrySet()) {
@@ -493,7 +494,7 @@ public final class RecipeDatabase {
 			}
 		}
 		
-		// add aggregated ingredients to result list
+		// add aggregated ingredients to result categories
 		for (Map.Entry<String, Double> entry : amountMap.entrySet()) {
 			String ingredientName = entry.getKey();
 			String s = entry.getValue() + " " + measurementMap.get(entry.getKey()) + " " + ingredientName;
