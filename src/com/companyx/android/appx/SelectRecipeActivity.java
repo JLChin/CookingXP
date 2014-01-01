@@ -35,7 +35,7 @@ import com.companyx.android.appx.RecipeDatabase.ShoppingList;
  */
 public class SelectRecipeActivity extends BaseListActivity {
 	// CONSTANTS
-	private static final int[] RECIPE_CATEGORIES = {R.string.select_recipe_all_recipes, R.string.select_recipe_chicken, R.string.select_recipe_pork };
+	private static final int[] RECIPE_CATEGORIES = {R.string.select_recipe_all_recipes, R.string.chicken, R.string.pork, R.string.beef, R.string.select_recipe_seafood };
 	
 	// VIEW HOLDERS
 	private LinearLayout layoutIngredients;
@@ -69,7 +69,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		initializeListView();
 		
-		recipeDatabase = RecipeDatabase.getInstance();
+		recipeDatabase = RecipeDatabase.getInstance(this);
 	}
 	
 	/**
@@ -160,9 +160,23 @@ public class SelectRecipeActivity extends BaseListActivity {
 	private void loadCategory(String category) {
 		operation = null; // remove "Categories" status
 		
+		List<String> searchStrings = new ArrayList<String>();
+		
 		if (category.equals(getString(R.string.select_recipe_all_recipes)))
 			recipes = recipeDatabase.allRecipes();
-		else
+		else if (category.equals(getString(R.string.pork))) {
+			searchStrings.add(getString(R.string.pork));
+			searchStrings.add(getString(R.string.ham));
+			recipes = recipeDatabase.searchSetRecipes(searchStrings);
+		} else if (category.equals(getString(R.string.beef))) {
+			searchStrings.add(getString(R.string.beef));
+			searchStrings.add(getString(R.string.steak));
+			recipes = recipeDatabase.searchSetRecipes(searchStrings);
+		} else if (category.equals(getString(R.string.select_recipe_seafood))) {
+			for (int i : RecipeDatabase.SEAFOOD)
+				searchStrings.add(getString(i));
+			recipes = recipeDatabase.searchSetRecipes(searchStrings);
+		} else
 			recipes = recipeDatabase.searchRecipes(category);
 		
 		setListAdapter(new RecipeListViewAdapter(this, recipes));
@@ -291,7 +305,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 			short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
 			
 			if (totalTimeInMin <= 0)
-				return " - ";
+				return " --- ";
 			
 			// construct hours string
 			short hours = (short) (totalTimeInMin / 60);
