@@ -24,10 +24,11 @@ public final class RecipeDatabase {
 	// FOOD TYPES
 	public static final int[] MEAT = {R.string.bacon, R.string.beef, R.string.chicken, R.string.duck, R.string.eel, R.string.ham, R.string.pork, R.string.steak, R.string.turkey};
 	public static final int[] SEAFOOD = {R.string.carp, R.string.clam, R.string.crab, R.string.fish, R.string.herring, R.string.lobster, R.string.oyster, R.string.salmon, R.string.tilapia, R.string.tuna};
-	public static final int[] PRODUCE = {R.string.apples, R.string.avocado, R.string.bananas, R.string.cabbage, R.string.carrots, R.string.celery, R.string.cucumbers, R.string.eggplants, R.string.eggs, R.string.lettuce, R.string.onions, R.string.peas, R.string.potatoes, R.string.spinach};
+	public static final int[] PRODUCE = {R.string.apples, R.string.avocados, R.string.bananas, R.string.cabbage, R.string.carrots, R.string.celery, R.string.cucumbers, R.string.eggplants, R.string.eggs, R.string.lettuce, R.string.onions, R.string.peas, R.string.potatoes, R.string.spinach};
 	public static final byte TYPE_MEAT = 0;
 	public static final byte TYPE_SEAFOOD = 1;
 	public static final byte TYPE_PRODUCE = 2;
+	private static Set<String> meats; // set containing meats, used to screen for vegetarian recipes
 	private static Map<String, Byte> foodTypeMap; // maps ingredient keywords to their type category
 	
 	// MEASUREMENT ALIASES
@@ -40,6 +41,7 @@ public final class RecipeDatabase {
 	private static Map<Integer, Recipe> idMap; // maps recipeId to corresponding recipe
 	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
 	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
+	private static Set<Integer> vegetarianRecipes; // set containing recipeId's of vegetarian recipes
 
 	// SINGLETON
 	private static RecipeDatabase holder;
@@ -73,12 +75,13 @@ public final class RecipeDatabase {
 		idMap = new HashMap<Integer, Recipe>();
 		favoriteRecipes = new HashSet<Integer>();
 		shoppingListRecipes = new HashMap<Integer, Byte>();
+		vegetarianRecipes = new HashSet<Integer>();
 		
 		measurementAliases = new HashMap<String, String>();
-		
-		foodTypeMap = new HashMap<String, Byte>();
-		
 		loadMeasurementAliases();
+		
+		meats = new HashSet<String>();
+		foodTypeMap = new HashMap<String, Byte>();
 		loadFoodTypes();
 	}
 	
@@ -171,7 +174,7 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Adds a new recipe to the recipe map and index map.
+	 * Adds a new recipe to the database, indexes the recipe.
 	 * @param newRecipe the new recipe to be added to the database.
 	 */
 	public void addRecipe(Recipe newRecipe) {
@@ -183,6 +186,7 @@ public final class RecipeDatabase {
 		
 		// INDEX ID
 		idMap.put(recipeId, newRecipe);
+		vegetarianRecipes.add(recipeId); // removed during indexing if found to contain meat ingredient(s)
 		
 		// INDEX RECIPE NAME
 		index(newRecipe.name, recipeId);
@@ -211,6 +215,10 @@ public final class RecipeDatabase {
 
 			// add recipeId to search index
 			indexMap.get(word).add(recipeId);
+			
+			// strike from vegetarianRecipes if contains meat
+			if (meats.contains(word))
+				vegetarianRecipes.remove(recipeId);
 		}
 	}
 	
@@ -284,11 +292,8 @@ public final class RecipeDatabase {
 		Set<Integer> resultSet = new HashSet<Integer>();
 		
 		for (String searchString : searchStrings) {
-			// convert searchString to lowercase, to find both lower and uppercase results in the database
-			searchString = searchString.toLowerCase(Locale.US);
-			
 			// parse search terms
-			String[] searchWords = searchString.split(" ");
+			String[] searchWords = searchString.toLowerCase(Locale.US).split(" ");
 			
 			// eliminate duplicate search terms
 			Set<String> searchWordSet = new HashSet<String>();
@@ -616,13 +621,24 @@ public final class RecipeDatabase {
 	 * Loads food types into the foodType Map.
 	 */
 	private void loadFoodTypes() {
-		for (int i : MEAT)
-			foodTypeMap.put(context.getString(i).toLowerCase(Locale.US), TYPE_MEAT);
-		
+		for (int i : MEAT) {
+			String meat = context.getString(i).toLowerCase(Locale.US);
+			meats.add(meat);
+			foodTypeMap.put(meat, TYPE_MEAT);
+		}
+			
 		for (int i : SEAFOOD)
 			foodTypeMap.put(context.getString(i).toLowerCase(Locale.US), TYPE_SEAFOOD);
 		
 		for (int i : PRODUCE)
 			foodTypeMap.put(context.getString(i).toLowerCase(Locale.US), TYPE_PRODUCE);
+	}
+	
+	/**
+	 * Returns a List of vegetarian Recipes, sorted by name.
+	 * @return a List of vegetarian Recipes, sorted by name.
+	 */
+	public List<Recipe> getVegetarianRecipes() {
+		return getRecipesById(vegetarianRecipes);
 	}
 }

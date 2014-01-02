@@ -35,7 +35,7 @@ import com.companyx.android.appx.RecipeDatabase.ShoppingList;
  */
 public class SelectRecipeActivity extends BaseListActivity {
 	// CONSTANTS
-	private static final int[] RECIPE_CATEGORIES = {R.string.select_recipe_all_recipes, R.string.chicken, R.string.pork, R.string.beef, R.string.select_recipe_seafood };
+	private static final int[] RECIPE_CATEGORIES = { R.string.select_recipe_all_recipes, R.string.chicken, R.string.pork, R.string.beef, R.string.select_recipe_seafood, R.string.select_recipe_vegetarian };
 	
 	// VIEW HOLDERS
 	private LinearLayout layoutIngredients;
@@ -176,6 +176,8 @@ public class SelectRecipeActivity extends BaseListActivity {
 			for (int i : RecipeDatabase.SEAFOOD)
 				searchStrings.add(getString(i));
 			recipes = recipeDatabase.searchSetRecipes(searchStrings);
+		} else if (category.equals(getString(R.string.select_recipe_vegetarian))) {
+			recipes = recipeDatabase.getVegetarianRecipes();
 		} else
 			recipes = recipeDatabase.searchRecipes(category);
 		
