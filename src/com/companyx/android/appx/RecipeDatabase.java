@@ -627,11 +627,13 @@ public final class RecipeDatabase {
 			foodTypeMap.put(meat, TYPE_MEAT);
 		}
 			
-		for (int i : SEAFOOD)
+		for (int i : SEAFOOD) {
 			foodTypeMap.put(context.getString(i).toLowerCase(Locale.US), TYPE_SEAFOOD);
+		}
 		
-		for (int i : PRODUCE)
+		for (int i : PRODUCE) {
 			foodTypeMap.put(context.getString(i).toLowerCase(Locale.US), TYPE_PRODUCE);
+		}
 	}
 	
 	/**
