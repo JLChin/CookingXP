@@ -37,12 +37,11 @@
     <string name="select_recipe_hours">hrs</string>
     <string name="select_recipe_min">min</string>
     <string name="select_recipe_all_recipes">All Recipes</string>
-    <string name="select_recipe_chicken">Chicken</string>
-    <string name="select_recipe_pork">Pork</string>
     <string name="select_recipe_meat">Meat</string>
     <string name="select_recipe_seafood">Seafood</string>
     <string name="select_recipe_produce">Produce</string>
     <string name="select_recipe_other">Other</string>
+    <string name="select_recipe_vegetarian">Vegetarian</string>
     
     <!-- RECIPE -->
     <string name="recipe_favorites_button_description">Add/Remove Favorite</string>
@@ -56,5 +55,46 @@
     <string name="recipe_shopping_list_from_shopping_list">from Shopping List</string>
     
     <string name="welcome">Welcome to the new cooking app</string>
+    
+    <!-- MEAT -->
+    <string name="bacon">Bacon</string>
+    <string name="beef">Beef</string>
+    <string name="chicken">Chicken</string>
+    <string name="duck">Duck</string>
+    <string name="eel">Eel</string>
+    <string name="ham">Ham</string>
+    <string name="pork">Pork</string>
+    <string name="steak">Steak</string>
+    <string name="turkey">Turkey</string>
+    
+    <!-- SEAFOOD -->
+    <string name="carp">Carp</string>
+    <string name="clam">Clam</string>
+    <string name="crab">Crab</string>
+    <string name="fish">Fish</string>
+    <string name="herring">Herring</string>
+    <string name="lobster">Lobster</string>
+    <string name="oyster">Oyster</string>
+    <string name="salmon">Salmon</string>
+    <string name="tilapia">Tilapia</string>
+    <string name="tuna">Tuna</string>
+    
+    <!-- PRODUCE -->
+    <string name="apples">apples</string>
+    <string name="avocados">avocados</string>
+    <string name="bananas">bananas</string>
+    <string name="cabbage">cabbage</string>
+    <string name="carrots">carrots</string>
+    <string name="celery">celery</string>
+    <string name="cucumbers">cucumbers</string>
+    <string name="eggplants">eggplants</string>
+    <string name="eggs">eggs</string>
+    <string name="lettuce">lettuce</string>
+    <string name="onions">onions</string>
+    <string name="peas">peas</string>
+    <string name="potatoes">potatoes</string>
+    <string name="spinach">spinach</string>
+    
+    <!-- OTHER -->
 
 </resources>

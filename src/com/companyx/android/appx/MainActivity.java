@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity {
 	 * TODO Create a separate thread to manage import if it takes longer than one or two seconds.
 	 */
 	private void loadDatabase() {
-		RecipeDatabase recipeDatabase = RecipeDatabase.getInstance();
+		RecipeDatabase recipeDatabase = RecipeDatabase.getInstance(this);
 		recipeDatabase.resetDatabase(); // in case singleton RecipeDatabase was not destroyed (i.e. exit/re-enter app quickly)
 		
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);

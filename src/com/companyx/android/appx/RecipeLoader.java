@@ -128,7 +128,11 @@ public class RecipeLoader {
 					dirList.add(new RecipeDirection(s));
 				}
 
+<<<<<<< HEAD
 				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, recLink, timeC, serveSize, diff);
+=======
+				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, null, timeC, serveSize, diff);
+>>>>>>> origin/master
 				recipeDatabase.addRecipe(newRecipe);
 
 				recipeNumber++; // increment recipe numbering system

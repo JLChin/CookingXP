@@ -59,7 +59,7 @@ public class RecipeActivity extends BaseActivity {
 	
 	private void initialize() {
 		// LOAD SYSTEM VARIABLES
-		recipeDatabase = RecipeDatabase.getInstance();
+		recipeDatabase = RecipeDatabase.getInstance(this);
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		sharedPrefEditor = sharedPref.edit();
 		
