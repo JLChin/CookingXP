@@ -5,9 +5,12 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -115,6 +118,7 @@ public class RecipeActivity extends BaseActivity {
 					sharedPrefEditor.putString("SERIALIZED_SHOPPING_LIST", recipeDatabase.getSerializedShoppingList());
 					sharedPrefEditor.commit();
 					
+					// QUANTITY CHANGE NOTIFICATION
 					if (position > currentQty)
 						Toast.makeText(getApplicationContext(), getString(R.string.recipe_shopping_list_added) + " " + (position - currentQty) + " " + recipe.name + " " + getString(R.string.recipe_shopping_list_to_shopping_list), Toast.LENGTH_SHORT).show();
 					else if (position < currentQty)
@@ -131,20 +135,43 @@ public class RecipeActivity extends BaseActivity {
 		// RECIPE BODY
 		layoutBody = (LinearLayout) findViewById(R.id.layout_recipe_body);
 		
+		// INGREDIENTS
 		for (RecipeIngredient ri : recipe.ingredients) {
+			addSeparator(layoutBody);
+			
 			TextView tv = new TextView(this);
-			String s = ri.amount + " " + ri.measurement + " " + ri.ingredientName + ", " + ri.notes;
+			String s = ri.amount + " " + ri.measurement + " " + ri.ingredientName;
+			
+			// ingredient notes
+			String notes = ri.notes;
+			
+			if (notes != null && notes != "" && notes != " ") // TODO something unexpected is being added to notes when it's supposed to be blank
+				s += ", " + notes;
+			
 			tv.setText(s);
 			layoutBody.addView(tv);
 		}
 		
+		// DIRECTIONS
 		if (recipe.directions != null) {
 			for (RecipeDirection rd : recipe.directions) {
+				addSeparator(layoutBody);
+				
 				TextView tv = new TextView(this);
 				String s = rd.direction;
 				tv.setText(s);
 				layoutBody.addView(tv);
 			}
 		}
+	}
+	
+	/**
+	 * Helper function to add a horizontal divider View to the parent ViewGroup.
+	 * @param viewGroup the parent ViewGroup to add the separator to.
+	 */
+	private void addSeparator(ViewGroup viewGroup) {
+		View separator = new View(this);
+		separator.setBackgroundColor(Color.LTGRAY);
+		viewGroup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
 	}
 }

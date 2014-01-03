@@ -126,7 +126,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		recipes = recipeDatabase.searchRecipes(query);
 		setListAdapter(new RecipeListViewAdapter(this, recipes));
 		
-		// TOAST COUNT
+		// COUNT NOTIFICATION
 		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
 	}
 	
@@ -137,7 +137,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		recipes = recipeDatabase.getFavoriteRecipes();
 		setListAdapter(new RecipeListViewAdapter(this, recipes));
 		
-		// IF EMPTY
+		// EMPTY NOTIFICATION
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_favorites_alert_title).setMessage(R.string.select_recipe_favorites_empty).setPositiveButton(R.string.select_recipe_favorites_empty_ok, null).show();
 	}
@@ -183,7 +183,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		setListAdapter(new RecipeListViewAdapter(this, recipes));
 		
-		// TOAST COUNT
+		// COUNT NOTIFICATION
 		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
 	}
 	
@@ -213,7 +213,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		if (!list.other.isEmpty())
 			addIngredientViews(getString(R.string.select_recipe_other) + " (" + list.other.size() + ")", list.other, layoutIngredients);
 		
-		// IF EMPTY
+		// EMPTY NOTIFICATION
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
 	}
