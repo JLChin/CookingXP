@@ -80,8 +80,9 @@ public class RecipeLoader {
                                 int c = Integer.valueOf(timeL[2].trim());
 
                                 RecipeTime timeC = new RecipeTime((short)pr, (short)ipr, (short)c);
-
+                                
                                 // Serving size byte (serveSize)
+                                // 0:0:0:0 Prep Time:Inactive Prep Time:Cook Time:Serving Size                                   
                                 int q = Integer.valueOf(timeL[3].trim());
                                 byte serveSize = (byte) q;
 
