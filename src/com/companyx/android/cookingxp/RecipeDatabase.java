@@ -99,19 +99,17 @@ public final class RecipeDatabase {
 		List<RecipeIngredient> ingredients;
 		List<RecipeDirection> directions;
 		List<Integer> linkedRecipes;
-		List<Byte> trees;
 		List<Short> boxes;
 		RecipeTime recipeTime;
 		byte numOfServings;
 		
-		Recipe(int recipeId, String name, String author, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, List<Integer> linkedRecipes, List<Byte> trees, List<Short> boxes, RecipeTime recipeTime, byte numOfServings) {
+		Recipe(int recipeId, String name, String author, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, List<Integer> linkedRecipes, List<Short> boxes, RecipeTime recipeTime, byte numOfServings) {
 			this.recipeId = recipeId;
 			this.name = name;
 			this.author = author;
 			this.ingredients = ingredients;
 			this.directions = directions;
 			this.linkedRecipes = linkedRecipes;
-			this.trees = trees;
 			this.boxes = boxes;
 			this.recipeTime = recipeTime;
 			this.numOfServings = numOfServings;
