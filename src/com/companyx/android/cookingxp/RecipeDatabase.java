@@ -44,6 +44,7 @@ public final class RecipeDatabase {
 	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
 	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
 	private static Set<Integer> vegetarianRecipes; // set containing recipeId's of vegetarian recipes
+	private static Map<Byte, String> treeMap; // maps treeId to treeName
 
 	// SINGLETON
 	private static RecipeDatabase holder;
@@ -78,6 +79,7 @@ public final class RecipeDatabase {
 		favoriteRecipes = new HashSet<Integer>();
 		shoppingListRecipes = new HashMap<Integer, Byte>();
 		vegetarianRecipes = new HashSet<Integer>();
+		treeMap = new HashMap<Byte, String>();
 		
 		measurementAliases = new HashMap<String, String>();
 		loadMeasurementAliases();
@@ -646,5 +648,23 @@ public final class RecipeDatabase {
 	 */
 	public List<Recipe> getVegetarianRecipes() {
 		return getRecipesById(vegetarianRecipes);
+	}
+	
+	/**
+	 * Adds a new Recipe game tree to the treeMap.
+	 * @param treeName the name of the new Recipe tree to be added.
+	 * @param treeId the unique treeId corresponding to the tree to be added.
+	 */
+	public void addTree(String treeName, byte treeId) {
+		treeMap.put(treeId, treeName);
+	}
+	
+	/**
+	 * Returns the game tree name corresponding to the specified treeId.
+	 * @param treeId the unique treeId to find the name for.
+	 * @return the game tree name corresponding to the specified treeId.
+	 */
+	public String findTreeById(byte treeId) {
+		return treeMap.get(treeId);
 	}
 }
