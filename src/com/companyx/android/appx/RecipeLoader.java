@@ -46,10 +46,14 @@ public class RecipeLoader {
                                 String regex = "\\b  +";
                                 String blank = "";
                                 String title = "";
+                				String auth = "";
                                 INPUT = initVal;
-                                // Difficulty Placeholder.
-                                byte diff = 0;
-
+                                List<Byte> treeGroup = new ArrayList<Byte>();
+                                List<Byte> boxAssignment = new ArrayList<Byte>();
+                                //Placeholder for splitting out the data for Recipe Box and Tree Locations.
+                                byte diff = 0; //This should be removed once both lists are read to be imported as it is nolonger needed.
+                                
+                                
                                 // Storing Recipe title
                                 while (scanner.hasNext()) {
 
@@ -61,6 +65,14 @@ public class RecipeLoader {
                                                 break;
                                         }
                                 }
+                                
+                				// Check for Author and update auth string if one is found.
+                				if (title.matches(".*\\b(?i):\\b.*")) {
+                					String titleS[] = title.split("\\b:");
+                					title = titleS[0].trim();
+                					auth = titleS[1].trim();
+                				}
+                				
                                 // Time Split into Int - then Short into the RecipeTime
                                 String timeL[] = INPUT.split("\\:");
                                 int pr = Integer.valueOf(timeL[0].trim());
@@ -114,7 +126,7 @@ public class RecipeLoader {
                                         dirList.add(new RecipeDirection(s));
                                 }
 
-                                Recipe newRecipe = new Recipe(recipeNumber, title, riList, dirList, timeC, serveSize, diff);
+                                Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, timeC, serveSize, diff);
                                 recipeDatabase.addRecipe(newRecipe);
 
                                 recipeNumber++; // increment recipe numbering system
