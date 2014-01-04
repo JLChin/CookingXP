@@ -1,4 +1,4 @@
-package com.companyx.android.appx;
+package com.companyx.android.cookingxp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,10 +9,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.companyx.android.appx.RecipeDatabase.Recipe;
-import com.companyx.android.appx.RecipeDatabase.RecipeDirection;
-import com.companyx.android.appx.RecipeDatabase.RecipeIngredient;
-import com.companyx.android.appx.RecipeDatabase.RecipeTime;
+import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
+import com.companyx.android.cookingxp.RecipeDatabase.RecipeDirection;
+import com.companyx.android.cookingxp.RecipeDatabase.RecipeIngredient;
+import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 
 @SuppressWarnings("unused")
 // Recipe Reader

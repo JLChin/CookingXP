@@ -28,7 +28,7 @@
             android:value=".MainActivity" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.companyx.android.cookingxp.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,10 +37,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SelectRecipeActivity"
+            android:name="com.companyx.android.cookingxp.SelectRecipeActivity"
             android:label="@string/title_recipes"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName="com.companyx.android.cookingxp.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -50,8 +50,8 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".RecipeActivity"
-            android:parentActivityName=".MainActivity" >
+            android:name="com.companyx.android.cookingxp.RecipeActivity"
+            android:parentActivityName="com.companyx.android.cookingxp.MainActivity" >
         </activity>
     </application>
 
