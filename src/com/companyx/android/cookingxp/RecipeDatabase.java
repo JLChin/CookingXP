@@ -1,4 +1,4 @@
-package com.companyx.android.appx;
+package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import com.companyx.android.appx.R;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

@@ -1,6 +1,8 @@
-package com.companyx.android.appx;
+package com.companyx.android.cookingxp;
 
 import java.io.InputStream;
+
+import com.companyx.android.appx.R;
 
 import android.content.Context;
 import android.content.Intent;

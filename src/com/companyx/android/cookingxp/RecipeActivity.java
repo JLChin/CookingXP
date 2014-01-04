@@ -1,4 +1,4 @@
-package com.companyx.android.appx;
+package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companyx.android.appx.RecipeDatabase.Recipe;
-import com.companyx.android.appx.RecipeDatabase.RecipeDirection;
-import com.companyx.android.appx.RecipeDatabase.RecipeIngredient;
+import com.companyx.android.appx.R;
+import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
+import com.companyx.android.cookingxp.RecipeDatabase.RecipeDirection;
+import com.companyx.android.cookingxp.RecipeDatabase.RecipeIngredient;
 
 /**
  * Recipe Activity

@@ -1,4 +1,4 @@
-package com.companyx.android.appx;
+package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companyx.android.appx.RecipeDatabase.Recipe;
-import com.companyx.android.appx.RecipeDatabase.RecipeTime;
-import com.companyx.android.appx.RecipeDatabase.ShoppingList;
+import com.companyx.android.appx.R;
+import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
+import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
+import com.companyx.android.cookingxp.RecipeDatabase.ShoppingList;
 
 /**
  * Search/Select Recipe Activity
