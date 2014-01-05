@@ -1,21 +1,23 @@
-package com.companyx.android.appx;
+package com.companyx.android.cookingxp;
 
-import android.app.ListActivity;
+import com.companyx.android.appx.R;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 /**
- * BaseListActivity
+ * BaseActivity
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
-public class BaseListActivity extends ListActivity {
+public class BaseActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		// enable "type-to-search", activates the search dialog when the user starts typing on the keyboard
 		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 	}
