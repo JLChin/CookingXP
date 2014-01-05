@@ -1,20 +1,20 @@
 0:E
-Stove Top Pan Fried Bacon:Cooking XP
+Stove Top Pan Fried Bacon:Cooking XP:0
 5:0:10:0
 1:slab:bacon:Thick or Thin cut
 _Take a plate out and line it with paper towels.:Set the stove top to Medium or Medium-Low & set your skillet onto the burner. (Cast-Iron is preferred, but any will do):Once the pan is nice and hot, place each piece of bacon down in a single layer.:When the bacon starts to curl up, flip each slice over and cook until they're as crispy as you desire.:Place the cooked bacon on the plate with paper towns to drain the excess grease.:Pour off the bacon fat between batches as it accumulates quickly!:Enjoy your Bacon!
 0:E
-Oven cooked Bacon:Cooking XP
+Oven cooked Bacon:Cooking XP:0
 5:0:25:0
 1:slab:thick cut bacon: 
 _Preheat the oven to 350 degrees.:Line a baking sheet with foil.:Lay the bacon on the baking sheet and place in oven.:Bake for 20-25 minutes.:Transfer the bacon onto a plate with papertowels on it to drain the grease on each piece.:Enjoy your delicious bacon!  This method is great when you have a lot of bacon to cook!:NOTE- If you find that your bacon is not crisp enough, increase the baking time by a few minutes.
 0:E
-Nuclear Bacon:Cooking XP
+Nuclear Bacon:Cooking XP:0
 5:0:6:2
 1:slab:bacon:Thin cut Bacon works best with this method
 _:Layer a microwave safe plate with paper towels.:Arrange bacon on the plate and cover with another paper towel to prevent bacon grease splattering everywhere in your microwave!:Microwave on High for 4-6 minutes until desired doneness is achieved!:NOTE- A true bacon lover may scoff at this method, but it does work and if you need bacon and fast!  Then this is the method for you!
 0:E
-Stove top Prime Steak:Cooking XP
+Stove top Prime Steak:Cooking XP:1
 5:50:10:2
 1:1 1/2 inch Thick:T-bone, Ribeye, Tenderloin, or New York Strip:At least 1 inch thick, if not 2 inches
 2:teaspoons:canola oil:Any Neutral oil will do. IE. Brown Nut etc
@@ -23,7 +23,7 @@ Stove top Prime Steak:Cooking XP
 2:tablespoons:Butter: 
 _Salt your steak in advance - 45 minutes before cooking (Alternatively if you wish to not wait, Salt your steak JUST before you place it in the pan):Oil the pan with 1-2 teaspoons of oil (Cast-Iron skillets are preferred):Heat the pan over high heat until the oil starts to lightly smoke.  Then it's time to put the steaks on!:Add steaks carefully to the pan.  Start with the end closest to you and lay it backwards. (That way if you accidently drop the steak, the hot oil splashes away from you rather than onto you!):Cook steak for 3-6 minutes per side.  Use tongs or a spatula to flip the steak. When flipping if the steak has a bone, be sure to grab the bone with the tongs when flipping to prevent the meat separating from the bone on accident!:Add 2 tablespoons of butter to the pan 2-minutes before the steak is done.:Tilt the pan and spoon the melted butter on top of the steak evenly. (This is called Basting):Use a thermometer to test doneness.:120° F (48.8° C) = Rare:130° F (54.4° C) = Medium rare:140° F (60° C) = Medium:150° F (65.5° C) = Medium well:160° F (71.1° C) = Well done:Let your steak rest 5 to 10 minutes after you remove it from the pan.:After the steak has rested, enjoy your wonderful creation!:NOTES- There are two schools of thought for flipping steaks.  Only flip once, or flip frequently, try both and see which you like best!:When adding the butter, that is the step to add additional aromatics if you so wish (IE. Rosemary, Lavender, Thyme, Sage, Garlic):While your steak is resting if you cooked with aromatics, pour them on the steak to rest with it, and clear them off after the steak is done resting to impart even more flavor:If you find that you're steak is turning out slightly overdone (IE more Medium than Medium Rare), then pull it off about 5° F before the steak is done, this will allow it to stay within the desired doneness range since the steak continues cooking for a little bit while resting (which could be the likely culprit of the slight overdoneness!).
 0:E
-Bacon Wrapped Steak:Cooking XP
+Bacon Wrapped Steak:Cooking XP:4
 10:0:12:1
 1:8 Ounce:Tenderloin Steak:1 1/2 to 2 inches thick
 1:piece:thin cut bacon: 
@@ -33,7 +33,7 @@ Bacon Wrapped Steak:Cooking XP
 1:Tablespoon:olive oil: 
 _Preheat the oven to 450 degrees.:Wrap the steak with the bacon. (Bacon makes Everything better!):Heat an ovenproof skillet on the stovetop to Medium-high.:Salt and pepper both sides of the Steak.:Add butter and Olive Oil to the pan.:When melted, add Steak to the skillet.:Sear both sides (About 1 minute each side).:Take the skillet off the stove and place into the oven. (Use an ovenproof glove for safty.  There is nothing more uncool than burning your hand and dropping your steak!):Cook 7-9 minutes for a good Medium Rare.  Use a thermometer to determine how long your oven needs specifically. (120F Rare, 130F Medium Rare, 140F Medium, 150F Medium well, 160F Well-done):Once you have your steak at its desired doneness, remove from the oven and let it rest for 5 minutes before serving. (So the tasty juices don't all bleed out!):Enjoy your delicious steak!
 0:E
-Stove top Patty 1:Cooking XP
+Stove top Patty 1:Cooking XP:2
 10:0:10:2
 1/2:pound:ground beef:80-20 or 90-10
 ::salt:Just a pinch!  Any kind of salt will do.
@@ -41,14 +41,14 @@ Stove top Patty 1:Cooking XP
 ::butter:or oil to give your pan a non-stick surface
 _Separate your meat into patties(1/2 pound makes 2 patties):Roll the meat together and press into about 3/4th inch thick patties.:Press a divit into the center of the patty to prevent it from plumping up.:Heat a skillet to medium.:Cook each side for 4-5 minutes. If you have a Thermometer, test the internal temp 140F rare, 145 medium-rare, 160 medium, 170 well done.:Keep an eye on the pattie/s the amount of time it takes to cook the patties largely depends on the size and thickness of the patties.  
 0:E
-Patty Melt:Cooking XP
+Patty Melt:Cooking XP:5
 10:0:10:2
 1/2:pound:ground beef:80-20 or 90-10
 1:package:Sliced Cheese:Choose your favorite cheese
 1:loaf:bread:Your Favorite bread!
 _Separate your meat into patties(1/2 pound makes 2 patties):Roll the meat together and press into about 3/4th inch thick patties.:Press a divit into the center of the patty to prevent it from plumping up.:Heat a skillet to medium.:Cook each side for 4-5 minutes. If you have a Thermometer, test the internal temp 140F rare, 145 medium-rare, 160 medium, 170 well done.:Keep an eye on the pattie/s the amount of time it takes to cook the patties largely depends on the size and thickness of the patties.:Toast your bun with a toaster oven, toaster, or on another pan with butter.:Once the burger is done cooking it is time assemble your patty melt by placing one slice of cheese on the bottom bun.:Place the patty ontop of that.:Place another slice of cheese ontop of the patty, and place the final piece of toasted bread on top of the sandwich.
 0:E
-Beef Meat Balls:Cooking XP
+Beef Meat Balls:Cooking XP:8
 20:0:35:12
 2:pounds:ground beef:80-20
 1:teaspoon:salt: 
@@ -62,7 +62,7 @@ Beef Meat Balls:Cooking XP
 4:cups:marinara sauce:Choose your favorite or create your own!
 _Preheat the oven to 450F:Smear the olive oil onto a baking dish making sure to coat the entire cooking surface of the baking dish. (IE Glass Baking pan):Combine the beef, salt, eggs, breadcrumbs, ricotta, and herbs.:Mix well by hand.:Roll the mixture into 1 1/2 inch meatballs making sure each meatball is nice and firm. Think Golfball size!:Place the meatballs into the baking dish side by side.  If the meatballs are touching that is okay.  For best results line them up in even rows.:Place baking dish into the oven for 20 minutes.:Heat Marinara sauce over medium to medium-high.  Make sure to stir often so it doesn't stick to the pot or burn.:Remove meatballs and test internal temperature which should be 160-165F.  If there isn't a thermometer available, just open a meatball up and look inside to see if it is cooked through with a fork.  The meatball should be firm and not loose.:Drain the grease out of the baking dish and pour the hot marinara sauce over the meatballs.:Place the meatballs back into the oven for another 15 minutes.:Remove from oven and serve!:NOTES- You can add red pepper flakes for additional kick.  Other tomato sauces can be substituted for the marinara.  The classic 3 meat meatball can be prepared this way also.
 0:E
-BLT:Cooking XP
+BLT:Cooking XP:3
 15:0:10:2
 2::vine ripe tomatoes:Almost any tomato variety can be substituted here, it is a matter of size and juiciness that is preferred. 
 4:leaves:Iceberg lettuce:Iceberg can be substituted with Oak leaf or Bibb.  Stay away from Romaine.
@@ -73,7 +73,7 @@ BLT:Cooking XP
  : :Pepper: 
 _Cut the bacon in half to have nice sandwich sized slices.:Pan fry, Bake, or Microwave the bacon to desired doneness.  Frying or baking is recommended for best results.:Slice the tomatoes into sandwich sized slices.:Toast 4 pieces of bread to a nice golden brown just before the bacon is finished.:Spread a layer of mayo onto each of the 4 pieces of toast.:Place the tomato slices onto one side of each sandwich and lightly sprinkle with salt.:Drain the bacon on a plate with paper towels before transferring it to the sandwich.:Place as much bacon as you desire onto each sandwich.:Next add the lettuce leaves. 1-2 per sandwich.  Some different lettuce leaves may require more.:Place the other piece of bread on top of each sandwich.:Cut sandwiches in half if desired and enjoy your BLT!
 0:E
-Beef Stew:Betty Crocker
+Beef Stew:Betty Crocker:9
 20:0:180:2
 1:pound:boneless beef chuck, tip or round roast:cut into 1-inch cubes 
 1:tablespoon:vegetable oil:shortening can be substituted for this.
@@ -90,7 +90,7 @@ Beef Stew:Betty Crocker
 2:tablespoons:All-Purpose Flour: 
 _Chop all produce and meat into their desired sizes.:In a 12-inch skillet, heat oil over medium heat 1 to 2 minutes.  Make sure your skillet is large enough to hold all ingredients and liquids before attempting or a large mess could occur!:Add beef; cook about 15 minutes, stirring occasionally, until brown on all sides. Seasoning the beef before browning it yeilds additional flavor.:Add water, 1/2 teaspoon salt and the pepper. Heat to boiling. Reduce heat to low. Cover; simmer 2 hours to 2 hours 30 minutes or until beef is almost tender.:Stir in remaining ingredients except cold water and flour. Cover; cook about 30 minutes or until vegetables are tender. Remove bay leaf.:In tightly covered jar or container, shake cold water and flour; gradually stir into beef mixture. Heat to boiling, stirring constantly. Boil and stir 1 minute until thickened.:Reduce heat to low and serve!
 0:E
-Crockpot Roast:Cooking XP
+Crockpot Roast:Cooking XP:7
 30:0:480:6
 2:pound:boneless beef chuck, tip or round roast:Increase or decrease the size of the roast to increase or decrease serving sizes.
 1/2:cup:beef broth:Add more broth if desired and for larger roasts.
@@ -104,7 +104,7 @@ Crockpot Roast:Cooking XP
 1:can:cream of mushroom soup:10 3/4 ounce or 1.34375 cups
 _Chop all produce to desired sizes and place at the bottom of the Crockpot.:Oil a pan with 1-2 teaspoons of oil. Swirl the oil around to get a thin coating over the bottom of the pan.:Salt the main surfaces of the roast.:Heat the pan over high heat.  When the oil starts to lightly smoke and or shimmer, place your roast in the pan.:Once the first side has completely seared, it will release easily from the pan. This should take 1-2 minutes.  Do not try to move the meat until then.:Repeat this searing process for not only top and bottom, but All Sides of the roast. Use tongs if necessary.  This is to lock in depth of flavor!:Once all sides are seared, place the roast into the Crockpot fat side up.:Pour in beef broth and add the pepper.  Next pour the cream of mushroom soup and Worcestershire sauce over the meat.  Other herbs can be added here to put your own spin of this classic!:Cover everything and cook on low for 8-10 hours.:NOTE- This is a great recipe for an premade afterwork awesome dinner!
 0:E
-Meat Loaf:CookingXP
+Meat Loaf:CookingXP:6
 10:0:60:8
 1 1/2:pound:ground beef: 
 1: :Egg: 
@@ -119,7 +119,7 @@ Meat Loaf:CookingXP
 1/3:cup:ketchup: 
 _Preheat oven to 350 degrees F (175 degrees C).:In a large bowl, combine the beef, worcestershire sauce, egg, onion, milk and bread OR cracker crumbs. Season with salt and pepper to taste and place in a lightly greased 5x9 inch loaf pan, OR form into a loaf and place in a lightly greased 9x13 inch baking dish.:In a separate small bowl, combine the brown sugar, mustard and ketchup. Mix well and pour over the meatloaf.:Bake for 1 hour.:NOTE - This recipe was inspired by Janet Caldwell's Meatloaf.
 0:E
-Chicken Fried Steak:Alton Brown
+Chicken Fried Steak:Alton Brown:10
 45:10:30:5
 2:pounds:beef bottom round:trimmed of excess fat
 2:teaspoons:kosher salt: 
@@ -131,310 +131,3 @@ Chicken Fried Steak:Alton Brown
 1/2:cup:whole milk: 
 1/2:teaspoon:thyme: 
 _Preheat oven to 250 degrees F.:Cut the meat with the grain into 1/2-inch thick slices and eason each piece on both sides with the salt and pepper.:Place the flour into a pie pan. Dredge the meat on both sides in the flour.:Using a needling device, tenderize the meat until each slice is 1/4-inch thick.:Place the eggs into a separate pie pan.:Dredge the meat again in the flour, followed by the egg and finally back into the flour again.:Repeat with all the pieces of meat.:Place the meat onto a plate and allow it to rest for 10-15 minutes before cooking.:Place enough of the vegetable oil to cover the bottom of a 12-inch slope-sided skillet and set over medium-high heat.:Once the oil begins to shimmer, add the meat in batches, being careful not to overcrowd the pan.:Cook each piece on both sides until golden brown, approximately 4 minutes per side.:Remove the steaks to a wire rack set in a half sheet pan and place into the oven. Repeat until all of the meat is browned.:Once all steaks are in the oven, Add the remaining vegetable oil, or at least 1 tablespoon, to the pan.: Whisk in 3 tablespoons of the flour left over from the dredging.:Add the chicken broth and deglaze the pan and whisk until the gravy comes to a boil and begins to thicken.:Add the milk and thyme and whisk until the gravy coats the back of a spoon, approximately 5 to 10 minutes.:Season to taste, with more salt and pepper, if needed and serve the gravy over the steaks!
-=======
-Baked Potato
-0:0:60:1
-1:large:russet potato: 
- : :canola oil: 
- : :kosher salt: 
-_1. Heat oven to 350°F and position racks in top and bottom thirds.:2. Wash potato (or potatoes. thoroughly with a stiff brush and cold running water.:3. Dry, then using a standard fork poke 8 to 12 deep holes all over the spud so that moisture can escape during cooking.:4. Place in a bowl and coat lightly with oil.:5. Sprinkle with kosher salt and place potato directly on rack in middle of oven.:6. Place a baking sheet (I put a piece of aluminum foil. on the lower rack to catch any drippings.:7. Bake 1 hour or until skin feels crisp but flesh beneath feels soft.:8. Serve by creating a dotted line from end to end with your fork, then crack the spud open by squeezing the ends towards one another.:9. It will pop right open.:10. But watch out, there will be some steam.:11. NOTE: If you're cooking more than 4 potatoes, you'll need to extend the cooking time by up to 15 minutes.
-0:E
-Stove Top Mac-n-Cheese:Recipe courtesy Alton Brown
-10:0:25:7
-1/2:pound:elbow macaroni: 
-4:tablespoons:butter: 
-2: :eggs: 
-6:ounces:evaporated milk: 
-1/2:teaspoon:hot sauce: 
-1:teaspoon:kosher salt: 
- : :black pepper:(Fresh)
-3/4:teaspoon:dry mustard: 
-10:ounces:sharp cheddar:(shredded)
-_1. In a large pot of boiling, salted water cook the pasta to al dente and drain. Return to the pot and melt in the butter. Toss to coat.:2. Whisk together the eggs, milk, hot sauce, salt, pepper, and mustard. Stir into the pasta and add the cheese. Over low heat continue to stir for 3 minutes or until creamy.
-0:E
-Potato Salad:Recipe courtesy Tyler Florence
-10:15:15:5
-2:pounds:Yukon gold potatoes:(small)
-2: :large eggs: 
- : :Kosher salt: 
-1/2:bunch:scallions:(sliced, white and green parts)
-2:tablespoons:capers:(drained)
-2:cups:mayonnaise: 
-1/4:cup:Dijon mustard: 
-1/4:cup:dill pickles:(finely chopped with 1/4 cup juice, about 2 pickles)
-1/2: :red onion:(small, chopped)
-2:tablespoons:flat-leaf parsley:(chopped fresh)
-1/2:bunch:dill:(chopped)
-1/2: :lemon:(juiced)
- : :black pepper:(Freshly ground)
- : :Extra-virgin olive oil:(for drizzling)
-_1.Put the potatoes and eggs into a big saucepan of cold salted water. Bring to a simmer. After 12 minutes remove the eggs with a slotted spoon and let cool. Continue cooking the potatoes until a paring knife poked into them goes in without resistance, about 3 minutes longer. Drain the potatoes in a colander and let them cool.:2.Reserve some scallion greens and capers for garnish. Meanwhile, stir together the mayonnaise, mustard, pickles and their juice, onion, remaining scallions and capers, parsley, and lemon juice in a bowl large enough to hold the potatoes. Peel the cool eggs and grate them into the bowl. Stick a fork into the potatoes and lift them 1 at a time out of the colander. Break up the potatoes by hand into rough chunks, add them to the bowl and toss to coat with the dressing. Season, to taste, with salt and pepper. Drizzle with a little olive oil before serving.
-0:E
-Chicken Tortilla Soup:Recipe courtesy Danny Boome
-10:0:25:5
-2:tablespoons:vegetable oil: 
-1: :small onion:(diced)
-2:tablespoons:minced garlic: 
-2: :jalapenos:(finely diced)
-6:cups:low-sodium chicken broth: 
-1:14.5-ounce can:fire roasted diced tomatoes: 
-1:14.5-ounce can:black beans:(rinsed and drained)
-3: :chicken breasts:(boneless and skinless)
-2: :limes:(juiced, plus wedges for garnish)
- : :Salt: 
- : :black pepper:(freshly ground)
-1:cup:cilantro:(roughly chopped fresh leaves)
-1:8-inch:flour tortilla:(grilled, cut into thin strips)
-1: :avocado:(pitted, sliced)
-1:cup:Monterrey cheese:(shredded)
-_In a large saucepan heat the vegetable oil. Add the onions and cook for 2 minutes. Once the onions have softened add the garlic and jalepenos and cook for another minute. Pour the chicken broth, tomatoes and beans into the pot and bring to a boil. Once at a boil lower heat to simmer and add your chicken breasts. Cook the chicken for 20 to 25 minutes. Once chicken is cooked remove from pot. When cool enough to handle shred it and set it aside. Add lime juice and fresh cilantro to the pot. In a serving bowl add a mound of shredded chicken. Ladle soup over chicken and top with a lime wedge, grilled tortilla strips, avocado slices and cheese.
-0:E
-Guacamole:The Barefoot Contessa Cookbook
-15:0:0:3
-4: :avocados:(ripe Haas)
-3:tablespoons:lemon juice:(1 lemon - freshly squeezed)
-8:dashes:hot pepper sauce: 
-1/2:cup:red onion:(1 small onion - Diced)
-1: :large garlic clove:(minced)
-1:teaspoon:kosher salt: 
-1:teaspoon:black pepper:(freshly ground)
-1: :medium tomato:(seeded, and diced)
-_Cut the avocados in 1/2, remove the pits, and scoop the flesh out of their shells into a large bowl. (I use my hands.) Immediately add the lemon juice, hot pepper sauce, onion, garlic, salt, and pepper and toss well. Using a sharp knife, slice through the avocados in the bowl until they are finely diced. Add the tomatoes. Mix well and taste for salt and pepper.
-0:E
-Rosemary Chips:Recipe courtesy Food Network Magazine
-10:0:20:4
-1 1/2:pounds:russet potatoes:(thinly sliced)
-2:teaspoons:rosemary:(chopped)
-1: :garlic clove:(grated)
-3:tablespoons:olive oil: 
-3/4:teaspoon:salt: 
- :pinch:cayenne: 
-_Toss 1 1/2 pounds thinly sliced russet potatoes with 2 teaspoons chopped rosemary, 1 grated garlic clove, 3 tablespoons olive oil, 3/4 teaspoon salt and a pinch of cayenne. Spread on a baking sheet; roast in a 500 degrees F oven until golden, about 20 minutes. Flip the potatoes and cook until golden and crisp, 8 more minutes. Season with salt.
-0:E
-Spiced Pita Chips:2007, Ellie Krieger, All Rights Reserved
-5:0:15:6
-2:tablespoon:olive oil: 
-1:teaspoon:ground cumin: 
-1/2:teaspoon:ground coriander: 
-1/4:teaspoon:cayenne pepper: 
-1/2:teaspoon:garlic powder: 
-1/4:teaspoon:black pepper:(fresh ground)
-1/4:teaspoon:salt: 
-3: :whole-wheat pitas:(cut into 1/8's)
-_Preheat oven to 350 degrees F.  Combine olive oil and all spices in a large bowl. Add pita wedges and toss to coat, Spread in 1 layer on a baking sheet and bake for about 15 minutes, tossing once, or until pita is brown and crisp. Cool completely before serving.
-0:E
-Chicken Noodle Soup:Recipe courtesy Alton Brown
-30:0:7:4
-4:cups:chicken stock:(home made or store bought)
-3/4:cup:onion:(diced)
-3/4:cup:celery:(diced)
-1:tablespoon:minced garlic: 
-2:ounces:dried egg noodles:(cooked to al dente)
-1/2:teaspoon:tarragon:(finely chopped fresh leaves)
-2:teaspoons:parsley:(finely chopped fresh leaves)
- : :Lemon halves:(for serving)
-_Bring stock to boil for 2 minutes in a large, non-reactive stockpot with lid on, over high heat. Add onion, celery, and garlic. Lower heat and simmer for 2 minutes. Add noodles and cook 5 more minutes. Remove from heat and add herbs and salt and pepper, to taste. Serve with lemon halves and add squeeze of lemon juice if desired. 
-0:E
-Mexican Lasagna:Recipe courtesy Rachael Ray
-10:0:20:4
-3:tablespoons:extra-virgin olive oil: 
-2:pounds:ground chicken breast: 
-2:tablespoons:chili powder: 
-2:teaspoons:ground cumin: 
-1/2: :red onion:(chopped)
-1:(15-ounce) can:black beans:(drained)
-1:cup:medium heat taco sauce:(or 1 (14-oz) can stewed or fire roasted tomatoes)
-1:cup:frozen corn kernels: 
- : :Salt: 
-8:(8 inch):spinach flour tortillas: 
-2 1/2:cups:shredded Cheddar or shredded pepper jack: 
-2: :scallions:(finely chopped)
-_1.Preheat the oven to 425 degrees F.:2.Preheat a large skillet over medium high heat. Add 2 tablespoons extra-virgin olive oil - twice around the pan. Add chicken and season with chili powder, cumin, and red onion. Brown the meat, 5 minutes. Add taco sauce or stewed or fire roasted tomatoes. Add black beans and corn. Heat the mixture through, 2 to 3 minutes then season with salt, to your taste.:3.Coat a shallow baking dish with remaining extra-virgin olive oil, about 1 tablespoon oil. Cut the tortillas in half or quarters to make them easy to layer with. Build lasagna in layers of meat and beans, then tortillas, then cheese. Repeat: meat, tortilla, cheese again. Bake lasagna 12 to 15 minutes until cheese is brown and bubbly. Top with the scallions and serve.
-0:E
-Chicken Enchiladas:Recipe courtesy of Emeril Lagasse
-0:0:0:5
-3:tablespoons:oil:(plus 1/2 cup, divided)
-1:tablespoon:flour: 
-1/4:cup:New Mexican chili powder: 
-16:ounces:chicken stock: 
-10:ounces:tomato puree: 
-1:teaspoon:dried oregano: 
-1/2:teaspoon:ground cumin: 
- : :Salt: 
-3:cups:cheddar cheese:(grated)
-2:cups:chicken:(cooked and shredded)
-1: :onion:(chopped)
-10:corn:tortillas: 
-1:cup:sour cream:( for garnish)
-1/2:cup:scallions:(chopped, for garnish)
-_1.Preheat oven to 350 degrees F.:2.Make sauce: In a saucepan heat 3 tablespoons oil, add flour and cook, whisking, 1 minute. Add chili powder and cook 30 seconds. Stir in stock, tomato puree, oregano and cumin and bring to a boil. Reduce heat and simmer 15 minutes until flavors are well-blended. Season to taste with salt.:3.Combine cheese, chicken and onion for filling. Heat remaining 1/2 cup oil in a skillet until hot. Using tongs dip in tortillas, one at a time, to soften, and drain on paper towels. Dip each tortilla in sauce. On a plate fill with a generous spoonful of filling and roll up; place enchilada seam-side down in a baking dish and repeat until all ingredients are used up. Top with remaining sauce. Bake 30 minutes. To serve, top with sour cream and scallions.
-0:E
-Creamy Poblano Pepper Strips (Rajas):Recipe courtesy Marcela Valladolid, 2009
-10:10:25:5
-6: :poblano chiles:(peeled)
-3:tablespoons:vegetable oil: 
-1: :white onion:(medium, thinly sliced)
-2: :corn ears:(kernels removed)
-1/4:cup:heavy cream: 
-1/4:cup:Mexican crema:(or creme fraiche)
-1/2:cup:shredded Monterrey jack cheese: 
- : :Kosher salt: 
- : :black pepper:(Ground Fresh)
-_1.Char the poblano chiles directly over the gas flame on the stove or under the broiler until blackened on all sides. Enclose in a plastic bag and let steam for about 10 minutes.:2.Add the oil to a heavy large skillet over medium heat. When the oil is hot, add the onion and saute until translucent, about 5 minutes. Add the corn and cook for an additional 3 minutes. Set aside.:3.Peel and seed the chiles. Cut the chiles into 1/4 to 1/2-inch strips (rajas. and add the strips to the onion and corn mixture and saute until the corn is tender, about 5 minutes. Add the heavy cream and Mexican crema and cook until bubbling, about for 8 minutes. Add the cheese and stir until melted and smooth. Season the rajas with salt and pepper, to taste. Transfer to a serving dish and serve. Notes:4.*Cook's Note: The poblano chile is a fresh chile that ranges from mild to hot. It is a deep, dark green color and is large and wide with shiny skin. Ripened on the plant and dried it is known as "chile ancho" or "pasilla." They can also be found at most supermarkets or Latin specialty markets. Just keep your eye out, as some stores sell them fresh under the name "pasilla." A great filling for tacos or topping for grilled arrachera. You can use virtually any chile but a mild poblano adds the perfect amount of spice to any dish.
-0:E
-French Toast:2008, Robert Irvine, All Rights Reserved
-20:0:10:4
-1:teaspoon:ground cinnamon: 
-1/4:teaspoon:ground nutmeg: 
-2:tablespoons:sugar: 
-4:tablespoons:butter: 
-4: :eggs: 
-1/4: :cup milk: 
-1/2:teaspoon:vanilla extract: 
-8:slices:bread:(challah, brioche, or white)
-1/2:cup:maple syrup:(warmed)
-_1.In a small bowl, combine, cinnamon, nutmeg, and sugar and set aside briefly.:2.In a 10-inch or 12-inch skillet, melt butter over medium heat. Whisk together cinnamon mixture, eggs, milk, and vanilla and pour into a shallow container such as a pie plate. Dip bread in egg mixture. Fry slices until golden brown, then flip to cook the other side. Serve with syrup.
-0:E
-French Toast:Recipe courtesy Alton Brown, 2003
-10:0:24:4
-1:cup:half-and-half: 
-3: :large eggs: 
-2:tablespoons:honey:(warmed in microwave for 20 seconds)
-1/4:teaspoon:salt: 
-8:(1/2-inch) slices:stale bread:(day-old or stale country loaf, brioche or challah bread)
-4:tablespoons:butter: 
-_1.In medium size mixing bowl, whisk together the half-and-half, eggs, honey, and salt. You may do this the night before. When ready to cook, pour custard mixture into a pie pan and set aside.:2.Preheat oven to 375 degrees F. Dip bread into mixture, allow to soak for 30 seconds on each side, and then remove to a cooling rack that is sitting in a sheet pan, and allow to sit for 1 to 2 minutes.:3.Over medium-low heat, melt 1 tablespoon of butter in a 10-inch nonstick saute pan. Place 2 slices of bread at a time into the pan and cook until golden brown, approximately 2 to 3 minutes per side. Remove from pan and place on rack in oven for 5 minutes. Repeat with all 8 slices. Serve immediately with maple syrup, whipped cream or fruit.
-0:E
-Blueberry Buttermilk Pancakes:Recipe courtesy The Cookworks
-20:0:15:5
-2:cups:all-purpose flour: 
-1/4:cup:sugar: 
-2 1/4:teaspoons:baking powder: 
-1/2:teaspoon:baking soda: 
-1/2:teaspoon:salt: 
-2: :eggs: 
-2:cups:buttermilk: 
-1/4:cup:unsalted butter:(melted)
-1:cup:blueberries:(fresh or frozen)
-_1.In a large bowl sift together the flour, sugar, baking powder, baking soda, and salt.:2.Beat the eggs with the buttermilk and melted butter. Combine the dry and the wet ingredients into a lumpy batter, being careful not to over mix, see Cook's Note*.:3.Heat some butter in a skillet over medium heat. Spoon 1/3 cup of batter into the skillet and sprinkle the top with some of the blueberries. Cook for 2 to 3 minutes on each side.:4.Serve with a dollop of whipped cream and maple syrup. *Cook's Note - Over mixed batter will result in flat, heavy pancakes. Serving suggestions: whipped cream and maple syrup
-0:E
-Basic Waffle Recipe:courtesy Alton Brown, 2005
-15:5:10:6
-4 3/4:ounces:all-purpose flour:(approximately 1 cup)
-4 3/4:ounces:whole-wheat flour:(approximately 1 cup)
-1/2:teaspoon:baking soda: 
-1:teaspoon:baking:powder: 
-1:teaspoon:salt: 
-3:tablespoons:sugar: 
-3: :eggs:(whole, beaten)
-2:ounces:unsalted butter:(melted)
-16:ounces:buttermilk:(room temperature)
-: :Vegetable spray:(for waffle iron)
-_1.Preheat waffle iron according to manufacturer's directions.:2.In a medium bowl whisk together the flours, soda, baking powder, salt, and sugar. In another bowl beat together eggs and melted butter, and then add the buttermilk. Add the wet ingredients to the dry and stir until combined. Allow to rest for 5 minutes.:3.Ladle the recommended amount of waffle batter onto the iron according to the manufacturer's recommendations. Close iron top and cook until the waffle is golden on both sides and is easily removed from iron. Serve immediately or keep warm in a 200 degree F oven until ready to serve.
-0:E2
-Chocolate Waffle:Recipe courtesy Alton Brown, 2005
-15:5:10:6
-7:ounces:all-purpose flour:(approximately 1 1/2 cups)
-1 3/4:ounces:sugar:(approximately 3 tablespoons)
-1.5:ounces:cocoa powder:(approximately 1/2 cup)
-1:teaspoon:baking powder: 
-1:teaspoon:salt: 
-1/2:teaspoon:baking soda: 
-3: :eggs:(whole, beaten)
-2:ounces:unsalted butter:(melted and slightly cooled)
-1:teaspoon:pure vanilla extract: 
-16:ounces:buttermilk:(room temperature)
-4:ounces:chocolate chips:(approximately 3/4 cup)
- : :Vegetable spray:(for waffle iron)
-_1.Preheat waffle iron according to manufacturer's directions.:2.In a medium bowl whisk together the flour, sugar, cocoa powder, baking powder, salt, and baking soda. In another bowl beat together the eggs and melted butter and vanilla, and then add the buttermilk. Add the wet ingredients to the dry and stir in the chocolate chips just until combined. Allow to rest for 5 minutes.:3.Ladle the recommended amount of waffle batter onto the center of the iron. Close the iron top and cook until the waffle is crispy on both sides and is easily removed from iron. Serve immediately or keep warm in a 200 degree F oven until ready to serve.
-0:E
-Cheese Grits:Recipe courtesy Alton Brown, 2004
-5:0:30:4
-2:cups:whole milk: 
-2:cups:water: 
-1 1/2:teaspoons:kosher salt: 
-1:cup:coarse ground cornmeal: 
-1/2:teaspoon:black pepper:(freshly ground)
-4:tablespoons:unsalted butter: 
-4:ounces:sharp Cheddar:(shredded)
-_1.Place the milk, water, and salt into a large, heavy-bottomed pot over medium-high heat and bring to a boil. Once the milk mixture comes to a boil, gradually add the cornmeal while continually whisking. Once all of the cornmeal has been incorporated, decrease the heat to low and cover. Remove lid and whisk frequently, every 3 to 4 minutes, to prevent grits from sticking or forming lumps; make sure to get into corners of pot when whisking. Cook for 20 to 25 minutes or until mixture is creamy.:2.Remove from the heat, add the pepper and butter, and whisk to combine. Once the butter is melted, gradually whisk in the cheese a little at a time. Serve immediately.
-0:I
-Pecan, Sour Cream Waffles:Recipe courtesy Alton Brown
-35:0:0:0
-1:cup:whole milk: 
-1:cup:sour cream: 
-2: :eggs: 
-3:tablespoons:butter:(melted)
-1:teaspoon:vanilla: 
-2:teaspoons:baking powder: 
-1 1/2:cups:all purpose flour: 
-1:teaspoon:baking soda: 
-1/2:teaspoon:cinnamon: 
- :Pinch:kosher salt: 
-1/2:cup:pecans:(toasted and chopped fine)
-_1.Heat waffle iron. Combine wet ingredients and whisk well to combine. Sift dry ingredients into a large bowl and form a well in the center. Add the wet mixture to the well and fold in with the dry. Don't worry if there are a few lumps. Stir in pecans just before cooking.:2.When iron is hot, spray lightly with non-stick spray. Spoon 1/2 to 3/4 cup of batter onto the center of the iron and cook until a golden brown crust forms.:3.Serve warm with burnt peach ice cream
-0:E
-Basic Polenta Recipe:courtesy Giada De Laurentiis
-5:0:25:6
-6:cups:water: 
-2:teaspoons:salt: 
-1 3/4:cups:yellow cornmeal: 
-3:tablespoons:unsalted butter: 
-_Bring 6 cups of water to a boil in a heavy large saucepan. Add 2 teaspoons of salt. Gradually whisk in the cornmeal. Reduce the heat to low and cook until the mixture thickens and the cornmeal is tender, stirring often, about 15 minutes. Turn off the heat. Add the butter, and stir until melted.
-0:E
-Best Basic White Rice:Recipe courtesy Ingrid Hoffmann
-5:0:35:4
-2:cups:long-grain white rice: 
-1:tablespoon:unsalted butter: 
-1 1/2:teaspoons:olive oil: 
-1:teaspoon:salt: 
-4:cups:chicken broth:(homemade or canned low-sodium broth)
-_Place the rice in a large saucepan with the butter, olive oil, and salt, and chicken broth (or water). Bring to a boil, uncovered, and cook until you see holes forming that tunnel down into the rice forming on the surface, about 15 minutes. Reduce the heat to the lowest setting and cover the saucepan. Cook for 20 minutes, then fluff and serve.
-0:E
-Your Basic Tossed Salad:Recipe courtesy Rachael Ray
-10:0:1:4
-2: :hearts romaine lettuce: 
-2: :small plum tomatoes:(diced)
-1: :Kirby cucumber:(or 1/4 European seedless cucumber, diced)
-1: :yellow onion:(small, or 1/2 red onion, chopped)
-1: :carrot:(peeled and shredded)
-1/4:cup:extra-virgin olive oil: 
-2-3:tablespoons:red wine vinegar: 
-1:teaspoon:sugar: 
- : :Coarse salt: 
- : :black pepper: 
-_Place salad greens in a salad bowl and top with tomatoes, cucumbers, onion, and carrot. Place oil, vinegar and sugar in a small plastic container. Put the lid on the container and shake dressing until sugar dissolves, about 1 minute. Pour dressing over salad. Season salad with salt and pepper, to taste, and toss to combine.
-0:E
-Perfect Mashed Potatoes:Recipe courtesy Food Network Magazine
-20:0:45:6
-2:pounds:russet potatoes:(medium)
- : :Kosher salt: 
-1/2 to 1:stick:unsalted butter:(room temperature)
-1:cup:whole milk:(warmed)
- : :black pepper:(Freshly ground)
-_1.Put the potatoes in a large saucepan and add enough cold water to cover. Season with salt and bring to a simmer; cook, uncovered, until the potatoes are fork-tender, about 45 minutes.:2.Drain the potatoes. Hold with an oven mitt or kitchen towel and peel off the skins, then transfer the potatoes to a bowl.:3.Add the butter and warm milk to the bowl and mash with a potato masher or fork (or pass the potatoes through a ricer or food mill for a smoother mash.. Season with salt and pepper.:4.Plan on 1/3 to 1/2 pound potatoes per person for your feast.
-0:E
-Basic Edamame:Recipe courtesy Alton Brown, 2008
-5:0:6:4
-1:pound:edamame:(fresh or frozen, in or out of shell)
-1/4:cup:water: 
- : :Kosher salt:(optional)
-_Place the edamame and water into a large microwave-safe bowl. Microwave on high for 4 to 6 minutes. Drain any excess water and serve as is or with salt.
-0:E
-Corn Casserole:Recipe courtesy Paula Deen
-8:5:55:7
-1:(15 1/4-ounce)can:whole kernel corn:(drained)
-1:(14 3/4-ounce) can:cream-style corn: 
-1:(8-ounce) package:corn muffin mix:(recommended: Jiffy)
-1:cup:sour cream: 
-1/2:stick:butter:(melted)
-1 to 1 1/2:cups:shredded Cheddar: 
-_Preheat oven to 350 degrees F. In a large bowl, stir together the 2 cans of corn, corn muffin mix, sour cream, and melted butter. Pour into a greased 9 by 13-inch casserole dish. Bake for 45 minutes, or until golden brown. Remove from oven and top with Cheddar. Return to oven for 5 to 10 minutes, or until cheese is melted. Let stand for at least 5 minutes and then serve warm.
-0:E
-Sweet Chicken Bacon Wraps:Recipe courtesy Paula Deen
-25:0:30:14
-1 1/4:pounds:boneless, skinless, chicken breasts:(about 4 breasts)
-1:(1-pound) package:sliced bacon: 
-2/3:cup:brown sugar: 
-2:tablespoons:chili powder: 
-_Preheat oven to 350 degrees F.  Cut chicken breasts into 1-inch cubes. Cut each bacon slice into thirds. Wrap each chicken cube with bacon and secure with a wooden pick. Stir together brown sugar and chili powder. Dredge wrapped chicken in mixture. Coat a rack and broiler pan with nonstick cooking spray. Place chicken wrap on rack in broiler pan. Bake 350 for 30 to 35 minutes or until bacon is crisp.
