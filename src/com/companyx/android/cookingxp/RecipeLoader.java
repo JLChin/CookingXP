@@ -18,131 +18,127 @@ import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 // Recipe Reader
 // @author Adam Hackbarth <adam.hackbarth@gmail.com>
 public class RecipeLoader {
-        InputStream inputStream;
-        RecipeDatabase recipeDatabase;
+	InputStream inputStream;
+	RecipeDatabase recipeDatabase;
 
-        // constructor
-        RecipeLoader(InputStream inputStream, RecipeDatabase recipeDatabase) {
-                this.inputStream = inputStream;
-                this.recipeDatabase = recipeDatabase;
-        }
+	// constructor
+	RecipeLoader(InputStream inputStream, RecipeDatabase recipeDatabase) {
+		this.inputStream = inputStream;
+		this.recipeDatabase = recipeDatabase;
+	}
 
-        public void loadData() {
+	public void loadData() {
 
-                /* Loading Raw Data from File Location into Scanner */
-                Scanner scanner = new Scanner(inputStream);
-                scanner.useDelimiter(System.getProperty("line.separator"));
+		/* Loading Raw Data from File Location into Scanner */
+		Scanner scanner = new Scanner(inputStream);
+		scanner.useDelimiter(System.getProperty("line.separator"));
 
-                String bV = "\\b\\d:\\D"; // New Entry DISCOVERY Text
-                String INPUT = scanner.next();
-                String keyLine = "";
-                int recipeNumber = 0;
+		String bV = "\\b\\d:\\D"; // New Entry DISCOVERY Text
+		String INPUT = scanner.next();
+		String keyLine = "";
+		int recipeNumber = 0;
 
-                while (scanner.hasNext()) {
+		while (scanner.hasNext()) {
 
-                        if (INPUT.matches(bV)) {
-                                keyLine = INPUT; // saving the recipe key line
-                                String initVal = scanner.next(); // Starting Point Holder
-                                String regex = "\\b  +";
-                                String blank = "";
-                                String title = "";
-                				String auth = "";
-                                INPUT = initVal;
-                                List<Byte> treeGroup = new ArrayList<Byte>();
-                                List<Byte> boxAssignment = new ArrayList<Byte>();
-                                //Placeholder for splitting out the data for Recipe Box and Tree Locations.
-                                byte diff = 0; //This should be removed once both lists are read to be imported as it is nolonger needed.
-                                
-                                
-                                // Storing Recipe title
-                                while (scanner.hasNext()) {
+			if (INPUT.matches(bV)) {
+				keyLine = INPUT; // saving the recipe key line
+				String initVal = scanner.next(); // Starting Point Holder
+				String regex = "\\b  +";
+				String blank = "";
+				String title = "";
+				String auth = "";
+				INPUT = initVal;
+				// Difficulty Placeholder.
+				byte diff = 0;
 
-                                        if (INPUT.equals(bV)) {
-                                                INPUT = scanner.next();
-                                        } else {
-                                                title = INPUT;
-                                                INPUT = scanner.next();
-                                                break;
-                                        }
-                                }
-                                
-                				// Check for Author and update auth string if one is found.
-                				if (title.matches(".*\\b(?i):\\b.*")) {
-                					String titleS[] = title.split("\\b:");
-                					title = titleS[0].trim();
-                					auth = titleS[1].trim();
-                				}
-                				
-                                // Time Split into Int - then Short into the RecipeTime
-                                String timeL[] = INPUT.split("\\:");
-                                int pr = Integer.valueOf(timeL[0].trim());
-                                int ipr = Integer.valueOf(timeL[1].trim());
-                                int c = Integer.valueOf(timeL[2].trim());
+				// Storing Recipe title
+				while (scanner.hasNext()) {
 
-                                RecipeTime timeC = new RecipeTime((short)pr, (short)ipr, (short)c);
-                                
-                                // Serving size byte (serveSize)
-                                // 0:0:0:0 Prep Time:Inactive Prep Time:Cook Time:Serving Size                                   
-                                int q = Integer.valueOf(timeL[3].trim());
-                                byte serveSize = (byte) q;
+					if (INPUT.equals(bV)) {
+						INPUT = scanner.next();
+					} else {
+						title = INPUT;
+						INPUT = scanner.next();
+						break;
+					}
+				}
+				
+				// Check for Author and update auth string if one is found.
+				if (title.matches(".*\\b(?i):\\b.*")) {
+					String titleS[] = title.split("\\b:");
+					title = titleS[0].trim();
+					auth = titleS[1].trim();
+				}
+				
+				// Time Split into Int - then Short into the RecipeTime
+				String timeL[] = INPUT.split("\\:");
+				int pr = Integer.valueOf(timeL[0].trim());
+				int ipr = Integer.valueOf(timeL[1].trim());
+				int c = Integer.valueOf(timeL[2].trim());
 
-                                INPUT = scanner.next();
+				RecipeTime timeC = new RecipeTime((short)pr, (short)ipr, (short)c);
 
-                                ArrayList<String> ingredListArray = new ArrayList<String>();
-                                List<String> directList = new ArrayList<String>();
-                                // Grabbing Recipe Ingredients
-                                while (scanner.hasNext()) {
-                                        ingredListArray.add(INPUT);
-                                        INPUT = scanner.next();
-                                        if (INPUT.matches("\\b_.*")) {
-                                                break;
-                                        }
-                                }
-                                // Grabbing Recipe Directions/Instructions
-                                String dirL[] = INPUT.substring(1, INPUT.length()).split("\\:");
-                                directList = Arrays.asList(dirL);
+				// Serving size byte (serveSize)
+				int q = Integer.valueOf(timeL[3].trim());
+				byte serveSize = (byte) q;
 
-                                while (scanner.hasNext()) {
-                                        if (INPUT.matches(bV)) {
-                                                break;
-                                        } else {
-                                                INPUT = scanner.next();
-                                        }
-                                }
-                                // Separating the Ingredients for Database import
-                                List<RecipeIngredient> riList = new
-                                ArrayList<RecipeIngredient>();
-                                for (String z : ingredListArray) {
-                                        regex = "\\:"; 
-                                        Pattern p = Pattern.compile(regex);
-                                        String[] ami = p.split(z.toLowerCase());
-                                        RecipeIngredient newIngredient = new
-                                        RecipeIngredient(ami[0].trim(), ami[1].trim(), ami[2].trim(), ami[3].trim());
-                                        riList.add(newIngredient);
-                                }
-                        
-                                List<RecipeDirection> dirList = new
-                                ArrayList<RecipeDirection>();
-                                for (String s : directList){
-                                        dirList.add(new RecipeDirection(s));
-                                }
+				INPUT = scanner.next();
 
-                                Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, timeC, serveSize, diff);
-                                recipeDatabase.addRecipe(newRecipe);
+				ArrayList<String> ingredListArray = new ArrayList<String>();
+				List<String> directList = new ArrayList<String>();
+				// Grabbing Recipe Ingredients
+				while (scanner.hasNext()) {
+					ingredListArray.add(INPUT);
+					INPUT = scanner.next();
+					if (INPUT.matches("\\b_.*")) {
+						break;
+					}
+				}
+				// Grabbing Recipe Directions/Instructions
+				String dirL[] = INPUT.substring(1, INPUT.length()).split("\\:");
+				directList = Arrays.asList(dirL);
 
-                                recipeNumber++; // increment recipe numbering system
+				while (scanner.hasNext()) {
+					if (INPUT.matches(bV)) {
+						break;
+					} else {
+						INPUT = scanner.next();
+					}
+				}
+				// Separating the Ingredients for Database import
+				List<RecipeIngredient> riList = new
+				ArrayList<RecipeIngredient>();
+				for (String z : ingredListArray) {
+					regex = "\\:"; 
+					Pattern p = Pattern.compile(regex);
+					String[] ami = p.split(z.toLowerCase());
+					RecipeIngredient newIngredient = new
+					RecipeIngredient(ami[0].trim(), ami[1].trim(), ami[2].trim(), ami[3].trim());
+					riList.add(newIngredient);
+				}
+			
+				List<RecipeDirection> dirList = new
+				ArrayList<RecipeDirection>();
+				for (String s : directList){
+					dirList.add(new RecipeDirection(s));
+				}
 
-                        } else {
-                                while (scanner.hasNext()) {
-                                        if (INPUT.equals(bV)) {
-                                                break;
-                                        }
-                                        INPUT = scanner.next();
+				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, timeC, serveSize, diff);
+				recipeDatabase.addRecipe(newRecipe);
 
-                                }
-                        }
-                }
+				recipeNumber++; // increment recipe numbering system
 
-                scanner.close();
-        }
+			} else {
+				while (scanner.hasNext()) {
+					if (INPUT.equals(bV)) {
+						break;
+					}
+					INPUT = scanner.next();
+
+				}
+			}
+		}
+
+		scanner.close();
+	}
 }
