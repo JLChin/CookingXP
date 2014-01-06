@@ -1,6 +1,6 @@
 package com.companyx.android.cookingxp;
 
-import com.companyx.android.appx.R;
+import com.companyx.android.cookingxp.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -42,6 +42,11 @@ public class BaseActivity extends Activity {
 			intent = new Intent(this, SelectRecipeActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			intent.putExtra("operation", "Categories");
+			startActivity(intent);
+			break;
+		case R.id.menu_trees:
+			intent = new Intent(this, TreeActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(intent);
 			break;
 		case R.id.menu_shopping_list:

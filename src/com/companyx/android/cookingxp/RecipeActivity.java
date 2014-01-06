@@ -20,7 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companyx.android.appx.R;
+import com.companyx.android.cookingxp.R;
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 import com.companyx.android.cookingxp.RecipeDatabase.RecipeDirection;
 import com.companyx.android.cookingxp.RecipeDatabase.RecipeIngredient;

@@ -8,6 +8,7 @@
 
     <!-- MENU -->
     <string name="menu_recipes">Recipes</string>
+    <string name="menu_trees">Trees</string>
     <string name="menu_shopping_list">Shopping List</string>
     <string name="menu_favorites">Favorites</string>
     <string name="menu_search">Search</string>

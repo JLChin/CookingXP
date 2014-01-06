@@ -2,7 +2,7 @@ package com.companyx.android.cookingxp;
 
 import java.io.InputStream;
 
-import com.companyx.android.appx.R;
+import com.companyx.android.cookingxp.R;
 
 import android.content.Context;
 import android.content.Intent;

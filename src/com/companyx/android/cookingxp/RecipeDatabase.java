@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.companyx.android.appx.R;
+import com.companyx.android.cookingxp.R;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -58,6 +58,7 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Returns the singleton instance of the Recipe database.
+	 * @param c the calling context.
 	 * @return the singleton instance of the Recipe database.
 	 */
 	public synchronized static RecipeDatabase getInstance(Context c) {
