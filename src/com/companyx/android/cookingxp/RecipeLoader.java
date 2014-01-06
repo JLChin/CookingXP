@@ -41,6 +41,10 @@ public class RecipeLoader {
 		while (scanner.hasNext()) {
 
 			if (INPUT.matches(bV)) {
+				ArrayList<String> ingredListArray = new ArrayList<String>();
+				List<Short> boxAssignment = new ArrayList<Short>();
+				List<String> directList = new ArrayList<String>();
+				List<Integer> linkedRecipe = new ArrayList<Integer>();
 				keyLine = INPUT; // saving the recipe key line
 				String initVal = scanner.next(); // Starting Point Holder
 				String regex = "\\b  +";
@@ -48,8 +52,8 @@ public class RecipeLoader {
 				String title = "";
 				String auth = "";
 				INPUT = initVal;
-				// Difficulty Placeholder.
-				byte diff = 0;
+				// Recipe Linking Placeholder - Currently just linking to itself
+				linkedRecipe.add(recipeNumber);
 
 				// Storing Recipe title
 				while (scanner.hasNext()) {
@@ -68,6 +72,10 @@ public class RecipeLoader {
 					String titleS[] = title.split("\\b:");
 					title = titleS[0].trim();
 					auth = titleS[1].trim();
+			        for (int j = 2; j < titleS.length; j++) {
+			        	int boxId = Integer.valueOf(titleS[j].trim());
+	    				boxAssignment.add((short)boxId);
+	                }
 				}
 				
 				// Time Split into Int - then Short into the RecipeTime
@@ -83,9 +91,7 @@ public class RecipeLoader {
 				byte serveSize = (byte) q;
 
 				INPUT = scanner.next();
-
-				ArrayList<String> ingredListArray = new ArrayList<String>();
-				List<String> directList = new ArrayList<String>();
+				
 				// Grabbing Recipe Ingredients
 				while (scanner.hasNext()) {
 					ingredListArray.add(INPUT);
@@ -123,7 +129,7 @@ public class RecipeLoader {
 					dirList.add(new RecipeDirection(s));
 				}
 
-				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, timeC, serveSize, diff);
+				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, linkedRecipe, boxAssignment, timeC, serveSize);
 				recipeDatabase.addRecipe(newRecipe);
 
 				recipeNumber++; // increment recipe numbering system
