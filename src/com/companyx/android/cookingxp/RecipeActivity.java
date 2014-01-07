@@ -145,8 +145,8 @@ public class RecipeActivity extends BaseActivity {
 			// ingredient notes
 			String notes = ri.notes;
 			
-			if (notes != null && notes != "" && notes != " ") // TODO something unexpected is being added to notes when it's supposed to be blank
-				s += ", " + notes;
+			if (notes != null && notes.length() > 1)
+				s += " (" + notes + ")";
 			
 			tv.setText(s);
 			layoutBody.addView(tv);
