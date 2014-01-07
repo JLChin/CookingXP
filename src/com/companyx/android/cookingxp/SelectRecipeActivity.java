@@ -166,8 +166,9 @@ public class SelectRecipeActivity extends BaseListActivity {
 		if (category.equals(getString(R.string.select_recipe_all_recipes)))
 			recipes = recipeDatabase.allRecipes();
 		else if (category.equals(getString(R.string.pork))) {
-			searchStrings.add(getString(R.string.pork));
+			searchStrings.add(getString(R.string.bacon));
 			searchStrings.add(getString(R.string.ham));
+			searchStrings.add(getString(R.string.pork));
 			recipes = recipeDatabase.searchSetRecipes(searchStrings);
 		} else if (category.equals(getString(R.string.beef))) {
 			searchStrings.add(getString(R.string.beef));
