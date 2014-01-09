@@ -17,6 +17,7 @@ import android.widget.ImageView;
  * One Recipe can be a member of multiple Boxes.
  * One Box can be a member of multiple Trees.
  * Each Box is in one of three states: locked, unlocked or activated.
+ * The same Box can be in different states on different Trees.
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
@@ -38,6 +39,9 @@ public final class GameData {
 		resetData();
 	}
 	
+	/**
+	 * Resets the database.
+	 */
 	private void resetData() {
 		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Short, Tree>();
@@ -61,16 +65,16 @@ public final class GameData {
 	 * Class representing a box on the game Tree
 	 */
 	static class Box {
-		// STATE VARIABLES
-		String name;
+		// DATA
+		int nameStrRes;
 		
-		// VIEW RESOURCES
+		// IMAGE RESOURCES
 		int lockedImgRes;
 		int unlockedImgRes;
 		int activatedImgRes;
 		
-		Box (String name, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
-			this.name = name;
+		Box (int nameStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+			this.nameStrRes = nameStrRes;
 			this.lockedImgRes = lockedImgRes;
 			this.unlockedImgRes = unlockedImgRes;
 			this.activatedImgRes = activatedImgRes;
@@ -81,11 +85,13 @@ public final class GameData {
 	 * Class representing a game tree.
 	 */
 	static class Tree {
-		String name;
-		List<List<BoxHolder>> boxHolderMatrix; // two dimensional matrix of BoxHolders
+		int nameStrRes;
+		byte unlockedTier; // 0 <= tier < DEFAULT_TREE_HEIGHT
+		List<List<BoxHolder>> boxHolderMatrix; // List of tiers of BoxHolders
 		
-		Tree(String name) {
-			this.name = name;
+		Tree(int nameStrRes) {
+			this.nameStrRes = nameStrRes;
+			unlockedTier = 0;
 			
 			boxHolderMatrix = new ArrayList<List<BoxHolder>>();
 			for (int i = 0; i < DEFAULT_TREE_HEIGHT; i++)
@@ -94,15 +100,15 @@ public final class GameData {
 		
 		/**
 		 * Container class managing a Box's relation within this tree instance.
-		 * The Box contained in this Tree may have a different status in another Tree.
+		 * BoxHolder allows the Box contained in this Tree to have a different relation in another Tree.
 		 */
 		class BoxHolder {
 			// STATE VARIABLES
 			Box box;
-			byte tier; // 0 <= tier < DEFAULT_TREE_HEIGHT
-			boolean unlocked;
-			boolean activated;
-			List<BoxHolder> incomingEdges;
+			private byte tier; // 0 <= tier < DEFAULT_TREE_HEIGHT
+			private boolean unlocked;
+			private boolean activated;
+			private List<BoxHolder> incomingEdges;
 			
 			// VIEW RESOURCES
 			ImageView imageView;
@@ -111,27 +117,84 @@ public final class GameData {
 				this.box = box;
 				this.tier = tier;
 				this.imageView = imageView;
-				
+				incomingEdges = new ArrayList<BoxHolder>();
 			}
 			
+			BoxHolder addEdge(BoxHolder incomingBH) {
+				incomingEdges.add(incomingBH);
+				return this;
+			}
+			
+			/**
+			 * Returns whether this box is unlocked.
+			 * @return whether this box is unlocked.
+			 */
 			boolean isUnlocked() {
-				if (tier == 0)
-					return true;
-				return false;
+				return unlocked;
 			}
 			
+			/**
+			 * Checks conditions and updates unlocked status.
+			 */
+			private void updateUnlockedStatus() {
+				boolean result = false;
+				
+				if (tier <= unlockedTier) {
+					if (incomingEdges.isEmpty())
+						result = true;
+					else {
+						for (BoxHolder bh : incomingEdges) {
+							if (bh.activated)
+								result = true;
+						}
+					}
+				}
+				
+				unlocked = result;
+			}
+			
+			/**
+			 * Returns whether this box is activated.
+			 * @return whether this box is activated.
+			 */
 			boolean isActivated() {
-				// TODO check conditions
-				return true;
+				return activated;
+			}
+			
+			/**
+			 * Checks conditions and updates activated status.
+			 */
+			private void updateActivatedStatus() {
+				// TODO
+				activated = true;
+			}
+		}
+		
+		/**
+		 * Checks all conditions and updates unlocked and activated status of each BoxHolder, unlockedTier status of Tree. TODO
+		 * This method is called when the Tree is ready to be validated.
+		 */
+		private void updateTree() {
+			// update activated status of each BoxHolder
+			for (List<BoxHolder> row : boxHolderMatrix) {
+				for (BoxHolder bh : row)
+					bh.updateActivatedStatus();
+			}
+			
+			// update unlocked status of each BoxHolder
+			for (List<BoxHolder> row : boxHolderMatrix) {
+				for (BoxHolder bh : row)
+					bh.updateUnlockedStatus();
 			}
 		}
 	}
 	
-	public void addBox(short boxId, String name, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
-		boxMap.put(boxId, new Box(name, lockedImgRes, unlockedImgRes, activatedImgRes));
+	public void addBox(short boxId, int nameStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+		boxMap.put(boxId, new Box(nameStrRes, lockedImgRes, unlockedImgRes, activatedImgRes));
 	}
 	
 	public void addTree(short treeId, Tree newTree) {
 		treeMap.put(treeId, newTree);
+		newTree.updateTree(); // Tree is ready to be validated, set unlocked & activated statuses
 	}
 }
