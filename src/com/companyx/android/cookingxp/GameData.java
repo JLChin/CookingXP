@@ -1,10 +1,12 @@
 package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import android.widget.ImageView;
 
 /**
  * Game Database
@@ -14,6 +16,7 @@ import android.content.Context;
  * RULES:
  * One Recipe can be a member of multiple Boxes.
  * One Box can be a member of multiple Trees.
+ * Each Box is in one of three states: locked, unlocked or activated.
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
@@ -32,6 +35,12 @@ public final class GameData {
 	private static Context context;
 	
 	private GameData() {
+		resetData();
+	}
+	
+	private void resetData() {
+		boxMap = new HashMap<Short, Box>();
+		treeMap = new HashMap<Short, Tree>();
 	}
 	
 	/**
@@ -52,12 +61,19 @@ public final class GameData {
 	 * Class representing a box on the game Tree
 	 */
 	static class Box {
+		// STATE VARIABLES
 		String name;
-		int imageRef;
 		
-		Box (String name, int imageRef) {
+		// VIEW RESOURCES
+		int lockedImgRes;
+		int unlockedImgRes;
+		int activatedImgRes;
+		
+		Box (String name, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
 			this.name = name;
-			this.imageRef = imageRef;
+			this.lockedImgRes = lockedImgRes;
+			this.unlockedImgRes = unlockedImgRes;
+			this.activatedImgRes = activatedImgRes;
 		}
 	}
 	
@@ -78,17 +94,41 @@ public final class GameData {
 		
 		/**
 		 * Container class managing a Box's relation within this tree instance.
+		 * The Box contained in this Tree may have a different status in another Tree.
 		 */
 		class BoxHolder {
+			// STATE VARIABLES
+			Box box;
+			byte tier; // 0 <= tier < DEFAULT_TREE_HEIGHT
 			boolean unlocked;
-			boolean fulfilled;
+			boolean activated;
 			List<BoxHolder> incomingEdges;
 			
+			// VIEW RESOURCES
+			ImageView imageView;
+			
+			BoxHolder(Box box, byte tier, ImageView imageView) {
+				this.box = box;
+				this.tier = tier;
+				this.imageView = imageView;
+				
+			}
+			
+			boolean isUnlocked() {
+				if (tier == 0)
+					return true;
+				return false;
+			}
+			
+			boolean isActivated() {
+				// TODO check conditions
+				return true;
+			}
 		}
 	}
 	
-	public void addBox(short boxId, String name, int imageRef) {
-		boxMap.put(boxId, new Box(name, imageRef));
+	public void addBox(short boxId, String name, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+		boxMap.put(boxId, new Box(name, lockedImgRes, unlockedImgRes, activatedImgRes));
 	}
 	
 	public void addTree(short treeId, Tree newTree) {

@@ -22,12 +22,13 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// TODO Create a separate thread to manage import if it takes longer than one or two seconds.
 		loadDatabase();
+		loadGame();
 	}
 	
 	/**
 	 * Bulk recipe data loading, at the start of the app.
-	 * TODO Create a separate thread to manage import if it takes longer than one or two seconds.
 	 */
 	private void loadDatabase() {
 		RecipeDatabase recipeDatabase = RecipeDatabase.getInstance(this);
@@ -47,6 +48,12 @@ public class MainActivity extends BaseActivity {
 		// LOAD SHOPPING LIST
 		String serializedShoppingList = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
 		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
+	}
+	
+	private void loadGame() {
+		// LOAD BOXES
+		
+		// LOAD TREES
 	}
 
 	@Override
