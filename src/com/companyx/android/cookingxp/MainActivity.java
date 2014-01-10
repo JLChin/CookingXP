@@ -22,7 +22,7 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		// TODO Create a separate thread to manage import if it takes longer than one or two seconds.
+		// TODO Create a separate thread to manage lazy loading if it takes longer than one second.
 		loadDatabase();
 		loadGame();
 	}
@@ -36,7 +36,7 @@ public class MainActivity extends BaseActivity {
 		
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-		// LOAD DATA FROM FILE
+		// LOAD RECIPES FROM FILE
 		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
 		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
 		loader.loadData();
@@ -51,9 +51,7 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	private void loadGame() {
-		// LOAD BOXES
-		
-		// LOAD TREES
+		GameData gameData = GameData.getInstance(this);
 	}
 
 	@Override
