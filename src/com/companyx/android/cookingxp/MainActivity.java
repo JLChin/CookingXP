@@ -22,12 +22,13 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// TODO Create a separate thread to manage lazy loading if it takes longer than one second.
 		loadDatabase();
+		loadGame();
 	}
 	
 	/**
 	 * Bulk recipe data loading, at the start of the app.
-	 * TODO Create a separate thread to manage import if it takes longer than one or two seconds.
 	 */
 	private void loadDatabase() {
 		RecipeDatabase recipeDatabase = RecipeDatabase.getInstance(this);
@@ -35,7 +36,7 @@ public class MainActivity extends BaseActivity {
 		
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-		// LOAD DATA FROM FILE
+		// LOAD RECIPES FROM FILE
 		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
 		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
 		loader.loadData();
@@ -47,6 +48,10 @@ public class MainActivity extends BaseActivity {
 		// LOAD SHOPPING LIST
 		String serializedShoppingList = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
 		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
+	}
+	
+	private void loadGame() {
+		GameData gameData = GameData.getInstance(this);
 	}
 
 	@Override
