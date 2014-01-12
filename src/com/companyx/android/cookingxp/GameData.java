@@ -60,8 +60,8 @@ public final class GameData {
 	 * Class representing a game tree.
 	 */
 	static class Tree {
-		int nameStrRes;
-		int unlockedTier;
+		private int nameStrRes;
+		private int unlockedTier;
 		List<List<BoxHolder>> boxHolderMatrix; // List of tiers of BoxHolders
 		
 		Tree(int nameStrRes) {
@@ -71,6 +71,14 @@ public final class GameData {
 			boxHolderMatrix = new ArrayList<List<BoxHolder>>();
 			for (int i = 0; i < DEFAULT_TREE_HEIGHT; i++)
 				boxHolderMatrix.add(new ArrayList<BoxHolder>());
+		}
+		
+		/**
+		 * Returns the localized name of the Tree.
+		 * @return the localized name of the Tree.
+		 */
+		public String getName() {
+			return context.getString(nameStrRes);
 		}
 		
 		/**
@@ -253,5 +261,18 @@ public final class GameData {
 		tier3.get(2).incomingEdges.add(tier2.get(2));
 		
 		addTree(0, newTree);
+	}
+	
+	/**
+	 * Returns a List of game Trees.
+	 * @return a List of game Trees.
+	 */
+	public List<Tree> getTrees() {
+		List<Tree> result = new ArrayList<Tree>();
+		
+		for (Map.Entry<Integer, Tree> entry : treeMap.entrySet())
+			result.add(entry.getValue());
+		
+		return result;
 	}
 }
