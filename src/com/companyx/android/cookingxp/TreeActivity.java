@@ -7,6 +7,7 @@ import java.util.Map;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -140,8 +141,25 @@ public class TreeActivity extends BaseActivity {
 		TextView tvTitle = new TextView(this);
 		tvTitle.setText(getString(box.titleStrRes));
 		tvTitle.setTextColor(Color.LTGRAY);
-		layoutBoxPopup.addView(tvTitle);
 		
+		// MODIFIER
+		TextView tvModifier = new TextView(this);
+		tvModifier.setText("+10 Awesomeness");
+		tvModifier.setTextColor(Color.GREEN);
+		tvModifier.setGravity(Gravity.RIGHT);
+		RelativeLayout.LayoutParams paramsTV = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		paramsTV.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		tvModifier.setLayoutParams(paramsTV);
+		
+		// container for title, modifier
+		RelativeLayout rlTitle = new RelativeLayout(this);
+		RelativeLayout.LayoutParams paramsRL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		rlTitle.setLayoutParams(paramsRL);
+		rlTitle.addView(tvTitle);
+		rlTitle.addView(tvModifier);
+		layoutBoxPopup.addView(rlTitle);
+		
+		// separator
 		View separator = new View(this);
 		separator.setBackgroundColor(Color.LTGRAY);
 		layoutBoxPopup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
@@ -178,6 +196,13 @@ public class TreeActivity extends BaseActivity {
 			
 			layoutBoxPopup.addView(tvRecipe);
 		}
+		
+		// WEAPON TYPE!!!
+		TextView tvWeapon = new TextView(this);
+		tvWeapon.setText("Two-Handed Weapon");
+		tvWeapon.setTextColor(Color.CYAN);
+		tvWeapon.setGravity(Gravity.RIGHT);
+		layoutBoxPopup.addView(tvWeapon);
 		
 		// PopupWindow constructed, attach to view
 		popupWindow.showAsDropDown(view);
