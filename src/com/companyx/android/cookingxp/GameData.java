@@ -23,11 +23,11 @@ import android.content.res.Resources;
  */
 public final class GameData {
 	// CONSTANTS
-	private static final int DEFAULT_TREE_HEIGHT = 4;
-	private static final int NUM_OF_BOXES = 11;
+	private static final short DEFAULT_TREE_HEIGHT = 4;
+	private static final short NUM_OF_BOXES = 11;
 	
 	// STATE VARIABLES
-	private static Map<Integer, Box> boxMap; // maps unique boxId to Box
+	private static Map<Short, Box> boxMap; // maps unique boxId to Box
 	private static Map<Integer, Tree> treeMap; // maps unique treeId to Tree
 	
 	// SINGLETON
@@ -40,6 +40,8 @@ public final class GameData {
 	 * Class representing a box on the game Tree
 	 */
 	static class Box {
+		short boxId;
+		
 		// TEXT RESOURCES
 		int titleStrRes;
 		int descStrRes;
@@ -49,7 +51,8 @@ public final class GameData {
 		int unlockedImgRes;
 		int activatedImgRes;
 		
-		Box (int titleStrRes, int descStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+		Box (short boxId, int titleStrRes, int descStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+			this.boxId = boxId;
 			this.titleStrRes = titleStrRes;
 			this.descStrRes = descStrRes;
 			this.lockedImgRes = lockedImgRes;
@@ -116,12 +119,12 @@ public final class GameData {
 	 */
 	class BoxHolder {
 		// STATE VARIABLES
-		int boxId;
+		short boxId;
 		private boolean unlocked;
 		private boolean activated;
 		private List<BoxHolder> incomingEdges;
 		
-		BoxHolder(int boxId) {
+		BoxHolder(short boxId) {
 			this.boxId = boxId;
 			incomingEdges = new ArrayList<BoxHolder>();
 		}
@@ -196,8 +199,8 @@ public final class GameData {
 		resetData();
 	}
 	
-	public void addBox(int boxId, int nameStrRes, int descStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
-		boxMap.put(boxId, new Box(nameStrRes, descStrRes, lockedImgRes, unlockedImgRes, activatedImgRes));
+	public void addBox(short boxId, int nameStrRes, int descStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+		boxMap.put(boxId, new Box(boxId, nameStrRes, descStrRes, lockedImgRes, unlockedImgRes, activatedImgRes));
 	}
 	
 	public void addTree(int treeId, Tree newTree) {
@@ -210,7 +213,7 @@ public final class GameData {
 	 */
 	@SuppressLint("UseSparseArrays")
 	private void resetData() {
-		boxMap = new HashMap<Integer, Box>();
+		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Integer, Tree>();
 		
 		loadBoxes();
@@ -225,7 +228,7 @@ public final class GameData {
 		String p = context.getPackageName();
 		
 		// get resource Id's and load
-		for (int i = 0; i < NUM_OF_BOXES; i++)
+		for (short i = 0; i < NUM_OF_BOXES; i++)
 			addBox(i, r.getIdentifier("game_box_title" + i, "string", p), r.getIdentifier("game_box_description" + i, "string", p), r.getIdentifier("ic_box_locked", "drawable", p), r.getIdentifier("ic_box_unlocked" + i, "drawable", p), r.getIdentifier("ic_box_activated" + i, "drawable", p));
 	}
 	
@@ -237,23 +240,23 @@ public final class GameData {
 		Tree newTree = new Tree(R.string.game_tree0);
 		
 		List<BoxHolder> tier1 = newTree.boxHolderMatrix.get(0);
-		tier1.add(new BoxHolder(0));
-		tier1.add(new BoxHolder(1));
-		tier1.add(new BoxHolder(2));
+		tier1.add(new BoxHolder((short) 0));
+		tier1.add(new BoxHolder((short) 1));
+		tier1.add(new BoxHolder((short) 2));
 		
 		List<BoxHolder> tier2 = newTree.boxHolderMatrix.get(1);
-		tier2.add(new BoxHolder(3));
-		tier2.add(new BoxHolder(4));
-		tier2.add(new BoxHolder(5));
+		tier2.add(new BoxHolder((short) 3));
+		tier2.add(new BoxHolder((short) 4));
+		tier2.add(new BoxHolder((short) 5));
 		
 		List<BoxHolder> tier3 = newTree.boxHolderMatrix.get(2);
-		tier3.add(new BoxHolder(6));
-		tier3.add(new BoxHolder(7));
-		tier3.add(new BoxHolder(8));
+		tier3.add(new BoxHolder((short) 6));
+		tier3.add(new BoxHolder((short) 7));
+		tier3.add(new BoxHolder((short) 8));
 		
 		List<BoxHolder> tier4 = newTree.boxHolderMatrix.get(3);
-		tier4.add(new BoxHolder(9));
-		tier4.add(new BoxHolder(10));
+		tier4.add(new BoxHolder((short) 9));
+		tier4.add(new BoxHolder((short) 10));
 		
 		// add edges
 		tier2.get(0).incomingEdges.add(tier1.get(0));
@@ -283,7 +286,7 @@ public final class GameData {
 	 * @param boxId the unique Box identifier.
 	 * @return the Box indexed by the unique Id.
 	 */
-	public Box findBoxById(int boxId) {
+	public Box findBoxById(short boxId) {
 		return boxMap.get(boxId);
 	}
 }

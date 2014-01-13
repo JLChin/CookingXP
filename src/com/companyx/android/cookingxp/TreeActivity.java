@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.companyx.android.cookingxp.GameData.Box;
 import com.companyx.android.cookingxp.GameData.BoxHolder;
 import com.companyx.android.cookingxp.GameData.Tree;
+import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 
 /**
  * TreeActivity
@@ -35,6 +37,7 @@ public class TreeActivity extends BaseActivity {
 	
 	// SYSTEM
 	private GameData gameData;
+	private RecipeDatabase recipeDatabase;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class TreeActivity extends BaseActivity {
 	}
 	
 	private void initialize() {
+		recipeDatabase = RecipeDatabase.getInstance(this);
 		gameData = GameData.getInstance(this);
 		treeList = gameData.getTrees();
 		
@@ -85,8 +89,10 @@ public class TreeActivity extends BaseActivity {
 				} else
 					imgView.setImageResource(box.lockedImgRes);
 				
+				// cache Box in ImageView to retrieve later
+				imgView.setTag(box);
+				
 				// attach onClick PopupWindow to ImageView
-				imgView.setTag(box); // cache Box in ImageView
 				imgView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View view) {
@@ -146,9 +152,34 @@ public class TreeActivity extends BaseActivity {
 		tvDescription.setTextColor(Color.LTGRAY);
 		layoutBoxPopup.addView(tvDescription);
 		
-		// 
+		// APPLICABLE RECIPES
+		for (Recipe recipe : recipeDatabase.getRecipesByBox(box.boxId)) {
+			TextView tvRecipe = new TextView(this);
+			tvRecipe.setText(recipe.name);
+			tvRecipe.setTextColor(Color.WHITE);
+			
+			// cache Recipe in TextView to retrieve later
+			tvRecipe.setTag(recipe);
+			
+			// attach OnClickListener to go to Recipe
+			tvRecipe.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					// retrieve Recipe
+					Recipe recipe = (Recipe) view.getTag();
+					
+					// go to Recipe
+					Intent intent = new Intent(TreeActivity.this, RecipeActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+					intent.putExtra("recipeId", recipe.recipeId);
+					startActivity(intent);
+				}	
+			});
+			
+			layoutBoxPopup.addView(tvRecipe);
+		}
 		
-		// Popupwindow constructed, attach to view
+		// PopupWindow constructed, attach to view
 		popupWindow.showAsDropDown(view);
 		
 		openPopups.put(view, popupWindow);
