@@ -46,6 +46,7 @@ public final class RecipeDatabase {
 	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
 	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
 	private static Set<Integer> vegetarianRecipes; // set containing recipeId's of vegetarian recipes
+	private static Map<Short, Set<Integer>> boxMap; // maps boxId to Set of RecipeId's
 	
 	// SINGLETON
 	private static RecipeDatabase holder;
@@ -188,6 +189,15 @@ public final class RecipeDatabase {
 		// INDEX INGREDIENT NAMES
 		for (RecipeIngredient ri : newRecipe.ingredients)
 			index(ri.ingredientName, recipeId);
+		
+		// INDEX BOXES
+		for (short boxId : newRecipe.boxes) {
+			if (!boxMap.containsKey(boxId))
+				boxMap.put(boxId, new HashSet<Integer>());
+			
+			Set<Integer> set = (HashSet<Integer>) boxMap.get(boxId);
+			set.add(recipeId);
+		}
 	}
 	
 	/**
@@ -200,7 +210,7 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Returns the Recipe corresponding to the unique Id, null if non-existent or invalid Id.
-	 * @param recipeId the unique Id to retrieve the Recipe for.
+	 * @param recipeId the unique identifier to retrieve the Recipe for.
 	 * @return the Recipe corresponding to the unique Id, null if non-existent or invalid Id.
 	 */
 	public Recipe findRecipeById (int recipeId) {
@@ -227,6 +237,15 @@ public final class RecipeDatabase {
 		Byte result = shoppingListRecipes.get(recipeId);
 		
 		return (result == null) ? 0 : result;
+	}
+	
+	/**
+	 * Returns a List of Recipes applicable to the specified Box, sorted by name.
+	 * @param boxId the unique identifier for the specified Box.
+	 * @return a List of Recipes applicable to the specified Box, sorted by name.
+	 */
+	public List<Recipe> getRecipesByBox(short boxId) {
+		return getRecipesById(boxMap.get(boxId));
 	}
 	
 	/**
@@ -537,10 +556,13 @@ public final class RecipeDatabase {
 		favoriteRecipes = new HashSet<Integer>();
 		shoppingListRecipes = new HashMap<Integer, Byte>();
 		vegetarianRecipes = new HashSet<Integer>();
+		boxMap = new HashMap<Short, Set<Integer>>();
 		
+		// MEASUREMENT ALIASES
 		measurementAliases = new HashMap<String, String>();
 		loadMeasurementAliases();
 		
+		// FOOD TYPES
 		meats = new HashSet<String>();
 		foodTypeMap = new HashMap<String, Byte>();
 		loadFoodTypes();

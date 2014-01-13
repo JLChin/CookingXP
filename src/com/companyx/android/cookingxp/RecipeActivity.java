@@ -163,6 +163,15 @@ public class RecipeActivity extends BaseActivity {
 				layoutBody.addView(tv);
 			}
 		}
+		
+		// BOXES
+		List<Short> boxes = recipe.boxes;
+		for (short boxId : boxes) {
+			TextView tv = new TextView(this);
+			String s = String.valueOf((int) boxId);
+			tv.setText(s);
+			layoutBody.addView(tv);
+		}
 	}
 	
 	/**
