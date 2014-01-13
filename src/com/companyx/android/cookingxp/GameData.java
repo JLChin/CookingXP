@@ -41,15 +41,17 @@ public final class GameData {
 	 */
 	static class Box {
 		// TEXT RESOURCES
-		int nameStrRes;
+		int titleStrRes;
+		int descStrRes;
 		
 		// IMAGE RESOURCES
 		int lockedImgRes;
 		int unlockedImgRes;
 		int activatedImgRes;
 		
-		Box (int nameStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
-			this.nameStrRes = nameStrRes;
+		Box (int titleStrRes, int descStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+			this.titleStrRes = titleStrRes;
+			this.descStrRes = descStrRes;
 			this.lockedImgRes = lockedImgRes;
 			this.unlockedImgRes = unlockedImgRes;
 			this.activatedImgRes = activatedImgRes;
@@ -150,7 +152,7 @@ public final class GameData {
 		 */
 		private void updateActivatedStatus() {
 			// TODO
-			activated = true;
+			//activated = true;
 		}
 		
 		/**
@@ -194,8 +196,8 @@ public final class GameData {
 		resetData();
 	}
 	
-	public void addBox(int boxId, int nameStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
-		boxMap.put(boxId, new Box(nameStrRes, lockedImgRes, unlockedImgRes, activatedImgRes));
+	public void addBox(int boxId, int nameStrRes, int descStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
+		boxMap.put(boxId, new Box(nameStrRes, descStrRes, lockedImgRes, unlockedImgRes, activatedImgRes));
 	}
 	
 	public void addTree(int treeId, Tree newTree) {
@@ -222,9 +224,9 @@ public final class GameData {
 		Resources r = context.getResources();
 		String p = context.getPackageName();
 		
-		// get resource Id's and load TODO currently hardcoded to 0
+		// get resource Id's and load TODO currently hardcoded to Box0
 		for (int i = 0; i < NUM_OF_BOXES; i++)
-			boxMap.put(i, new Box(r.getIdentifier("game_box" + i, "string", p), r.getIdentifier("ic_box_locked", "drawable", p), r.getIdentifier("ic_box_unlocked0", "drawable", p), r.getIdentifier("ic_box_activated0", "drawable", p)));
+			addBox(i, r.getIdentifier("game_box_title" + i, "string", p), r.getIdentifier("game_box_description" + i, "string", p), r.getIdentifier("ic_box_locked", "drawable", p), r.getIdentifier("ic_box_unlocked0", "drawable", p), r.getIdentifier("ic_box_activated0", "drawable", p));
 	}
 	
 	/**
@@ -274,5 +276,14 @@ public final class GameData {
 			result.add(entry.getValue());
 		
 		return result;
+	}
+	
+	/**
+	 * Returns the Box indexed by the unique Id.
+	 * @param boxId the unique Box identifier.
+	 * @return the Box indexed by the unique Id.
+	 */
+	public Box findBoxById(int boxId) {
+		return boxMap.get(boxId);
 	}
 }

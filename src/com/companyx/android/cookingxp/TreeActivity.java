@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.companyx.android.cookingxp.GameData.Box;
 import com.companyx.android.cookingxp.GameData.BoxHolder;
 import com.companyx.android.cookingxp.GameData.Tree;
 
@@ -27,6 +28,9 @@ public class TreeActivity extends BaseActivity {
 		constructTree();
 	}
 	
+	/**
+	 * Automatically constructs Tree layouts from GameData info.
+	 */
 	private void constructTree() {
 		gameData = GameData.getInstance(this);
 		List<Tree> treeList = gameData.getTrees();
@@ -41,21 +45,27 @@ public class TreeActivity extends BaseActivity {
 			RelativeLayout.LayoutParams paramsRL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			rl.setLayoutParams(paramsRL);
 			
+			// ImageView container
 			LinearLayout ll = new LinearLayout(this); // default horizontal orientation
 			RelativeLayout.LayoutParams paramsLL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			paramsLL.addRule(RelativeLayout.CENTER_IN_PARENT);
 			ll.setLayoutParams(paramsLL);
 			
 			for (BoxHolder bh : tree.boxHolderMatrix.get(tier)) {
-				ImageView imgView = new ImageView(this);
+				// retrieve Box
+				Box box = gameData.findBoxById(bh.boxId);
 				
+				// set ImageView
+				ImageView imgView = new ImageView(this);
 				if (bh.isUnlocked()) {
 					if (bh.isActivated())
-						imgView.setImageResource(R.drawable.ic_box_activated0);
+						imgView.setImageResource(box.activatedImgRes);
 					else
-						imgView.setImageResource(R.drawable.ic_box_unlocked0);
+						imgView.setImageResource(box.unlockedImgRes);
 				} else
-					imgView.setImageResource(R.drawable.ic_box_locked);
+					imgView.setImageResource(box.lockedImgRes);
+				
+				// attach onClick PopupWindow to ImageView
 				
 				ll.addView(imgView);
 			}
