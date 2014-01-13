@@ -224,9 +224,9 @@ public final class GameData {
 		Resources r = context.getResources();
 		String p = context.getPackageName();
 		
-		// get resource Id's and load TODO currently hardcoded to Box0
+		// get resource Id's and load
 		for (int i = 0; i < NUM_OF_BOXES; i++)
-			addBox(i, r.getIdentifier("game_box_title" + i, "string", p), r.getIdentifier("game_box_description" + i, "string", p), r.getIdentifier("ic_box_locked", "drawable", p), r.getIdentifier("ic_box_unlocked0", "drawable", p), r.getIdentifier("ic_box_activated0", "drawable", p));
+			addBox(i, r.getIdentifier("game_box_title" + i, "string", p), r.getIdentifier("game_box_description" + i, "string", p), r.getIdentifier("ic_box_locked", "drawable", p), r.getIdentifier("ic_box_unlocked" + i, "drawable", p), r.getIdentifier("ic_box_activated" + i, "drawable", p));
 	}
 	
 	/**
