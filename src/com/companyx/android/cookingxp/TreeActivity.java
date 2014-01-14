@@ -7,6 +7,7 @@ import java.util.Map;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -29,6 +30,9 @@ import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class TreeActivity extends BaseActivity {
+	// CONSTANTS
+	public static final float DEFAULT_IMAGE_SPACING_RATIO = 0.1f; // ratio of image spacing to screen width
+	
 	// VIEW HOLDERS
 	private LinearLayout layoutTree;
 	
@@ -64,6 +68,13 @@ public class TreeActivity extends BaseActivity {
 	 * @param tree the Tree object to construct the layout for.
 	 */
 	private void constructTree(Tree tree) {
+		// calculate image spacing based on screen size and current orientation
+		@SuppressWarnings("deprecation")
+		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
+		int imgSpacingInPixels = (int) (DEFAULT_IMAGE_SPACING_RATIO * screenWidthInPixels);
+		
+		Log.wtf("JAMES", String.valueOf(imgSpacingInPixels));
+		
 		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
 			// tier container
 			RelativeLayout rl = new RelativeLayout(this);
@@ -102,13 +113,22 @@ public class TreeActivity extends BaseActivity {
 				});
 				
 				ll.addView(imgView);
+				
+				// vertical break between ImgViews
+				ll.addView(new View(this), new LinearLayout.LayoutParams(imgSpacingInPixels, LinearLayout.LayoutParams.MATCH_PARENT));
 			}
+			
+			// remove trailing break
+			ll.removeViewAt(ll.getChildCount() - 1);
 			
 			// ImageViews constructed, add to tier container
 			rl.addView(ll);
 			
 			// tier constructed, add to layout
 			layoutTree.addView(rl);
+			
+			// horizontal break between tiers
+			layoutTree.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
 		}
 	}
 	
@@ -144,7 +164,7 @@ public class TreeActivity extends BaseActivity {
 		
 		// MODIFIER
 		TextView tvModifier = new TextView(this);
-		tvModifier.setText("+10 Awesomeness");
+		tvModifier.setText("+10 Awesomeness"); // TODO
 		tvModifier.setTextColor(Color.GREEN);
 		tvModifier.setGravity(Gravity.RIGHT);
 		RelativeLayout.LayoutParams paramsTV = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -169,6 +189,9 @@ public class TreeActivity extends BaseActivity {
 		tvDescription.setText(getString(box.descStrRes));
 		tvDescription.setTextColor(Color.LTGRAY);
 		layoutBoxPopup.addView(tvDescription);
+		
+		// break
+		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 4));
 		
 		// APPLICABLE RECIPES
 		for (Recipe recipe : recipeDatabase.getRecipesByBox(box.boxId)) {
@@ -197,9 +220,12 @@ public class TreeActivity extends BaseActivity {
 			layoutBoxPopup.addView(tvRecipe);
 		}
 		
+		// break
+		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 4));
+		
 		// WEAPON TYPE!!!
 		TextView tvWeapon = new TextView(this);
-		tvWeapon.setText("Two-Handed Weapon");
+		tvWeapon.setText("Two-Handed Weapon"); // TODO
 		tvWeapon.setTextColor(Color.CYAN);
 		tvWeapon.setGravity(Gravity.RIGHT);
 		layoutBoxPopup.addView(tvWeapon);
