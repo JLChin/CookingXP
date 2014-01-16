@@ -8,7 +8,7 @@
         android:title="@string/menu_recipes"/>
     <item
         android:id="@+id/menu_trees"
-        android:icon="@drawable/ic_action_select_all"
+        android:icon="@drawable/ic_action_tree"
         android:orderInCategory="1"
         android:showAsAction="always"
         android:title="@string/menu_trees"/>

@@ -86,6 +86,7 @@ public final class RecipeDatabase {
 	 */
 	static class RecipeDirection {
 		String direction;
+		short timeInMin;
 		
 		RecipeDirection(String direction) {
 			this.direction = direction;

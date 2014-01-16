@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -35,6 +37,7 @@ public class TreeActivity extends BaseActivity {
 	
 	// VIEW HOLDERS
 	private LinearLayout layoutTree;
+	private RelativeLayout layoutTreeOverlay;
 	
 	// STATE VARIABLES
 	private List<Tree> treeList;
@@ -61,6 +64,7 @@ public class TreeActivity extends BaseActivity {
 		openPopups = new HashMap<View, PopupWindow>();
 		
 		layoutTree = (LinearLayout) findViewById(R.id.layout_tree);
+		layoutTreeOverlay = (RelativeLayout) findViewById(R.id.layout_tree_overlay);
 	}
 	
 	/**
@@ -72,9 +76,7 @@ public class TreeActivity extends BaseActivity {
 		@SuppressWarnings("deprecation")
 		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
 		int imgSpacingInPixels = (int) (DEFAULT_IMAGE_SPACING_RATIO * screenWidthInPixels);
-		
-		Log.wtf("JAMES", String.valueOf(imgSpacingInPixels));
-		
+		/*
 		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
 			// tier container
 			RelativeLayout rl = new RelativeLayout(this);
@@ -112,7 +114,12 @@ public class TreeActivity extends BaseActivity {
 					}
 				});
 				
+				// cache ImageView in BoxHolder to use dimensions for drawing lines
+				bh.imageView = imgView;
+				
+				// add ImageView to container
 				ll.addView(imgView);
+				
 				
 				// vertical break between ImgViews
 				ll.addView(new View(this), new LinearLayout.LayoutParams(imgSpacingInPixels, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -129,6 +136,29 @@ public class TreeActivity extends BaseActivity {
 			
 			// horizontal break between tiers
 			layoutTree.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
+		}
+		*/
+		// draw edges between Boxes
+		layoutTreeOverlay.addView(new EdgeView(this));
+	}
+	
+	private static class EdgeView extends View {
+		Paint paint;
+
+		public EdgeView(Context context) {
+			super(context);
+			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paint.setColor(Color.BLACK);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeWidth(8);
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			
+			canvas.drawLine(0, 0, 200, 200, paint);
+			canvas.drawLine(200, 0, 0, 200, paint);
 		}
 	}
 	
@@ -191,7 +221,7 @@ public class TreeActivity extends BaseActivity {
 		layoutBoxPopup.addView(tvDescription);
 		
 		// break
-		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 4));
+		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 12));
 		
 		// APPLICABLE RECIPES
 		for (Recipe recipe : recipeDatabase.getRecipesByBox(box.boxId)) {
@@ -221,7 +251,7 @@ public class TreeActivity extends BaseActivity {
 		}
 		
 		// break
-		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 4));
+		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 12));
 		
 		// WEAPON TYPE!!!
 		TextView tvWeapon = new TextView(this);
