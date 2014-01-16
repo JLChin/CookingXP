@@ -110,7 +110,7 @@ public class TreeActivity extends BaseActivity {
 		// calculate image spacing based on screen size and current orientation
 		@SuppressWarnings("deprecation")
 		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
-		int imgSpacingInPixels = (int) (DEFAULT_IMAGE_SPACING_RATIO * screenWidthInPixels);
+		int imgSpacingInPixels = (int) (DEFAULT_IMAGE_SPACING_RATIO * screenWidthInPixels + 0.5f);
 		
 		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
 			// horizontal break between tiers

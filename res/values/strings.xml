@@ -54,6 +54,14 @@
     <string name="recipe_shopping_list_to_shopping_list">to Shopping List</string>
     <string name="recipe_shopping_list_removed">Removed</string>
     <string name="recipe_shopping_list_from_shopping_list">from Shopping List</string>
+    <string name="recipe_header_ingredients">Ingredients</string>
+    <string name="recipe_header_directions">Directions</string>
+    <string name="recipe_header_info">Info</string>
+    <string name="recipe_info_prep_time">Prep Time</string>
+    <string name="recipe_info_servings">Servings</string>
+    <string name="recipe_info_hour">hr</string>
+    <string name="recipe_info_hours">hrs</string>
+    <string name="recipe_info_min">min</string>
     
     <string name="welcome">Welcome to the new cooking game</string>
     
