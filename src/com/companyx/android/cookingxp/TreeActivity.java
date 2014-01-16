@@ -1,20 +1,29 @@
 package com.companyx.android.cookingxp;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.companyx.android.cookingxp.GameData.Box;
@@ -28,8 +37,14 @@ import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class TreeActivity extends BaseActivity {
+	// CONSTANTS
+	public static final float DEFAULT_IMAGE_SPACING_RATIO = 0.1f; // ratio of image spacing to screen width
+	public static final int[] TREES = {R.string.game_tree0, R.string.game_tree1, R.string.game_tree2};
+	
 	// VIEW HOLDERS
 	private LinearLayout layoutTree;
+	private RelativeLayout layoutTreeOverlay;
+	private Spinner spinnerTree;
 	
 	// STATE VARIABLES
 	private List<Tree> treeList;
@@ -45,6 +60,7 @@ public class TreeActivity extends BaseActivity {
 		setContentView(R.layout.activity_trees);
 		
 		initialize();
+		initializeSpinner();
 		constructTree(treeList.get(0));
 	}
 	
@@ -56,6 +72,34 @@ public class TreeActivity extends BaseActivity {
 		openPopups = new HashMap<View, PopupWindow>();
 		
 		layoutTree = (LinearLayout) findViewById(R.id.layout_tree);
+		layoutTreeOverlay = (RelativeLayout) findViewById(R.id.layout_tree_overlay);
+	}
+	
+	/**
+	 * Set up the Tree selection Spinner.
+	 */
+	private void initializeSpinner() {
+		spinnerTree = new Spinner(this);
+		
+		// add selections
+		List<String> trees = new ArrayList<String>();
+		for (int i : TREES)
+			trees.add(getString(i));
+		spinnerTree.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, trees));
+		
+		// attach listener
+		spinnerTree.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				// TODO position = treeId
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		
+		layoutTree.addView(spinnerTree);
 	}
 	
 	/**
@@ -63,7 +107,15 @@ public class TreeActivity extends BaseActivity {
 	 * @param tree the Tree object to construct the layout for.
 	 */
 	private void constructTree(Tree tree) {
+		// calculate image spacing based on screen size and current orientation
+		@SuppressWarnings("deprecation")
+		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
+		int imgSpacingInPixels = (int) (DEFAULT_IMAGE_SPACING_RATIO * screenWidthInPixels);
+		
 		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
+			// horizontal break between tiers
+			layoutTree.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
+						
 			// tier container
 			RelativeLayout rl = new RelativeLayout(this);
 			RelativeLayout.LayoutParams paramsRL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -100,14 +152,51 @@ public class TreeActivity extends BaseActivity {
 					}
 				});
 				
+				// cache ImageView in BoxHolder to use dimensions for drawing lines
+				bh.imageView = imgView;
+				
+				// add ImageView to container
 				ll.addView(imgView);
+				
+				
+				// vertical break between ImgViews
+				ll.addView(new View(this), new LinearLayout.LayoutParams(imgSpacingInPixels, LinearLayout.LayoutParams.MATCH_PARENT));
 			}
+			
+			// remove trailing break
+			ll.removeViewAt(ll.getChildCount() - 1);
 			
 			// ImageViews constructed, add to tier container
 			rl.addView(ll);
 			
 			// tier constructed, add to layout
 			layoutTree.addView(rl);
+		}
+		
+		// draw edges between Boxes
+		layoutTreeOverlay.addView(new EdgeView(this));
+	}
+	
+	/**
+	 * Custom View class for drawing the path edges between Boxes.
+	 */
+	private static class EdgeView extends View {
+		Paint paint;
+
+		public EdgeView(Context context) {
+			super(context);
+			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paint.setColor(Color.BLACK);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeWidth(8);
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			
+			canvas.drawLine(0, 0, 200, 200, paint);
+			canvas.drawLine(200, 0, 0, 200, paint);
 		}
 	}
 	
@@ -140,8 +229,25 @@ public class TreeActivity extends BaseActivity {
 		TextView tvTitle = new TextView(this);
 		tvTitle.setText(getString(box.titleStrRes));
 		tvTitle.setTextColor(Color.LTGRAY);
-		layoutBoxPopup.addView(tvTitle);
 		
+		// MODIFIER
+		TextView tvModifier = new TextView(this);
+		tvModifier.setText("+10 Awesomeness"); // TODO
+		tvModifier.setTextColor(Color.GREEN);
+		tvModifier.setGravity(Gravity.RIGHT);
+		RelativeLayout.LayoutParams paramsTV = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		paramsTV.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		tvModifier.setLayoutParams(paramsTV);
+		
+		// container for title, modifier
+		RelativeLayout rlTitle = new RelativeLayout(this);
+		RelativeLayout.LayoutParams paramsRL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		rlTitle.setLayoutParams(paramsRL);
+		rlTitle.addView(tvTitle);
+		rlTitle.addView(tvModifier);
+		layoutBoxPopup.addView(rlTitle);
+		
+		// separator
 		View separator = new View(this);
 		separator.setBackgroundColor(Color.LTGRAY);
 		layoutBoxPopup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
@@ -151,6 +257,9 @@ public class TreeActivity extends BaseActivity {
 		tvDescription.setText(getString(box.descStrRes));
 		tvDescription.setTextColor(Color.LTGRAY);
 		layoutBoxPopup.addView(tvDescription);
+		
+		// break
+		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 12));
 		
 		// APPLICABLE RECIPES
 		for (Recipe recipe : recipeDatabase.getRecipesByBox(box.boxId)) {
@@ -178,6 +287,16 @@ public class TreeActivity extends BaseActivity {
 			
 			layoutBoxPopup.addView(tvRecipe);
 		}
+		
+		// break
+		layoutBoxPopup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 12));
+		
+		// WEAPON TYPE!!!
+		TextView tvWeapon = new TextView(this);
+		tvWeapon.setText("Two-Handed Weapon"); // TODO
+		tvWeapon.setTextColor(Color.CYAN);
+		tvWeapon.setGravity(Gravity.RIGHT);
+		layoutBoxPopup.addView(tvWeapon);
 		
 		// PopupWindow constructed, attach to view
 		popupWindow.showAsDropDown(view);

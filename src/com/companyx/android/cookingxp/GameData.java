@@ -2,11 +2,15 @@ package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.widget.ImageView;
 
 /**
  * Game Database
@@ -117,9 +121,10 @@ public final class GameData {
 	 * Container class managing a Box's relation within a Tree instance.
 	 * BoxHolder allows the Box contained in one Tree to have a different relation in another Tree.
 	 */
-	class BoxHolder {
+	static class BoxHolder {
 		// STATE VARIABLES
 		short boxId;
+		ImageView imageView;
 		private boolean unlocked;
 		private boolean activated;
 		private List<BoxHolder> incomingEdges;
@@ -155,7 +160,13 @@ public final class GameData {
 		 */
 		private void updateActivatedStatus() {
 			// TODO
-			//activated = true;
+			short[] debug = {0, 1, 3, 4, 7};
+			Set<Short> activatedBoxes = new HashSet<Short>();
+			for (short s : debug)
+				activatedBoxes.add(s);
+			
+			if (activatedBoxes.contains(boxId))
+				activated = true;
 		}
 		
 		/**
