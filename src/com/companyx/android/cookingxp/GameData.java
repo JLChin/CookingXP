@@ -66,6 +66,81 @@ public final class GameData {
 	}
 	
 	/**
+	 * Container class managing a Box's relation within a Tree instance.
+	 * BoxHolder allows the Box contained in one Tree to have a different relation in another Tree.
+	 */
+	static class BoxHolder {
+		// STATE VARIABLES
+		short boxId;
+		ImageView imageView;
+		private boolean unlocked;
+		private boolean activated;
+		private List<BoxHolder> incomingEdges;
+		
+		BoxHolder(short boxId) {
+			this.boxId = boxId;
+			incomingEdges = new ArrayList<BoxHolder>();
+		}
+		
+		BoxHolder addEdge(BoxHolder incomingBH) {
+			incomingEdges.add(incomingBH);
+			return this;
+		}
+		
+		/**
+		 * Returns whether this box is activated.
+		 * @return whether this box is activated.
+		 */
+		boolean isActivated() {
+			return activated;
+		}
+		
+		/**
+		 * Returns whether this box is unlocked.
+		 * @return whether this box is unlocked.
+		 */
+		boolean isUnlocked() {
+			return unlocked;
+		}
+		
+		/**
+		 * Checks conditions and updates activated status.
+		 */
+		private void updateActivatedStatus() {
+			// TODO
+			short[] debug = {0, 1, 3, 4, 7, 9};
+			Set<Short> activatedBoxes = new HashSet<Short>();
+			for (short s : debug)
+				activatedBoxes.add(s);
+			
+			if (activatedBoxes.contains(boxId))
+				activated = true;
+		}
+		
+		/**
+		 * Checks conditions and updates unlocked status.
+		 * @param tier the tier this BoxHolder is on.
+		 * @param unlockedTier the unlocked tier of the parent Tree.
+		 */
+		private void updateUnlockedStatus(int tier, int unlockedTier) {
+			boolean result = false;
+			
+			if (tier <= unlockedTier) {
+				if (incomingEdges.isEmpty())
+					result = true;
+				else {
+					for (BoxHolder bh : incomingEdges) {
+						if (bh.activated)
+							result = true;
+					}
+				}
+			}
+			
+			unlocked = result;
+		}
+	}
+	
+	/**
 	 * Class representing a game tree.
 	 */
 	static class Tree {
@@ -118,81 +193,6 @@ public final class GameData {
 	}
 	
 	/**
-	 * Container class managing a Box's relation within a Tree instance.
-	 * BoxHolder allows the Box contained in one Tree to have a different relation in another Tree.
-	 */
-	static class BoxHolder {
-		// STATE VARIABLES
-		short boxId;
-		ImageView imageView;
-		private boolean unlocked;
-		private boolean activated;
-		private List<BoxHolder> incomingEdges;
-		
-		BoxHolder(short boxId) {
-			this.boxId = boxId;
-			incomingEdges = new ArrayList<BoxHolder>();
-		}
-		
-		BoxHolder addEdge(BoxHolder incomingBH) {
-			incomingEdges.add(incomingBH);
-			return this;
-		}
-		
-		/**
-		 * Returns whether this box is activated.
-		 * @return whether this box is activated.
-		 */
-		boolean isActivated() {
-			return activated;
-		}
-		
-		/**
-		 * Returns whether this box is unlocked.
-		 * @return whether this box is unlocked.
-		 */
-		boolean isUnlocked() {
-			return unlocked;
-		}
-		
-		/**
-		 * Checks conditions and updates activated status.
-		 */
-		private void updateActivatedStatus() {
-			// TODO
-			short[] debug = {0, 1, 3, 4, 7};
-			Set<Short> activatedBoxes = new HashSet<Short>();
-			for (short s : debug)
-				activatedBoxes.add(s);
-			
-			if (activatedBoxes.contains(boxId))
-				activated = true;
-		}
-		
-		/**
-		 * Checks conditions and updates unlocked status.
-		 * @param tier the tier this BoxHolder is on.
-		 * @param unlockedTier the unlocked tier of the parent Tree.
-		 */
-		private void updateUnlockedStatus(int tier, int unlockedTier) {
-			boolean result = false;
-			
-			if (tier <= unlockedTier) {
-				if (incomingEdges.isEmpty())
-					result = true;
-				else {
-					for (BoxHolder bh : incomingEdges) {
-						if (bh.activated)
-							result = true;
-					}
-				}
-			}
-			
-			unlocked = result;
-		}
-	}
-	
-	/**
 	 * Returns the singleton instance of the game database.
 	 * @param c the calling context.
 	 * @return the singleton instance of the game database.
@@ -210,25 +210,50 @@ public final class GameData {
 		resetData();
 	}
 	
+	/**
+	 * Adds a new Box to the database.
+	 * @param boxId the unique identifier for the new Box.
+	 * @param nameStrRes the resource identifier for the Box name.
+	 * @param descStrRes the resource identifier for the Box description.
+	 * @param lockedImgRes the resource identifier for the Box locked state image.
+	 * @param unlockedImgRes the resource identifier for the Box unlocked state image.
+	 * @param activatedImgRes the resource identifier for the Box activated state image.
+	 */
 	public void addBox(short boxId, int nameStrRes, int descStrRes, int lockedImgRes, int unlockedImgRes, int activatedImgRes) {
 		boxMap.put(boxId, new Box(boxId, nameStrRes, descStrRes, lockedImgRes, unlockedImgRes, activatedImgRes));
 	}
 	
+	/**
+	 * Adds a new Tree to the database.
+	 * The Tree should be fully formed before using this method.
+	 * @param treeId the unique identifier for the new Tree.
+	 * @param newTree the new Tree to be added to the database.
+	 */
 	public void addTree(int treeId, Tree newTree) {
 		treeMap.put(treeId, newTree);
 		newTree.validateTree(); // Tree is ready to be validated, set unlocked & activated statuses
 	}
 	
 	/**
-	 * Resets the database.
+	 * Returns the Box indexed by the unique Id.
+	 * @param boxId the unique Box identifier.
+	 * @return the Box indexed by the unique Id.
 	 */
-	@SuppressLint("UseSparseArrays")
-	private void resetData() {
-		boxMap = new HashMap<Short, Box>();
-		treeMap = new HashMap<Integer, Tree>();
+	public Box findBoxById(short boxId) {
+		return boxMap.get(boxId);
+	}
+	
+	/**
+	 * Returns a List of game Trees.
+	 * @return a List of game Trees.
+	 */
+	public List<Tree> getTrees() {
+		List<Tree> result = new ArrayList<Tree>();
 		
-		loadBoxes();
-		loadTrees();
+		for (Map.Entry<Integer, Tree> entry : treeMap.entrySet())
+			result.add(entry.getValue());
+		
+		return result;
 	}
 	
 	/**
@@ -280,24 +305,14 @@ public final class GameData {
 	}
 	
 	/**
-	 * Returns a List of game Trees.
-	 * @return a List of game Trees.
+	 * Resets the database.
 	 */
-	public List<Tree> getTrees() {
-		List<Tree> result = new ArrayList<Tree>();
+	@SuppressLint("UseSparseArrays")
+	private void resetData() {
+		boxMap = new HashMap<Short, Box>();
+		treeMap = new HashMap<Integer, Tree>();
 		
-		for (Map.Entry<Integer, Tree> entry : treeMap.entrySet())
-			result.add(entry.getValue());
-		
-		return result;
-	}
-	
-	/**
-	 * Returns the Box indexed by the unique Id.
-	 * @param boxId the unique Box identifier.
-	 * @return the Box indexed by the unique Id.
-	 */
-	public Box findBoxById(short boxId) {
-		return boxMap.get(boxId);
+		loadBoxes();
+		loadTrees();
 	}
 }
