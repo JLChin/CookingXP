@@ -98,7 +98,7 @@
     
     <!-- GAME BOXES -->
     <string name="game_box_title0">Everyone Loves Bacon</string>
-    <string name="game_box_description0">Description 0.</string>
+    <string name="game_box_description0">Who doesn\'t, right?!</string>
     <string name="game_box_title1">Basic Steak</string>
     <string name="game_box_description1">Description 1.</string>
     <string name="game_box_title2">Patty</string>
@@ -121,6 +121,8 @@
     <string name="game_box_description10">Description 10.</string>
     
     <!-- GAME TREES -->
-    <string name="game_tree0">Tree 0</string>
+    <string name="game_tree0">The Way of Beef</string>
+    <string name="game_tree1">Some Other Tree</string>
+    <string name="game_tree2">Yet Another Tree</string>
 
 </resources>
