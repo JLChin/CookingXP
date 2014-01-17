@@ -22,9 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companyx.android.cookingxp.R;
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
-import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 import com.companyx.android.cookingxp.RecipeDatabase.ShoppingList;
 
 /**
@@ -68,31 +66,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 			this.recipes = recipes;
 		}
 		
-		/**
-		 * Helper function that generates a string containing the formatted hour and minute representation of the recipe cooking time.
-		 * @param timeRequiredInMin the time required in minutes for the Recipe.
-		 * @return a string containing the formatted hour and minute representation of the recipe cooking time.
-		 */
-		private String getTime(RecipeTime recipeTime) {
-			// retrieve total time
-			short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
-			
-			if (totalTimeInMin <= 0)
-				return " --- ";
-			
-			// construct hours string
-			short hours = (short) (totalTimeInMin / 60);
-			String hoursStr = "";
-			if (hours != 0) {
-				if (hours == 1)
-					hoursStr += hours + " " + getString(R.string.select_recipe_hour) + " ";
-				else
-					hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
-			}
-				
-			return hoursStr + (totalTimeInMin % 60) + " " + getString(R.string.select_recipe_min);
-		}
-		
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 	        View view = convertView;
@@ -123,7 +96,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        if (operation != null && operation.equals("Shopping List"))
 	        	recipeView.textViewInfoRight.setText(String.valueOf(recipeDatabase.getQuantity(recipeId)));
 	        else
-	        	recipeView.textViewInfoRight.setText(getTime(recipe.recipeTime));
+	        	recipeView.textViewInfoRight.setText(RecipeActivity.getTime(recipe.recipeTime, SelectRecipeActivity.this));
 	        
 	        return view;
 	    }
