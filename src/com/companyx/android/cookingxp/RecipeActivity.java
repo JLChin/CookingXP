@@ -30,6 +30,8 @@ import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 /**
  * Recipe Activity
  * 
+ * TODO orientation, screen size, density etc
+ * 
  *  @author James Chin <jameslchin@gmail.com>
  */
 public class RecipeActivity extends BaseActivity {
@@ -78,11 +80,13 @@ public class RecipeActivity extends BaseActivity {
 		// RECIPE NAME
 		textViewName = (TextView) findViewById(R.id.textview_recipe_name);
 		textViewName.setText(recipe.name);
+		textViewName.setTextSize(18 + 0.5f);
 		
 		// RECIPE SUBTITLE
 		textViewSubtitle = (TextView) findViewById(R.id.textview_recipe_subtitle);
 		textViewSubtitle.setText(recipe.author);
 		textViewSubtitle.setTextColor(Color.GRAY);
+		textViewSubtitle.setTextSize(14 + 0.5f);
 		
 		// FAVORITE BUTTON
 		buttonFavorite = (ImageButton) findViewById(R.id.imagebutton_recipe_favorite);
@@ -208,7 +212,7 @@ public class RecipeActivity extends BaseActivity {
 	static void addInfoLine(String info, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
 		TextView tv = new TextView(context);
 		tv.setText(info);
-		tv.setTextSize(14 + 0.5f);
+		tv.setTextSize(16 + 0.5f);
 		tv.setTextColor(Color.GRAY);
 		int padding = (int) (dpiScalingFactor * 2 + 0.5f);
 		tv.setPadding(0, padding, 0, padding);
@@ -225,6 +229,7 @@ public class RecipeActivity extends BaseActivity {
 	static void addTextLine(String text, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
 		TextView tv = new TextView(context);
 		tv.setText(text);
+		tv.setTextSize(16 + 0.5f);
 		int padding = (int) (dpiScalingFactor * 6 + 0.5f);
 		tv.setPadding(0, padding, 0, padding);
 		viewGroup.addView(tv);
