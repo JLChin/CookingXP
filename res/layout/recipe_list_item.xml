@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_recipe_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
@@ -15,8 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/recipe_list_info_right"
-        android:layout_toRightOf="@+id/recipe_list_image"
-        android:paddingLeft="6dp" >
+        android:layout_toRightOf="@+id/recipe_list_image" >
 
         <TextView
             android:id="@+id/recipe_list_name"
@@ -29,9 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_below="@+id/recipe_list_name"
-            android:paddingLeft="6dp"
-            android:textColor="#999999"
-            android:textSize="12sp" />
+            android:textColor="#999999" />
     </RelativeLayout>
 
     <TextView
@@ -40,7 +38,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:paddingRight="6dp"
         android:textColor="#006dcc" />
 
 </RelativeLayout>

@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,18 +18,19 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companyx.android.cookingxp.R;
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
-import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 import com.companyx.android.cookingxp.RecipeDatabase.ShoppingList;
 
 /**
  * Search/Select Recipe Activity
  * 
  * Multi-purposed recipe selection activity.
+ * 
+ * TODO orientation, screen size, density etc
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
@@ -47,6 +47,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	
 	// SYSTEM
 	private RecipeDatabase recipeDatabase;
+	private float dpiScalingFactor;
 	
 	/**
 	 * Custom Recipe list view adapter.
@@ -57,6 +58,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		class RecipeView {
 			int recipeId;
+			RelativeLayout layoutRecipeListItem;
 			TextView textViewName;
 			TextView textViewDescription;
 			TextView textViewInfoRight;
@@ -66,31 +68,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 			super(activity, R.layout.recipe_list_item, recipes);
 			this.activity = activity;
 			this.recipes = recipes;
-		}
-		
-		/**
-		 * Helper function that generates a string containing the formatted hour and minute representation of the recipe cooking time.
-		 * @param timeRequiredInMin the time required in minutes for the Recipe.
-		 * @return a string containing the formatted hour and minute representation of the recipe cooking time.
-		 */
-		private String getTime(RecipeTime recipeTime) {
-			// retrieve total time
-			short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
-			
-			if (totalTimeInMin <= 0)
-				return " --- ";
-			
-			// construct hours string
-			short hours = (short) (totalTimeInMin / 60);
-			String hoursStr = "";
-			if (hours != 0) {
-				if (hours == 1)
-					hoursStr += hours + " " + getString(R.string.select_recipe_hour) + " ";
-				else
-					hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
-			}
-				
-			return hoursStr + (totalTimeInMin % 60) + " " + getString(R.string.select_recipe_min);
 		}
 		
 		@Override
@@ -104,6 +81,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 
 	            // hold the view objects in an object, so they don't need to be re-fetched
 	            recipeView = new RecipeView();
+	            recipeView.layoutRecipeListItem = (RelativeLayout) view.findViewById(R.id.layout_recipe_list_item);
 	            recipeView.textViewName = (TextView) view.findViewById(R.id.recipe_list_name);
 	            recipeView.textViewDescription = (TextView) view.findViewById(R.id.recipe_list_description);
 	            recipeView.textViewInfoRight = (TextView) view.findViewById(R.id.recipe_list_info_right);
@@ -118,12 +96,22 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        int recipeId = recipe.recipeId;
 	        
 	        recipeView.recipeId = recipeId;
+	        
+	        int padding = (int) (dpiScalingFactor * 6 + 0.5f);
+			recipeView.layoutRecipeListItem.setPadding(padding, padding, padding, padding);
+	        
 	        recipeView.textViewName.setText(recipe.name);
-	        recipeView.textViewDescription.setText("Put something cool here.");
+	        recipeView.textViewName.setTextSize(16 + 0.5f);
+	        
+	        recipeView.textViewDescription.setText(recipe.author);
+	        recipeView.textViewDescription.setTextSize(12 + 0.5f);
+	        recipeView.textViewDescription.setPadding(padding, 0, 0, 0);
+	        
 	        if (operation != null && operation.equals("Shopping List"))
 	        	recipeView.textViewInfoRight.setText(String.valueOf(recipeDatabase.getQuantity(recipeId)));
 	        else
-	        	recipeView.textViewInfoRight.setText(getTime(recipe.recipeTime));
+	        	recipeView.textViewInfoRight.setText(RecipeActivity.getTime(recipe.recipeTime, SelectRecipeActivity.this));
+	        recipeView.textViewInfoRight.setTextSize(16 + 0.5f);
 	        
 	        return view;
 	    }
@@ -136,21 +124,12 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 * @param viewGroup the parent ViewGroup to add the child views to.
 	 */
 	private void addIngredientViews(String title, Set<String> ingredients, ViewGroup viewGroup) {
-		// add title TextView to layout
-		TextView titleView = new TextView(this);
-		titleView.setText(title);
-		titleView.setTypeface(null, Typeface.BOLD_ITALIC);
-		viewGroup.addView(titleView);
+		// add header
+		RecipeActivity.addHeader(title, viewGroup, this, dpiScalingFactor);
 		
-		// add ingredient Views to layout
-		for (String s : ingredients) {
-			TextView tv = new TextView(this);
-			tv.setText(s);
-			viewGroup.addView(tv);
-		}
-		
-		// add footer View TODO currently blank
-		viewGroup.addView(new TextView(this));
+		// add ingredient Views
+		for (String s : ingredients)
+			RecipeActivity.addTextLine(s, viewGroup, this, dpiScalingFactor);
 	}
 	
 	/**
@@ -184,6 +163,8 @@ public class SelectRecipeActivity extends BaseListActivity {
 		initializeListView();
 		
 		recipeDatabase = RecipeDatabase.getInstance(this);
+		
+		dpiScalingFactor = getResources().getDisplayMetrics().density;
 	}
 
 	/**
@@ -289,19 +270,19 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		// MEAT
 		if (!list.meat.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_meat) + " (" + list.meat.size() + ")", list.meat, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_meat), list.meat, layoutIngredients);
 		
 		// SEAFOOD
 		if (!list.seafood.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_seafood) + " (" + list.seafood.size() + ")", list.seafood, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_seafood), list.seafood, layoutIngredients);
 		
 		// PRODUCE
 		if (!list.produce.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_produce) + " (" + list.produce.size() + ")", list.produce, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_produce), list.produce, layoutIngredients);
 		
 		// OTHER
 		if (!list.other.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_other) + " (" + list.other.size() + ")", list.other, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_other), list.other, layoutIngredients);
 		
 		// EMPTY NOTIFICATION
 		if (recipes.size() == 0)

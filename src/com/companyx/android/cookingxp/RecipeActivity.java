@@ -30,6 +30,8 @@ import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 /**
  * Recipe Activity
  * 
+ * TODO orientation, screen size, density etc
+ * 
  *  @author James Chin <jameslchin@gmail.com>
  */
 public class RecipeActivity extends BaseActivity {
@@ -78,11 +80,13 @@ public class RecipeActivity extends BaseActivity {
 		// RECIPE NAME
 		textViewName = (TextView) findViewById(R.id.textview_recipe_name);
 		textViewName.setText(recipe.name);
+		textViewName.setTextSize(18 + 0.5f);
 		
 		// RECIPE SUBTITLE
 		textViewSubtitle = (TextView) findViewById(R.id.textview_recipe_subtitle);
 		textViewSubtitle.setText(recipe.author);
 		textViewSubtitle.setTextColor(Color.GRAY);
+		textViewSubtitle.setTextSize(14 + 0.5f);
 		
 		// FAVORITE BUTTON
 		buttonFavorite = (ImageButton) findViewById(R.id.imagebutton_recipe_favorite);
@@ -146,7 +150,7 @@ public class RecipeActivity extends BaseActivity {
 		layoutBody = (LinearLayout) findViewById(R.id.layout_recipe_body);
 		
 		// INFORMATION
-		addHeader(getString(R.string.recipe_header_info), layoutBody);
+		addHeader(getString(R.string.recipe_header_info), layoutBody, this, dpiScalingFactor);
 		LinearLayout llInfoContainer = new LinearLayout(this);
 		llInfoContainer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 		
@@ -156,10 +160,10 @@ public class RecipeActivity extends BaseActivity {
 		llInfo.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
 		
 		// preparation time
-		addInfoLine(getString(R.string.recipe_info_prep_time) + ": " + getTime(recipe.recipeTime), llInfo);
+		addInfoLine(getString(R.string.recipe_info_prep_time) + ": " + getTime(recipe.recipeTime, this), llInfo, this, dpiScalingFactor);
 		
 		// servings
-		addInfoLine(getString(R.string.recipe_info_servings) + ": " + recipe.numOfServings, llInfo);
+		addInfoLine(getString(R.string.recipe_info_servings) + ": " + recipe.numOfServings, llInfo, this, dpiScalingFactor);
 		
 		// right side: boxes
 		LinearLayout llBoxes = new LinearLayout(this);
@@ -178,7 +182,7 @@ public class RecipeActivity extends BaseActivity {
 		layoutBody.addView(llInfoContainer);
 		
 		// INGREDIENTS
-		addHeader(getString(R.string.recipe_header_ingredients), layoutBody);
+		addHeader(getString(R.string.recipe_header_ingredients), layoutBody, this, dpiScalingFactor);
 		for (RecipeIngredient ri : recipe.ingredients) {
 			String s = ri.amount + " " + ri.measurement + " " + ri.ingredientName;
 			
@@ -187,26 +191,28 @@ public class RecipeActivity extends BaseActivity {
 			if (notes != null && notes.length() > 1)
 				s += " (" + notes + ")";
 			
-			addTextLine(s, layoutBody);
+			addTextLine(s, layoutBody, this, dpiScalingFactor);
 		}
 		
 		// DIRECTIONS
-		addHeader(getString(R.string.recipe_header_directions), layoutBody);
+		addHeader(getString(R.string.recipe_header_directions), layoutBody, this, dpiScalingFactor);
 		if (recipe.directions != null) {
 			for (RecipeDirection rd : recipe.directions)
-				addTextLine(rd.direction, layoutBody);
+				addTextLine(rd.direction, layoutBody, this, dpiScalingFactor);
 		}
 	}
 	
 	/**
-	 * Helper function to add a formatted info line to the parent ViewGroup.
-	 * @param text the String to add as the info.
-	 * @param viewGroup the parent ViewGroup to add the text line to.
+	 * Adds a formatted info line to the parent ViewGroup.
+	 * @param info the String to add as the info.
+	 * @param viewGroup the parent ViewGroup to add the info line to.
+	 * @param context the parent Context.
+	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	private void addInfoLine(String info, ViewGroup viewGroup) {
-		TextView tv = new TextView(this);
+	static void addInfoLine(String info, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
+		TextView tv = new TextView(context);
 		tv.setText(info);
-		tv.setTextSize(14 + 0.5f);
+		tv.setTextSize(16 + 0.5f);
 		tv.setTextColor(Color.GRAY);
 		int padding = (int) (dpiScalingFactor * 2 + 0.5f);
 		tv.setPadding(0, padding, 0, padding);
@@ -214,31 +220,36 @@ public class RecipeActivity extends BaseActivity {
 	}
 	
 	/**
-	 * Helper function to add a formatted text line to the parent ViewGroup.
+	 * Adds a formatted text line to the parent ViewGroup.
 	 * @param text the String to add as the text.
 	 * @param viewGroup the parent ViewGroup to add the text line to.
+	 * @param context the parent Context.
+	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	private void addTextLine(String text, ViewGroup viewGroup) {
-		TextView tv = new TextView(this);
+	static void addTextLine(String text, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
+		TextView tv = new TextView(context);
 		tv.setText(text);
+		tv.setTextSize(16 + 0.5f);
 		int padding = (int) (dpiScalingFactor * 6 + 0.5f);
 		tv.setPadding(0, padding, 0, padding);
 		viewGroup.addView(tv);
 		
-		addHorizontalSeparator(viewGroup, Color.LTGRAY, 1.0f);
+		addHorizontalSeparator(viewGroup, Color.LTGRAY, 1.0f, context, dpiScalingFactor);
 	}
 	
 	/**
-	 * Helper function to add a formatted header to the parent ViewGroup.
+	 * Adds a formatted header to the parent ViewGroup.
 	 * @param title the String to use as the header title.
 	 * @param viewGroup the parent ViewGroup to add the header to.
+	 * @param context the parent Context.
+	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	private void addHeader(String title, ViewGroup viewGroup) {
+	static void addHeader(String title, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
 		// leading space
-		viewGroup.addView(new View(this), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (dpiScalingFactor * 16 + 0.5f)));
+		viewGroup.addView(new View(context), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (dpiScalingFactor * 16 + 0.5f)));
 		
 		// TextView
-		TextView header = new TextView(this);
+		TextView header = new TextView(context);
 		header.setText(title);
 		header.setTypeface(null, Typeface.BOLD);
 		header.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -249,27 +260,30 @@ public class RecipeActivity extends BaseActivity {
 		header.setBackgroundColor(Color.BLACK);
 		viewGroup.addView(header);
 		
-		addHorizontalSeparator(viewGroup, Color.BLACK, 3.0f);
+		addHorizontalSeparator(viewGroup, Color.BLACK, 3.0f, context, dpiScalingFactor);
 	}
 	
 	/**
-	 * Helper function to add a horizontal divider View to the parent ViewGroup.
+	 * Adds a horizontal divider View to the parent ViewGroup.
 	 * @param viewGroup the parent ViewGroup to add the separator line to.
 	 * @param color the color of the separator line.
 	 * @param dpThickness the thickness of the separator line to be drawn, in density-independent pixels (dip).
+	 * @param context the parent Context.
+	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	private void addHorizontalSeparator(ViewGroup viewGroup, int color, float dpThickness) {
-		View separator = new View(this);
+	static void addHorizontalSeparator(ViewGroup viewGroup, int color, float dpThickness, Context context, float dpiScalingFactor) {
+		View separator = new View(context);
 		separator.setBackgroundColor(color);
 		viewGroup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (dpiScalingFactor * dpThickness + 0.5f)));
 	}
 	
 	/**
-	 * Helper function that generates a string containing the formatted hour and minute representation of the recipe cooking time.
-	 * @param timeRequiredInMin the time required in minutes for the Recipe.
+	 * Returns a string containing the formatted hour and minute representation of the recipe cooking time.
+	 * @param recipeTime the RecipeTime object containing the time information for this Recipe.
+	 * @param context the parent Context.
 	 * @return a string containing the formatted hour and minute representation of the recipe cooking time.
 	 */
-	private String getTime(RecipeTime recipeTime) {
+	static String getTime(RecipeTime recipeTime, Context context) {
 		// retrieve total time
 		short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
 		
@@ -281,11 +295,11 @@ public class RecipeActivity extends BaseActivity {
 		String hoursStr = "";
 		if (hours != 0) {
 			if (hours == 1)
-				hoursStr += hours + " " + getString(R.string.recipe_info_hour) + " ";
+				hoursStr += hours + " " + context.getString(R.string.recipe_info_hour) + " ";
 			else
-				hoursStr += hours + " " + getString(R.string.recipe_info_hours) + " ";
+				hoursStr += hours + " " + context.getString(R.string.recipe_info_hours) + " ";
 		}
 			
-		return hoursStr + (totalTimeInMin % 60) + " " + getString(R.string.recipe_info_min);
+		return hoursStr + (totalTimeInMin % 60) + " " + context.getString(R.string.recipe_info_min);
 	}
 }
