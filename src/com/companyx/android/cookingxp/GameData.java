@@ -73,9 +73,9 @@ public final class GameData {
 		// STATE VARIABLES
 		short boxId;
 		ImageView imageView;
+		List<BoxHolder> incomingEdges;
 		private boolean unlocked;
 		private boolean activated;
-		private List<BoxHolder> incomingEdges;
 		
 		BoxHolder(short boxId) {
 			this.boxId = boxId;
