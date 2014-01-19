@@ -24,7 +24,6 @@ public class MainActivity extends BaseActivity {
 		
 		// TODO Create a separate thread to manage lazy loading if it takes longer than one second.
 		loadDatabase();
-		loadGame();
 	}
 	
 	/**
@@ -48,10 +47,6 @@ public class MainActivity extends BaseActivity {
 		// LOAD SHOPPING LIST
 		String serializedShoppingList = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
 		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
-	}
-	
-	private void loadGame() {
-		GameData gameData = GameData.getInstance(this);
 	}
 
 	@Override

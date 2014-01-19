@@ -11,11 +11,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -49,21 +51,165 @@ public class TreeActivity extends BaseActivity {
 	// STATE VARIABLES
 	private List<Tree> treeList;
 	private Map<View, PopupWindow> openPopups;
+	private List<BoxHolder> pendingEdgeBHs;
 	
 	// SYSTEM
 	private GameData gameData;
 	private RecipeDatabase recipeDatabase;
+	OnGlobalLayoutListener listenerOGL;
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_trees);
-		
-		initialize();
-		initializeSpinner();
-		constructTree(treeList.get(0));
+	/**
+	 * Custom View class for drawing the path edges between Boxes.
+	 */
+	private static class EdgeView extends View {
+		Paint paint;
+		float startX, startY, stopX, stopY;
+
+		public EdgeView(Context context, float startX, float startY, float stopX, float stopY) {
+			super(context);
+			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paint.setColor(Color.BLACK);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeWidth(8);
+			
+			this.startX = startX;
+			this.startY = startY;
+			this.stopX = stopX;
+			this.stopY = stopY;
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			
+			canvas.drawLine(startX, startY, stopX, stopY, paint);
+		}
 	}
 	
+	/**
+	 * Constructs Tree layout from GameData info.
+	 * @param tree the Tree object to construct the layout for.
+	 */
+	private void constructTree(Tree tree) {
+		// calculate image spacing based on screen size and current orientation
+		@SuppressWarnings("deprecation")
+		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
+		int imgSpacingInPixels = (int) (DEFAULT_IMAGE_SPACING_RATIO * screenWidthInPixels + 0.5f);
+		
+		pendingEdgeBHs = new ArrayList<BoxHolder>();
+		
+		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
+			// horizontal break between tiers
+			layoutTree.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
+						
+			// tier container
+			RelativeLayout rl = new RelativeLayout(this);
+			
+			// ImageView container
+			LinearLayout ll = new LinearLayout(this); // default horizontal orientation
+			RelativeLayout.LayoutParams paramsLL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			paramsLL.addRule(RelativeLayout.CENTER_IN_PARENT);
+			
+			for (BoxHolder bh : tree.boxHolderMatrix.get(tier)) {
+				// retrieve Box
+				Box box = gameData.findBoxById(bh.boxId);
+				
+				// set ImageView
+				ImageView imgView = new ImageView(this);
+				if (bh.isUnlocked()) {
+					if (bh.isActivated())
+						imgView.setImageResource(box.activatedImgRes);
+					else
+						imgView.setImageResource(box.unlockedImgRes);
+				} else
+					imgView.setImageResource(box.lockedImgRes);
+				
+				// cache Box in ImageView to retrieve later
+				imgView.setTag(box);
+				
+				// attach onClick PopupWindow to ImageView
+				imgView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						showPopup(view);
+					}
+				});
+				
+				// cache ImageView in BoxHolder to use dimensions for drawing edges
+				bh.imageView = imgView;
+				
+				// add ImageView to container
+				ll.addView(imgView);
+				
+				// vertical break between ImgViews
+				ll.addView(new View(this), new LinearLayout.LayoutParams(imgSpacingInPixels, LinearLayout.LayoutParams.MATCH_PARENT));
+				
+				// if there are pending edges to be drawn, add to List
+				if (!bh.incomingEdges.isEmpty())
+					pendingEdgeBHs.add(bh);
+			}
+			
+			// remove trailing break
+			ll.removeViewAt(ll.getChildCount() - 1);
+			
+			// ImageViews constructed, add to tier container
+			rl.addView(ll, paramsLL);
+			
+			// tier constructed, add to layout
+			layoutTree.addView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+		}
+		
+		// draw edges when ImageViews are given layout dimensions
+		listenerOGL = new OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				drawEdges();
+			}	
+		};
+		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
+	}
+	
+	/**
+	 * Draws the path edges connecting the Boxes on the Tree.
+	 * This is called only once, after the ImageViews have been given layout dimensions.
+	 */
+	@SuppressWarnings("deprecation")
+	private void drawEdges() {
+		// remove listener, no longer needed
+		layoutTree.getViewTreeObserver().removeGlobalOnLayoutListener(listenerOGL);
+		
+		for (BoxHolder bh : pendingEdgeBHs) {
+			for (BoxHolder incomingBH : bh.incomingEdges) {
+				int[] startXY = new int[2];
+				int[] endXY = new int[2];
+				incomingBH.imageView.getLocationInWindow(startXY);
+				bh.imageView.getLocationInWindow(endXY);
+				
+				// if current ImageView lines up with incoming ImageView, they are on the same axis
+				if (bh.imageView.getLeft() == incomingBH.imageView.getLeft()) {
+					// bottom middle of incoming ImageView to top middle of current ImageView
+				} else if (bh.imageView.getLeft() > incomingBH.imageView.getLeft()) {
+					// lower right corner of incoming ImageView to upper left corner of current ImageView
+				} else {
+					// lower left corner of incoming ImageView to upper right corner of current ImageView
+				}
+				
+				// TODO testing
+				TextView tvTest = new TextView(this);
+				tvTest.setText("EDGE");
+				RelativeLayout.LayoutParams paramsTest = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				paramsTest.leftMargin = (startXY[0] + endXY[0]) / 2;
+				paramsTest.topMargin = (startXY[1] + endXY[1]) / 2 - incomingBH.imageView.getHeight();
+				layoutTreeOverlay.addView(tvTest, paramsTest);
+				
+				layoutTreeOverlay.addView(new EdgeView(this, startXY[0], startXY[1], endXY[0], endXY[1]));
+			}
+		}
+	}
+	
+	/**
+	 * Set up the Activity.
+	 */
 	private void initialize() {
 		recipeDatabase = RecipeDatabase.getInstance(this);
 		gameData = GameData.getInstance(this);
@@ -102,102 +248,19 @@ public class TreeActivity extends BaseActivity {
 		layoutTree.addView(spinnerTree);
 	}
 	
-	/**
-	 * Constructs Tree layout from GameData info.
-	 * @param tree the Tree object to construct the layout for.
-	 */
-	private void constructTree(Tree tree) {
-		// calculate image spacing based on screen size and current orientation
-		@SuppressWarnings("deprecation")
-		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
-		int imgSpacingInPixels = (int) (DEFAULT_IMAGE_SPACING_RATIO * screenWidthInPixels + 0.5f);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_trees);
 		
-		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
-			// horizontal break between tiers
-			layoutTree.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
-						
-			// tier container
-			RelativeLayout rl = new RelativeLayout(this);
-			RelativeLayout.LayoutParams paramsRL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-			rl.setLayoutParams(paramsRL);
-			
-			// ImageView container
-			LinearLayout ll = new LinearLayout(this); // default horizontal orientation
-			RelativeLayout.LayoutParams paramsLL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-			paramsLL.addRule(RelativeLayout.CENTER_IN_PARENT);
-			ll.setLayoutParams(paramsLL);
-			
-			for (BoxHolder bh : tree.boxHolderMatrix.get(tier)) {
-				// retrieve Box
-				Box box = gameData.findBoxById(bh.boxId);
-				
-				// set ImageView
-				ImageView imgView = new ImageView(this);
-				if (bh.isUnlocked()) {
-					if (bh.isActivated())
-						imgView.setImageResource(box.activatedImgRes);
-					else
-						imgView.setImageResource(box.unlockedImgRes);
-				} else
-					imgView.setImageResource(box.lockedImgRes);
-				
-				// cache Box in ImageView to retrieve later
-				imgView.setTag(box);
-				
-				// attach onClick PopupWindow to ImageView
-				imgView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						showPopup(view);
-					}
-				});
-				
-				// cache ImageView in BoxHolder to use dimensions for drawing lines
-				bh.imageView = imgView;
-				
-				// add ImageView to container
-				ll.addView(imgView);
-				
-				
-				// vertical break between ImgViews
-				ll.addView(new View(this), new LinearLayout.LayoutParams(imgSpacingInPixels, LinearLayout.LayoutParams.MATCH_PARENT));
-			}
-			
-			// remove trailing break
-			ll.removeViewAt(ll.getChildCount() - 1);
-			
-			// ImageViews constructed, add to tier container
-			rl.addView(ll);
-			
-			// tier constructed, add to layout
-			layoutTree.addView(rl);
-		}
-		
-		// draw edges between Boxes
-		layoutTreeOverlay.addView(new EdgeView(this));
+		initialize();
+		initializeSpinner();
+		constructTree(treeList.get(0));
 	}
 	
-	/**
-	 * Custom View class for drawing the path edges between Boxes.
-	 */
-	private static class EdgeView extends View {
-		Paint paint;
-
-		public EdgeView(Context context) {
-			super(context);
-			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-			paint.setColor(Color.BLACK);
-			paint.setStyle(Paint.Style.STROKE);
-			paint.setStrokeWidth(8);
-		}
-
-		@Override
-		protected void onDraw(Canvas canvas) {
-			super.onDraw(canvas);
-			
-			canvas.drawLine(0, 0, 200, 200, paint);
-			canvas.drawLine(200, 0, 0, 200, paint);
-		}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	/**
@@ -235,17 +298,14 @@ public class TreeActivity extends BaseActivity {
 		tvModifier.setText("+10 Awesomeness"); // TODO
 		tvModifier.setTextColor(Color.GREEN);
 		tvModifier.setGravity(Gravity.RIGHT);
-		RelativeLayout.LayoutParams paramsTV = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		paramsTV.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		tvModifier.setLayoutParams(paramsTV);
+		RelativeLayout.LayoutParams paramsMod = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		paramsMod.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		
 		// container for title, modifier
 		RelativeLayout rlTitle = new RelativeLayout(this);
-		RelativeLayout.LayoutParams paramsRL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		rlTitle.setLayoutParams(paramsRL);
 		rlTitle.addView(tvTitle);
-		rlTitle.addView(tvModifier);
-		layoutBoxPopup.addView(rlTitle);
+		rlTitle.addView(tvModifier, paramsMod);
+		layoutBoxPopup.addView(rlTitle, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 		
 		// separator
 		View separator = new View(this);
@@ -302,10 +362,5 @@ public class TreeActivity extends BaseActivity {
 		popupWindow.showAsDropDown(view);
 		
 		openPopups.put(view, popupWindow);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return super.onCreateOptionsMenu(menu);
 	}
 }

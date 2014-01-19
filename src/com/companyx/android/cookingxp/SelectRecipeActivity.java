@@ -37,7 +37,7 @@ import com.companyx.android.cookingxp.RecipeDatabase.ShoppingList;
 public class SelectRecipeActivity extends BaseListActivity {
 	// CONSTANTS
 	private static final int[] RECIPE_CATEGORIES = { R.string.select_recipe_all_recipes, R.string.chicken, R.string.pork, R.string.beef, R.string.select_recipe_seafood, R.string.select_recipe_vegetarian };
-		
+	
 	// VIEW HOLDERS
 	private LinearLayout layoutIngredients;
 	
@@ -53,9 +53,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 * Custom Recipe list view adapter.
 	 */
 	private class RecipeListViewAdapter extends ArrayAdapter<Recipe> {
-		private final Context activity;
-		private final List<Recipe> recipes;
-		
 		class RecipeView {
 			int recipeId;
 			RelativeLayout layoutRecipeListItem;
@@ -63,6 +60,9 @@ public class SelectRecipeActivity extends BaseListActivity {
 			TextView textViewDescription;
 			TextView textViewInfoRight;
 		}
+		
+		private final Context activity;
+		private final List<Recipe> recipes;
 		
 		RecipeListViewAdapter(Context activity, List<Recipe> recipes) {
 			super(activity, R.layout.recipe_list_item, recipes);
@@ -98,7 +98,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        recipeView.recipeId = recipeId;
 	        
 	        int padding = (int) (dpiScalingFactor * 6 + 0.5f);
-			recipeView.layoutRecipeListItem.setPadding(padding, padding, padding, padding);
+			recipeView.layoutRecipeListItem.setPadding(0, padding, 0, padding);
 	        
 	        recipeView.textViewName.setText(recipe.name);
 	        recipeView.textViewName.setTextSize(16 + 0.5f);
@@ -157,6 +157,9 @@ public class SelectRecipeActivity extends BaseListActivity {
 		}
 	}
 	
+	/**
+	 * Set up the Activity.
+	 */
 	private void initialize() {
 		layoutIngredients = (LinearLayout) findViewById(R.id.layout_select_recipe_ingredients);
 		
