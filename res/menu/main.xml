@@ -2,7 +2,7 @@
 
     <item
         android:id="@+id/menu_recipes"
-        android:icon="@drawable/ic_action_select_all"
+        android:icon="@drawable/ic_action_recipes"
         android:orderInCategory="0"
         android:showAsAction="always"
         android:title="@string/menu_recipes"/>
