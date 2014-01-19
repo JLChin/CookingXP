@@ -98,7 +98,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        recipeView.recipeId = recipeId;
 	        
 	        int padding = (int) (dpiScalingFactor * 6 + 0.5f);
-			recipeView.layoutRecipeListItem.setPadding(padding, padding, padding, padding);
+			recipeView.layoutRecipeListItem.setPadding(0, padding, 0, padding);
 	        
 	        recipeView.textViewName.setText(recipe.name);
 	        recipeView.textViewName.setTextSize(16 + 0.5f);
