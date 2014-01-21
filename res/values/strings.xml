@@ -132,5 +132,11 @@
     <string name="game_tree0">The Way of Beef</string>
     <string name="game_tree1">Some Other Tree</string>
     <string name="game_tree2">Yet Another Tree</string>
+    
+    <!-- INFO -->
+    <string name="info_credits"><b>Development</b>
+        \nJames Chin
+        \nAdam Hackbarth
+    </string>
 
 </resources>

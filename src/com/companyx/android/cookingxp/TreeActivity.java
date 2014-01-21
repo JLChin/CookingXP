@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -61,7 +60,7 @@ public class TreeActivity extends BaseActivity {
 	/**
 	 * Custom View class for drawing the path edges between Boxes.
 	 */
-	private static class EdgeView extends View {
+	static class EdgeView extends View {
 		Paint paint;
 		float startX, startY, stopX, stopY;
 
@@ -196,13 +195,14 @@ public class TreeActivity extends BaseActivity {
 				
 				// TODO testing
 				TextView tvTest = new TextView(this);
-				tvTest.setText("EDGE");
+				tvTest.setText("EDGEsdgfsdfgdsfgsdgsdfgsdfgsdfgsdgfss");
 				RelativeLayout.LayoutParams paramsTest = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				paramsTest.leftMargin = (startXY[0] + endXY[0]) / 2;
 				paramsTest.topMargin = (startXY[1] + endXY[1]) / 2 - incomingBH.imageView.getHeight();
 				layoutTreeOverlay.addView(tvTest, paramsTest);
 				
-				layoutTreeOverlay.addView(new EdgeView(this, startXY[0], startXY[1], endXY[0], endXY[1]));
+				//layoutTreeOverlay.addView(new EdgeView(this, startXY[0], startXY[1], endXY[0], endXY[1]));
+				layoutTreeOverlay.addView(new EdgeView(this, 0, 0, 100, 100), paramsTest);
 			}
 		}
 	}
