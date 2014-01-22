@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -290,6 +291,18 @@ public class RecipeActivity extends BaseActivity {
 			for (RecipeDirection rd : recipe.directions)
 				addTextLine(rd.direction, layoutBody, this, dpiScalingFactor);
 		}
+		
+		// "I COOKED IT" TODO for debugging
+		Button buttonICookedIt = new Button(this);
+		buttonICookedIt.setText("I cooked it, Scout's honor.");
+		buttonICookedIt.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				for (short boxId : recipe.boxes)
+					gameData.pingBox(boxId);
+			}
+		});
+		layoutBody.addView(buttonICookedIt);
 	}
 	
 	@Override

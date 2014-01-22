@@ -68,7 +68,9 @@ public class BaseActivity extends Activity {
 			// TODO
 			break;
 		case R.id.menu_info:
-			// TODO
+			intent = new Intent(this, InfoActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			startActivity(intent);
 			break;
 		case R.id.menu_quit:
 			intent = new Intent(this, MainActivity.class);

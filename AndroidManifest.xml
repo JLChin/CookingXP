@@ -57,6 +57,10 @@
             android:name=".TreeActivity"
             android:parentActivityName=".MainActivity" >
         </activity>
+        <activity
+            android:name=".InfoActivity"
+            android:parentActivityName=".MainActivity" >
+        </activity>
     </application>
 
 </manifest>

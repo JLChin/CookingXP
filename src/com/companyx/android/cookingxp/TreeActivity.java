@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -41,17 +40,15 @@ import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 public class TreeActivity extends BaseActivity {
 	// CONSTANTS
 	public static final float DEFAULT_IMAGE_SPACING_RATIO = 0.1f; // ratio of image spacing to screen width
-	public static final int[] TREES = {R.string.game_tree0, R.string.game_tree1, R.string.game_tree2};
 	
 	// VIEW HOLDERS
-	private LinearLayout layoutTree;
-	private RelativeLayout layoutTreeOverlay;
+	private RelativeLayout layoutTree;
 	private Spinner spinnerTree;
 	
 	// STATE VARIABLES
-	private List<Tree> treeList;
+	private List<Tree> treeList; // all Trees currently available to the user
 	private Map<View, PopupWindow> openPopups;
-	private List<BoxHolder> pendingEdgeBHs;
+	private List<BoxHolder> pendingEdgeBHs; // path edges to draw, waiting for layout dimensions
 	
 	// SYSTEM
 	private GameData gameData;
@@ -61,16 +58,16 @@ public class TreeActivity extends BaseActivity {
 	/**
 	 * Custom View class for drawing the path edges between Boxes.
 	 */
-	private static class EdgeView extends View {
+	static class EdgeView extends View {
 		Paint paint;
 		float startX, startY, stopX, stopY;
 
-		public EdgeView(Context context, float startX, float startY, float stopX, float stopY) {
+		public EdgeView(Context context, float startX, float startY, float stopX, float stopY, int strokeWidth) {
 			super(context);
-			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paint = new Paint();
 			paint.setColor(Color.BLACK);
 			paint.setStyle(Paint.Style.STROKE);
-			paint.setStrokeWidth(8);
+			paint.setStrokeWidth(strokeWidth);
 			
 			this.startX = startX;
 			this.startY = startY;
@@ -89,8 +86,9 @@ public class TreeActivity extends BaseActivity {
 	/**
 	 * Constructs Tree layout from GameData info.
 	 * @param tree the Tree object to construct the layout for.
+	 * @param layout the LinearLayout to add the Tree to.
 	 */
-	private void constructTree(Tree tree) {
+	private void constructTree(Tree tree, LinearLayout layout) {
 		// calculate image spacing based on screen size and current orientation
 		@SuppressWarnings("deprecation")
 		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
@@ -100,7 +98,7 @@ public class TreeActivity extends BaseActivity {
 		
 		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
 			// horizontal break between tiers
-			layoutTree.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
+			layout.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
 						
 			// tier container
 			RelativeLayout rl = new RelativeLayout(this);
@@ -156,21 +154,13 @@ public class TreeActivity extends BaseActivity {
 			rl.addView(ll, paramsLL);
 			
 			// tier constructed, add to layout
-			layoutTree.addView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+			layout.addView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 		}
-		
-		// draw edges when ImageViews are given layout dimensions
-		listenerOGL = new OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				drawEdges();
-			}	
-		};
-		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
 	}
 	
 	/**
 	 * Draws the path edges connecting the Boxes on the Tree.
+	 * NOTE: Y coordinate on screen goes top-->down.
 	 * This is called only once, after the ImageViews have been given layout dimensions.
 	 */
 	@SuppressWarnings("deprecation")
@@ -180,58 +170,83 @@ public class TreeActivity extends BaseActivity {
 		
 		for (BoxHolder bh : pendingEdgeBHs) {
 			for (BoxHolder incomingBH : bh.incomingEdges) {
-				int[] startXY = new int[2];
-				int[] endXY = new int[2];
-				incomingBH.imageView.getLocationInWindow(startXY);
-				bh.imageView.getLocationInWindow(endXY);
+				// get ImageView locations in Window
+				int[] imageViewStartXY = {0, 0};
+				int[] imageViewEndXY = {0, 0};
+				incomingBH.imageView.getLocationInWindow(imageViewStartXY);
+				bh.imageView.getLocationInWindow(imageViewEndXY);
+				
+				// calculate dimensions in pixels
+				int imageViewWidth = incomingBH.imageView.getWidth();
+				int imageViewMidWidth = imageViewWidth / 2;
+				int imageViewHeight = incomingBH.imageView.getHeight();
+				int edgeViewHeight = imageViewEndXY[1] - imageViewStartXY[1] - imageViewHeight;
+				int edgeViewWidth = edgeViewHeight; // currently the ImageView spacing width scales 1:1 with height
+				
+				// absolute screen location coordinates are offset by XML padding - Android bug?
+				int hLayoutPadding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+				int vLayoutPadding = (int) getResources().getDimension(R.dimen.activity_vertical_margin);
+				int adjustedImageViewStartX = imageViewStartXY[0] - hLayoutPadding;
+				int adjustedImageViewStartY = imageViewStartXY[1] - vLayoutPadding;
+				
+				// EdgeView draw parameters
+				int startX = 0;
+				int startY = 0;
+				int endX = 0;
+				int endY = 0;
+				int leftMargin = 0;
+				int topMargin = 0;
+				int strokeWidth = 10;
 				
 				// if current ImageView lines up with incoming ImageView, they are on the same axis
 				if (bh.imageView.getLeft() == incomingBH.imageView.getLeft()) {
 					// bottom middle of incoming ImageView to top middle of current ImageView
+					startX = imageViewMidWidth;
+					startY = 0;
+					endX = imageViewMidWidth;
+					endY = edgeViewHeight;
+					leftMargin = adjustedImageViewStartX;
+					topMargin = adjustedImageViewStartY;
+					strokeWidth *= 2; // diagonals are thicker for some reason TODO
 				} else if (bh.imageView.getLeft() > incomingBH.imageView.getLeft()) {
 					// lower right corner of incoming ImageView to upper left corner of current ImageView
+					startX = 0;
+					startY = 0;
+					endX = edgeViewWidth;
+					endY = edgeViewHeight;
+					leftMargin = adjustedImageViewStartX + imageViewWidth;
+					topMargin = adjustedImageViewStartY;
 				} else {
 					// lower left corner of incoming ImageView to upper right corner of current ImageView
+					startX = edgeViewWidth;
+					startY = 0;
+					endX = 0;
+					endY = edgeViewHeight;
+					leftMargin = adjustedImageViewStartX;
+					topMargin = adjustedImageViewStartY;
 				}
 				
-				// TODO testing
-				TextView tvTest = new TextView(this);
-				tvTest.setText("EDGE");
-				RelativeLayout.LayoutParams paramsTest = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				paramsTest.leftMargin = (startXY[0] + endXY[0]) / 2;
-				paramsTest.topMargin = (startXY[1] + endXY[1]) / 2 - incomingBH.imageView.getHeight();
-				layoutTreeOverlay.addView(tvTest, paramsTest);
+				RelativeLayout.LayoutParams paramsEV = new RelativeLayout.LayoutParams(edgeViewWidth, edgeViewHeight);
+				paramsEV.leftMargin = leftMargin;
+				paramsEV.topMargin = topMargin;
 				
-				layoutTreeOverlay.addView(new EdgeView(this, startXY[0], startXY[1], endXY[0], endXY[1]));
+				layoutTree.addView(new EdgeView(this, startX, startY, endX, endY, strokeWidth), paramsEV);
 			}
 		}
 	}
 	
 	/**
-	 * Set up the Activity.
-	 */
-	private void initialize() {
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		gameData = GameData.getInstance(this);
-		treeList = gameData.getTrees();
-		
-		openPopups = new HashMap<View, PopupWindow>();
-		
-		layoutTree = (LinearLayout) findViewById(R.id.layout_tree);
-		layoutTreeOverlay = (RelativeLayout) findViewById(R.id.layout_tree_overlay);
-	}
-	
-	/**
 	 * Set up the Tree selection Spinner.
+	 * @param layout the LinearLayout to add the Spinner to.
 	 */
-	private void initializeSpinner() {
+	private void initializeSpinner(LinearLayout layout) {
 		spinnerTree = new Spinner(this);
 		
 		// add selections
-		List<String> trees = new ArrayList<String>();
-		for (int i : TREES)
-			trees.add(getString(i));
-		spinnerTree.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, trees));
+		List<String> treeTitles = new ArrayList<String>();
+		for (Tree tree : treeList)
+			treeTitles.add(tree.getName());
+		spinnerTree.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, treeTitles));
 		
 		// attach listener
 		spinnerTree.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -245,7 +260,7 @@ public class TreeActivity extends BaseActivity {
 			}
 		});
 		
-		layoutTree.addView(spinnerTree);
+		layout.addView(spinnerTree);
 	}
 	
 	@Override
@@ -253,14 +268,59 @@ public class TreeActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_trees);
 		
-		initialize();
-		initializeSpinner();
-		constructTree(treeList.get(0));
+		recipeDatabase = RecipeDatabase.getInstance(this);
+		gameData = GameData.getInstance(this);
+		openPopups = new HashMap<View, PopupWindow>();
+		layoutTree = (RelativeLayout) findViewById(R.id.layout_tree);
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		
+		layoutTree.removeAllViews();
+		
+		// close all open PopupWindows
+		for (View v : openPopups.keySet())
+			openPopups.remove(v).dismiss();
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		refreshLayout();
+	}
+
+	/**
+	 * Refresh the screen layout.
+	 * This is called onRestart() and handles any game updates since the user left the current Activity.
+	 */
+	private void refreshLayout() {
+		// draw edges when ImageViews are given layout dimensions
+		listenerOGL = new OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				drawEdges();
+			}
+		};
+		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
+
+		// vertical LinearLayout container
+		LinearLayout llTree = new LinearLayout(this);
+		llTree.setOrientation(LinearLayout.VERTICAL);
+		
+		treeList = gameData.getTrees();
+		initializeSpinner(llTree);
+		constructTree(treeList.get(0), llTree);
+		
+		// volatile layout elements refreshed, add to parent RelativeLayout
+		layoutTree.addView(llTree, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 	}
 	
 	/**

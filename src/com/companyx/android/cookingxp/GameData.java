@@ -2,10 +2,8 @@ package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -45,6 +43,7 @@ public final class GameData {
 	 */
 	static class Box {
 		short boxId;
+		private boolean activated;
 		
 		// TEXT RESOURCES
 		int titleStrRes;
@@ -63,13 +62,21 @@ public final class GameData {
 			this.unlockedImgRes = unlockedImgRes;
 			this.activatedImgRes = activatedImgRes;
 		}
+		
+		boolean isActivated() {
+			return activated;
+		}
+		
+		void setActivated(boolean activated) {
+			this.activated = activated;
+		}
 	}
 	
 	/**
 	 * Container class managing a Box's relation within a Tree instance.
 	 * BoxHolder allows the Box contained in one Tree to have a different relation in another Tree.
 	 */
-	static class BoxHolder {
+	class BoxHolder {
 		// STATE VARIABLES
 		short boxId;
 		ImageView imageView;
@@ -107,14 +114,10 @@ public final class GameData {
 		 * Checks conditions and updates activated status.
 		 */
 		private void updateActivatedStatus() {
-			// TODO
-			short[] debug = {0, 1, 3, 4, 7, 9};
-			Set<Short> activatedBoxes = new HashSet<Short>();
-			for (short s : debug)
-				activatedBoxes.add(s);
-			
-			if (activatedBoxes.contains(boxId))
+			if (findBoxById(boxId).isActivated())
 				activated = true;
+			else
+				activated = false;
 		}
 		
 		/**
@@ -167,9 +170,10 @@ public final class GameData {
 		
 		/**
 		 * Checks all conditions and updates unlocked and activated status of each BoxHolder, unlockedTier status of Tree.
-		 * This method is called when the Tree is ready to be validated.
+		 * This method is called before the Tree needs to be used or displayed, to reflect changes made.
+		 * @return this Tree instance, for convenience.
 		 */
-		private void validateTree() {
+		private Tree validateTree() {
 			// update activated status of each BoxHolder
 			for (List<BoxHolder> tier : boxHolderMatrix) {
 				boolean rowHasActivated = false;
@@ -189,6 +193,8 @@ public final class GameData {
 				for (BoxHolder bh : boxHolderMatrix.get(tier))
 					bh.updateUnlockedStatus(tier, unlockedTier);
 			}
+			
+			return this;
 		}
 	}
 	
@@ -225,13 +231,11 @@ public final class GameData {
 	
 	/**
 	 * Adds a new Tree to the database.
-	 * The Tree should be fully formed before using this method.
 	 * @param treeId the unique identifier for the new Tree.
 	 * @param newTree the new Tree to be added to the database.
 	 */
 	public void addTree(int treeId, Tree newTree) {
 		treeMap.put(treeId, newTree);
-		newTree.validateTree(); // Tree is ready to be validated, set unlocked & activated statuses
 	}
 	
 	/**
@@ -244,14 +248,14 @@ public final class GameData {
 	}
 	
 	/**
-	 * Returns a List of game Trees.
-	 * @return a List of game Trees.
+	 * Returns a List of updated game Trees.
+	 * @return a List of updated game Trees.
 	 */
 	public List<Tree> getTrees() {
 		List<Tree> result = new ArrayList<Tree>();
 		
 		for (Map.Entry<Integer, Tree> entry : treeMap.entrySet())
-			result.add(entry.getValue());
+			result.add(entry.getValue().validateTree());
 		
 		return result;
 	}
@@ -305,10 +309,19 @@ public final class GameData {
 	}
 	
 	/**
+	 * Updates the box after one of its recipes has been completed.
+	 * @param boxId the unique identifier for the Box.
+	 */
+	void pingBox(short boxId) {
+		// TODO make more interesting rules or leveling system, for now simply one ping --> activated
+		findBoxById(boxId).setActivated(true);
+	}
+	
+	/**
 	 * Resets the database.
 	 */
 	@SuppressLint("UseSparseArrays")
-	private void resetData() {
+	void resetData() {
 		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Integer, Tree>();
 		
