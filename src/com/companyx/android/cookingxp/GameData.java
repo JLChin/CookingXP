@@ -43,7 +43,7 @@ public final class GameData {
 	 */
 	static class Box {
 		short boxId;
-		boolean activated;
+		private boolean activated;
 		
 		// TEXT RESOURCES
 		int titleStrRes;
@@ -61,6 +61,14 @@ public final class GameData {
 			this.lockedImgRes = lockedImgRes;
 			this.unlockedImgRes = unlockedImgRes;
 			this.activatedImgRes = activatedImgRes;
+		}
+		
+		boolean isActivated() {
+			return activated;
+		}
+		
+		void setActivated(boolean activated) {
+			this.activated = activated;
 		}
 	}
 	
@@ -106,7 +114,7 @@ public final class GameData {
 		 * Checks conditions and updates activated status.
 		 */
 		private void updateActivatedStatus() {
-			if (findBoxById(boxId).activated)
+			if (findBoxById(boxId).isActivated())
 				activated = true;
 			else
 				activated = false;
@@ -162,9 +170,10 @@ public final class GameData {
 		
 		/**
 		 * Checks all conditions and updates unlocked and activated status of each BoxHolder, unlockedTier status of Tree.
-		 * This method is called when the Tree is ready to be validated.
+		 * This method is called before the Tree needs to be used or displayed, to reflect changes made.
+		 * @return this Tree instance, for convenience.
 		 */
-		private void validateTree() {
+		private Tree validateTree() {
 			// update activated status of each BoxHolder
 			for (List<BoxHolder> tier : boxHolderMatrix) {
 				boolean rowHasActivated = false;
@@ -184,6 +193,8 @@ public final class GameData {
 				for (BoxHolder bh : boxHolderMatrix.get(tier))
 					bh.updateUnlockedStatus(tier, unlockedTier);
 			}
+			
+			return this;
 		}
 	}
 	
@@ -220,13 +231,11 @@ public final class GameData {
 	
 	/**
 	 * Adds a new Tree to the database.
-	 * The Tree should be fully formed before using this method.
 	 * @param treeId the unique identifier for the new Tree.
 	 * @param newTree the new Tree to be added to the database.
 	 */
 	public void addTree(int treeId, Tree newTree) {
 		treeMap.put(treeId, newTree);
-		newTree.validateTree(); // Tree is ready to be validated, set unlocked & activated statuses
 	}
 	
 	/**
@@ -239,14 +248,14 @@ public final class GameData {
 	}
 	
 	/**
-	 * Returns a List of game Trees.
-	 * @return a List of game Trees.
+	 * Returns a List of updated game Trees.
+	 * @return a List of updated game Trees.
 	 */
 	public List<Tree> getTrees() {
 		List<Tree> result = new ArrayList<Tree>();
 		
 		for (Map.Entry<Integer, Tree> entry : treeMap.entrySet())
-			result.add(entry.getValue());
+			result.add(entry.getValue().validateTree());
 		
 		return result;
 	}
@@ -305,14 +314,14 @@ public final class GameData {
 	 */
 	void pingBox(short boxId) {
 		// TODO make more interesting rules or leveling system, for now simply one ping --> activated
-		findBoxById(boxId).activated = true;
+		findBoxById(boxId).setActivated(true);
 	}
 	
 	/**
 	 * Resets the database.
 	 */
 	@SuppressLint("UseSparseArrays")
-	private void resetData() {
+	void resetData() {
 		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Integer, Tree>();
 		

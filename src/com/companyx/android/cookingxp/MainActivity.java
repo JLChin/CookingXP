@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
-import android.widget.RelativeLayout;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -27,13 +30,23 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	private void testRandomStuff() {
-		RelativeLayout layoutMain = (RelativeLayout) findViewById(R.id.layout_main);
+		LinearLayout layoutMain = (LinearLayout) findViewById(R.id.layout_main);
 		
 		TextView tvWelcome = new TextView(this);
 		tvWelcome.setText(R.string.welcome);
 		tvWelcome.setTextSize(16 + 0.5f);
 		
 		layoutMain.addView(tvWelcome);
+		
+		Button buttonReset = new Button(this);
+		buttonReset.setText("Reset Game Data");
+		buttonReset.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				GameData.getInstance(MainActivity.this).resetData();
+			}	
+		});
+		layoutMain.addView(buttonReset);
 	}
 	
 	/**
