@@ -40,17 +40,15 @@ import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 public class TreeActivity extends BaseActivity {
 	// CONSTANTS
 	public static final float DEFAULT_IMAGE_SPACING_RATIO = 0.1f; // ratio of image spacing to screen width
-	public static final int[] TREES = {R.string.game_tree0, R.string.game_tree1, R.string.game_tree2};
 	
 	// VIEW HOLDERS
-	private LinearLayout layoutTree;
-	private RelativeLayout layoutTreeOverlay;
+	private RelativeLayout layoutTree;
 	private Spinner spinnerTree;
 	
 	// STATE VARIABLES
-	private List<Tree> treeList;
+	private List<Tree> treeList; // all Trees currently available to the user
 	private Map<View, PopupWindow> openPopups;
-	private List<BoxHolder> pendingEdgeBHs;
+	private List<BoxHolder> pendingEdgeBHs; // path edges to draw, waiting for layout dimensions
 	
 	// SYSTEM
 	private GameData gameData;
@@ -88,8 +86,9 @@ public class TreeActivity extends BaseActivity {
 	/**
 	 * Constructs Tree layout from GameData info.
 	 * @param tree the Tree object to construct the layout for.
+	 * @param layout the LinearLayout to add the Tree to.
 	 */
-	private void constructTree(Tree tree) {
+	private void constructTree(Tree tree, LinearLayout layout) {
 		// calculate image spacing based on screen size and current orientation
 		@SuppressWarnings("deprecation")
 		float screenWidthInPixels = getWindowManager().getDefaultDisplay().getWidth();
@@ -99,7 +98,7 @@ public class TreeActivity extends BaseActivity {
 		
 		for (int tier = 0; tier < tree.boxHolderMatrix.size(); tier++) {
 			// horizontal break between tiers
-			layoutTree.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
+			layout.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, imgSpacingInPixels));
 						
 			// tier container
 			RelativeLayout rl = new RelativeLayout(this);
@@ -155,17 +154,8 @@ public class TreeActivity extends BaseActivity {
 			rl.addView(ll, paramsLL);
 			
 			// tier constructed, add to layout
-			layoutTree.addView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+			layout.addView(rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 		}
-		
-		// draw edges when ImageViews are given layout dimensions
-		listenerOGL = new OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				drawEdges();
-			}	
-		};
-		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
 	}
 	
 	/**
@@ -199,39 +189,26 @@ public class TreeActivity extends BaseActivity {
 				RelativeLayout.LayoutParams paramsTest = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				paramsTest.leftMargin = (startXY[0] + endXY[0]) / 2;
 				paramsTest.topMargin = (startXY[1] + endXY[1]) / 2 - incomingBH.imageView.getHeight();
-				layoutTreeOverlay.addView(tvTest, paramsTest);
+				layoutTree.addView(tvTest, paramsTest);
 				
 				//layoutTreeOverlay.addView(new EdgeView(this, startXY[0], startXY[1], endXY[0], endXY[1]));
-				layoutTreeOverlay.addView(new EdgeView(this, 0, 0, 100, 100), paramsTest);
+				layoutTree.addView(new EdgeView(this, 0, 0, 100, 100), paramsTest);
 			}
 		}
 	}
 	
 	/**
-	 * Set up the Activity.
-	 */
-	private void initialize() {
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		gameData = GameData.getInstance(this);
-		treeList = gameData.getTrees();
-		
-		openPopups = new HashMap<View, PopupWindow>();
-		
-		layoutTree = (LinearLayout) findViewById(R.id.layout_tree);
-		layoutTreeOverlay = (RelativeLayout) findViewById(R.id.layout_tree_overlay);
-	}
-	
-	/**
 	 * Set up the Tree selection Spinner.
+	 * @param layout the LinearLayout to add the Spinner to.
 	 */
-	private void initializeSpinner() {
+	private void initializeSpinner(LinearLayout layout) {
 		spinnerTree = new Spinner(this);
 		
 		// add selections
-		List<String> trees = new ArrayList<String>();
-		for (int i : TREES)
-			trees.add(getString(i));
-		spinnerTree.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, trees));
+		List<String> treeTitles = new ArrayList<String>();
+		for (Tree tree : treeList)
+			treeTitles.add(tree.getName());
+		spinnerTree.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, treeTitles));
 		
 		// attach listener
 		spinnerTree.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -245,7 +222,7 @@ public class TreeActivity extends BaseActivity {
 			}
 		});
 		
-		layoutTree.addView(spinnerTree);
+		layout.addView(spinnerTree);
 	}
 	
 	@Override
@@ -253,14 +230,59 @@ public class TreeActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_trees);
 		
-		initialize();
-		initializeSpinner();
-		constructTree(treeList.get(0));
+		recipeDatabase = RecipeDatabase.getInstance(this);
+		gameData = GameData.getInstance(this);
+		openPopups = new HashMap<View, PopupWindow>();
+		layoutTree = (RelativeLayout) findViewById(R.id.layout_tree);
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		
+		layoutTree.removeAllViews();
+		
+		// close all open PopupWindows
+		for (View v : openPopups.keySet())
+			openPopups.remove(v).dismiss();
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		refreshLayout();
+	}
+
+	/**
+	 * Refresh the screen layout.
+	 * This is called onRestart() and handles any game updates since the user left the current Activity.
+	 */
+	private void refreshLayout() {
+		// draw edges when ImageViews are given layout dimensions
+		listenerOGL = new OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				drawEdges();
+			}
+		};
+		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
+
+		// vertical LinearLayout container
+		LinearLayout llTree = new LinearLayout(this);
+		llTree.setOrientation(LinearLayout.VERTICAL);
+		
+		treeList = gameData.getTrees();
+		initializeSpinner(llTree);
+		constructTree(treeList.get(0), llTree);
+		
+		// volatile layout elements refreshed, add to parent RelativeLayout
+		layoutTree.addView(llTree, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 	}
 	
 	/**

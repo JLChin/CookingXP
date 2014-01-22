@@ -2,10 +2,8 @@ package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -45,6 +43,7 @@ public final class GameData {
 	 */
 	static class Box {
 		short boxId;
+		boolean activated;
 		
 		// TEXT RESOURCES
 		int titleStrRes;
@@ -69,7 +68,7 @@ public final class GameData {
 	 * Container class managing a Box's relation within a Tree instance.
 	 * BoxHolder allows the Box contained in one Tree to have a different relation in another Tree.
 	 */
-	static class BoxHolder {
+	class BoxHolder {
 		// STATE VARIABLES
 		short boxId;
 		ImageView imageView;
@@ -107,14 +106,10 @@ public final class GameData {
 		 * Checks conditions and updates activated status.
 		 */
 		private void updateActivatedStatus() {
-			// TODO
-			short[] debug = {0, 1, 3, 4, 7, 9};
-			Set<Short> activatedBoxes = new HashSet<Short>();
-			for (short s : debug)
-				activatedBoxes.add(s);
-			
-			if (activatedBoxes.contains(boxId))
+			if (findBoxById(boxId).activated)
 				activated = true;
+			else
+				activated = false;
 		}
 		
 		/**
@@ -302,6 +297,15 @@ public final class GameData {
 		tier3.get(2).incomingEdges.add(tier2.get(2));
 		
 		addTree(0, newTree);
+	}
+	
+	/**
+	 * Updates the box after one of its recipes has been completed.
+	 * @param boxId the unique identifier for the Box.
+	 */
+	void pingBox(short boxId) {
+		// TODO make more interesting rules or leveling system, for now simply one ping --> activated
+		findBoxById(boxId).activated = true;
 	}
 	
 	/**

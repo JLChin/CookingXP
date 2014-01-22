@@ -11,15 +11,8 @@
     <!-- android:background="@drawable/layout_background_dark" -->
 
     <RelativeLayout
-        android:id="@+id/layout_tree_overlay"
+        android:id="@+id/layout_tree"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:id="@+id/layout_tree"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </RelativeLayout>
+        android:layout_height="wrap_content" />
 
 </ScrollView>
