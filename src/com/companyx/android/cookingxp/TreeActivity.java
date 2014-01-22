@@ -62,12 +62,12 @@ public class TreeActivity extends BaseActivity {
 		Paint paint;
 		float startX, startY, stopX, stopY;
 
-		public EdgeView(Context context, float startX, float startY, float stopX, float stopY) {
+		public EdgeView(Context context, float startX, float startY, float stopX, float stopY, int strokeWidth) {
 			super(context);
-			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paint = new Paint();
 			paint.setColor(Color.BLACK);
 			paint.setStyle(Paint.Style.STROKE);
-			paint.setStrokeWidth(8);
+			paint.setStrokeWidth(strokeWidth);
 			
 			this.startX = startX;
 			this.startY = startY;
@@ -160,6 +160,7 @@ public class TreeActivity extends BaseActivity {
 	
 	/**
 	 * Draws the path edges connecting the Boxes on the Tree.
+	 * NOTE: Y coordinate on screen goes top-->down.
 	 * This is called only once, after the ImageViews have been given layout dimensions.
 	 */
 	@SuppressWarnings("deprecation")
@@ -169,30 +170,67 @@ public class TreeActivity extends BaseActivity {
 		
 		for (BoxHolder bh : pendingEdgeBHs) {
 			for (BoxHolder incomingBH : bh.incomingEdges) {
-				int[] startXY = new int[2];
-				int[] endXY = new int[2];
-				incomingBH.imageView.getLocationInWindow(startXY);
-				bh.imageView.getLocationInWindow(endXY);
+				// get ImageView locations in Window
+				int[] imageViewStartXY = {0, 0};
+				int[] imageViewEndXY = {0, 0};
+				incomingBH.imageView.getLocationInWindow(imageViewStartXY);
+				bh.imageView.getLocationInWindow(imageViewEndXY);
+				
+				// calculate dimensions in pixels
+				int imageViewWidth = incomingBH.imageView.getWidth();
+				int imageViewMidWidth = imageViewWidth / 2;
+				int imageViewHeight = incomingBH.imageView.getHeight();
+				int edgeViewHeight = imageViewEndXY[1] - imageViewStartXY[1] - imageViewHeight;
+				int edgeViewWidth = edgeViewHeight; // currently the ImageView spacing width scales 1:1 with height
+				
+				// absolute screen location coordinates are offset by XML padding - Android bug?
+				int hLayoutPadding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+				int vLayoutPadding = (int) getResources().getDimension(R.dimen.activity_vertical_margin);
+				int adjustedImageViewStartX = imageViewStartXY[0] - hLayoutPadding;
+				int adjustedImageViewStartY = imageViewStartXY[1] - vLayoutPadding;
+				
+				// EdgeView draw parameters
+				int startX = 0;
+				int startY = 0;
+				int endX = 0;
+				int endY = 0;
+				int leftMargin = 0;
+				int topMargin = 0;
+				int strokeWidth = 10;
 				
 				// if current ImageView lines up with incoming ImageView, they are on the same axis
 				if (bh.imageView.getLeft() == incomingBH.imageView.getLeft()) {
 					// bottom middle of incoming ImageView to top middle of current ImageView
+					startX = imageViewMidWidth;
+					startY = 0;
+					endX = imageViewMidWidth;
+					endY = edgeViewHeight;
+					leftMargin = adjustedImageViewStartX;
+					topMargin = adjustedImageViewStartY;
+					strokeWidth *= 2; // diagonals are thicker for some reason TODO
 				} else if (bh.imageView.getLeft() > incomingBH.imageView.getLeft()) {
 					// lower right corner of incoming ImageView to upper left corner of current ImageView
+					startX = 0;
+					startY = 0;
+					endX = edgeViewWidth;
+					endY = edgeViewHeight;
+					leftMargin = adjustedImageViewStartX + imageViewWidth;
+					topMargin = adjustedImageViewStartY;
 				} else {
 					// lower left corner of incoming ImageView to upper right corner of current ImageView
+					startX = edgeViewWidth;
+					startY = 0;
+					endX = 0;
+					endY = edgeViewHeight;
+					leftMargin = adjustedImageViewStartX;
+					topMargin = adjustedImageViewStartY;
 				}
 				
-				// TODO testing
-				TextView tvTest = new TextView(this);
-				tvTest.setText("EDGEsdgfsdfgdsfgsdgsdfgsdfgsdfgsdgfss");
-				RelativeLayout.LayoutParams paramsTest = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				paramsTest.leftMargin = (startXY[0] + endXY[0]) / 2;
-				paramsTest.topMargin = (startXY[1] + endXY[1]) / 2 - incomingBH.imageView.getHeight();
-				layoutTree.addView(tvTest, paramsTest);
+				RelativeLayout.LayoutParams paramsEV = new RelativeLayout.LayoutParams(edgeViewWidth, edgeViewHeight);
+				paramsEV.leftMargin = leftMargin;
+				paramsEV.topMargin = topMargin;
 				
-				//layoutTreeOverlay.addView(new EdgeView(this, startXY[0], startXY[1], endXY[0], endXY[1]));
-				layoutTree.addView(new EdgeView(this, 0, 0, 100, 100), paramsTest);
+				layoutTree.addView(new EdgeView(this, startX, startY, endX, endY, strokeWidth), paramsEV);
 			}
 		}
 	}

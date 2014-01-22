@@ -35,7 +35,6 @@ public class MainActivity extends BaseActivity {
 		TextView tvWelcome = new TextView(this);
 		tvWelcome.setText(R.string.welcome);
 		tvWelcome.setTextSize(16 + 0.5f);
-		
 		layoutMain.addView(tvWelcome);
 		
 		Button buttonReset = new Button(this);
