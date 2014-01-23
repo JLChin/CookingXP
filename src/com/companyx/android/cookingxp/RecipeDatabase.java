@@ -410,11 +410,8 @@ public final class RecipeDatabase {
 	 * @param recipeId the unique identifier for the Recipe being indexed.
 	 */
 	private void index(String string, int recipeId) {
-		String[] words = string.split(" ");
-
-		// convert words to lowercase for indexing
-		for (int i = 0; i < words.length; i++)
-			words[i] = words[i].toLowerCase(Locale.US);
+		// convert to lowercase and parse
+		String[] words = string.toLowerCase(Locale.US).split(" ");
 
 		for (String word : words) {
 			// new word, did not exist previously
