@@ -174,6 +174,10 @@ public final class GameData {
 		 * @return this Tree instance, for convenience.
 		 */
 		private Tree validateTree() {
+			// re-verify tier status
+			unlockedTier = 0;
+			int currentTier = 0;
+			
 			// update activated status of each BoxHolder
 			for (List<BoxHolder> tier : boxHolderMatrix) {
 				boolean rowHasActivated = false;
@@ -184,8 +188,10 @@ public final class GameData {
 						rowHasActivated = true;
 				}
 				
-				if (rowHasActivated)
+				if (rowHasActivated && unlockedTier == currentTier)
 					unlockedTier++;
+				
+				currentTier++;
 			}
 			
 			// update unlocked status of each BoxHolder

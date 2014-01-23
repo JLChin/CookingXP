@@ -40,6 +40,7 @@ import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 public class TreeActivity extends BaseActivity {
 	// CONSTANTS
 	public static final float DEFAULT_IMAGE_SPACING_RATIO = 0.1f; // ratio of image spacing to screen width
+	public static final int DEFAULT_EDGE_STROKE_WIDTH = 10;
 	
 	// VIEW HOLDERS
 	private RelativeLayout layoutTree;
@@ -184,10 +185,8 @@ public class TreeActivity extends BaseActivity {
 				int edgeViewWidth = edgeViewHeight; // currently the ImageView spacing width scales 1:1 with height
 				
 				// absolute screen location coordinates are offset by XML padding - Android bug?
-				int hLayoutPadding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-				int vLayoutPadding = (int) getResources().getDimension(R.dimen.activity_vertical_margin);
-				int adjustedImageViewStartX = imageViewStartXY[0] - hLayoutPadding;
-				int adjustedImageViewStartY = imageViewStartXY[1] - vLayoutPadding;
+				int adjustedImageViewStartX = imageViewStartXY[0] - (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
+				int adjustedImageViewStartY = imageViewStartXY[1] - (int) getResources().getDimension(R.dimen.activity_vertical_margin);
 				
 				// EdgeView draw parameters
 				int startX = 0;
@@ -196,7 +195,7 @@ public class TreeActivity extends BaseActivity {
 				int endY = 0;
 				int leftMargin = 0;
 				int topMargin = 0;
-				int strokeWidth = 10;
+				int strokeWidth = DEFAULT_EDGE_STROKE_WIDTH;
 				
 				// if current ImageView lines up with incoming ImageView, they are on the same axis
 				if (bh.imageView.getLeft() == incomingBH.imageView.getLeft()) {
@@ -207,7 +206,7 @@ public class TreeActivity extends BaseActivity {
 					endY = edgeViewHeight;
 					leftMargin = adjustedImageViewStartX;
 					topMargin = adjustedImageViewStartY;
-					strokeWidth *= 2; // diagonals are thicker for some reason TODO
+					strokeWidth *= 2; // diagonal strokes are thicker for some reason TODO
 				} else if (bh.imageView.getLeft() > incomingBH.imageView.getLeft()) {
 					// lower right corner of incoming ImageView to upper left corner of current ImageView
 					startX = 0;
