@@ -19,6 +19,9 @@ import android.widget.TextView;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class MainActivity extends BaseActivity {
+	// SYSTEM
+	private RecipeDatabase recipeDatabase;
+	private GameData gameData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class MainActivity extends BaseActivity {
 		buttonReset.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				GameData.getInstance(MainActivity.this).resetData();
+				GameData.getInstance(MainActivity.this).clearGameData();
 			}	
 		});
 		layoutMain.addView(buttonReset);
@@ -52,7 +55,7 @@ public class MainActivity extends BaseActivity {
 	 * Bulk recipe data loading, at the start of the app.
 	 */
 	private void loadDatabase() {
-		RecipeDatabase recipeDatabase = RecipeDatabase.getInstance(this);
+		recipeDatabase = RecipeDatabase.getInstance(this);
 		recipeDatabase.resetDatabase(); // in case singleton RecipeDatabase was not destroyed (i.e. exit/re-enter app quickly)
 		
 		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
@@ -69,6 +72,9 @@ public class MainActivity extends BaseActivity {
 		// LOAD SHOPPING LIST
 		String serializedShoppingList = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
 		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
+		
+		// LOAD GAME DATA
+		gameData = GameData.getInstance(this);
 	}
 
 	@Override

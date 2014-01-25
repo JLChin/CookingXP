@@ -67,6 +67,7 @@ public final class RecipeDatabase {
 		List<Short> boxes;
 		RecipeTime recipeTime;
 		byte numOfServings;
+		boolean unlocked;
 		
 		Recipe(int recipeId, String name, String author, List<RecipeIngredient> ingredients, List<RecipeDirection> directions, List<Integer> linkedRecipes, List<Short> boxes, RecipeTime recipeTime, byte numOfServings) {
 			this.recipeId = recipeId;
@@ -78,6 +79,7 @@ public final class RecipeDatabase {
 			this.boxes = boxes;
 			this.recipeTime = recipeTime;
 			this.numOfServings = numOfServings;
+			unlocked = false;
 		}
 	}
 	
@@ -272,8 +274,11 @@ public final class RecipeDatabase {
 			
 			// transfer sorted results from Map to List
 			for (Map.Entry<String, Set<Recipe>> entry : resultTree.entrySet()) {
-				for (Recipe r : entry.getValue())
-					result.add(r);
+				for (Recipe r : entry.getValue()) {
+					// FILTER OUT LOCKED RECIPES
+					if (r.unlocked)
+						result.add(r);
+				}
 			}
 		}
 		
@@ -655,6 +660,29 @@ public final class RecipeDatabase {
 			result += (s.contains("/")) ? (Double.valueOf(s.substring(0, 1)) / Double.valueOf(s.substring(2, 3))) : Double.valueOf(s);
 			
 		return result;
+	}
+	
+	/**
+	 * Unlocks all Recipes that apply to the specified Box.
+	 * @param boxId the unique identifier for the Box whose recipes are to be unlocked.
+	 * @return a List of Recipes that have been newly unlocked, sorted by name, excluding Recipes already unlocked.
+	 */
+	public List<Recipe> unlockRecipesByBox(short boxId) {
+		Set<Integer> unlockedRecipes = new HashSet<Integer>();
+		
+		// retrieve the Set of Recipes unlocked by this Box
+		Set<Integer> recipeSet = boxMap.get(boxId);
+		
+		// unlock Recipes, counting only the ones not already unlocked
+		for (int recipeId : recipeSet) {
+			Recipe recipe = findRecipeById(recipeId);
+			if (!recipe.unlocked) {
+				recipe.unlocked = true;
+				unlockedRecipes.add(recipeId);
+			}
+		}
+		
+		return getRecipesById(unlockedRecipes);
 	}
 	
 	/**
