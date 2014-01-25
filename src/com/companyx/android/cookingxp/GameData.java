@@ -7,6 +7,7 @@ import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.widget.ImageView;
 
@@ -16,10 +17,11 @@ import android.widget.ImageView;
  * Manages all game data.
  * 
  * RULES:
- * One Recipe can be a member of multiple Boxes.
- * One Box can be a member of multiple Trees.
- * Each Box is in one of three states: locked, unlocked or activated.
- * The same Box can be in different states on different Trees.
+ * - One Recipe can be a member of multiple Boxes.
+ * - One Box can be a member of multiple Trees, managed by BoxHolders.
+ * - Each BoxHolder is in one of three states: locked, unlocked or activated.
+ * - The same Box can be in different states on different Trees.
+ * - Tier 0 Boxes get unlocked by default, whose Recipes are, in turn, also unlocked by default; the Box unlock progress dictates which Recipes are visible.
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
@@ -37,11 +39,15 @@ public final class GameData {
 	
 	// SYSTEM
 	private static Context context;
+	private static SharedPreferences sharedPref;
+	private static RecipeDatabase recipeDatabase;
 	
 	/**
-	 * Class representing a box on the game Tree
+	 * Class representing a box on the game Tree.
+	 * When a Box is activated, it may unlock other BoxHolders further down the Tree(s).
 	 */
 	static class Box {
+		// STATE VARIABLES
 		short boxId;
 		private boolean activated;
 		
@@ -63,18 +69,28 @@ public final class GameData {
 			this.activatedImgRes = activatedImgRes;
 		}
 		
+		/**
+		 * Returns true if this Box is activated, false otherwise.
+		 * @return true if this Box is activated, false otherwise.
+		 */
 		boolean isActivated() {
 			return activated;
 		}
 		
+		/**
+		 * Sets the activated status of this Box.
+		 * @param activated the boolean value to set the activated status to.
+		 */
 		void setActivated(boolean activated) {
 			this.activated = activated;
 		}
 	}
 	
 	/**
-	 * Container class managing a Box's relation within a Tree instance.
+	 * Container class managing a Box's relation within a particular Tree instance.
 	 * BoxHolder allows the Box contained in one Tree to have a different relation in another Tree.
+	 * When a BoxHolder is unlocked, its Box can be seen on the Tree, and that Box's Recipes become available to the user.
+	 * When a BoxHolder is activated, it may unlock other BoxHolders further down that particular Tree instance.
 	 */
 	class BoxHolder {
 		// STATE VARIABLES
@@ -89,22 +105,27 @@ public final class GameData {
 			incomingEdges = new ArrayList<BoxHolder>();
 		}
 		
+		/**
+		 * Adds a prerequisite BoxHolder whose activation is required to unlock this BoxHolder.
+		 * @param incomingBH the prerequisite BoxHolder.
+		 * @return this BoxHolder instance, for convenience.
+		 */
 		BoxHolder addEdge(BoxHolder incomingBH) {
 			incomingEdges.add(incomingBH);
 			return this;
 		}
 		
 		/**
-		 * Returns whether this box is activated.
-		 * @return whether this box is activated.
+		 * Returns true if this BoxHolder is activated, false otherwise.
+		 * @return true if this BoxHolder is activated, false otherwise.
 		 */
 		boolean isActivated() {
 			return activated;
 		}
 		
 		/**
-		 * Returns whether this box is unlocked.
-		 * @return whether this box is unlocked.
+		 * Returns true if this BoxHolder is unlocked, false otherwise.
+		 * @return true if this BoxHolder is unlocked, false otherwise.
 		 */
 		boolean isUnlocked() {
 			return unlocked;
@@ -121,7 +142,8 @@ public final class GameData {
 		}
 		
 		/**
-		 * Checks conditions and updates unlocked status.
+		 * Checks BoxHolder unlocking rules and updates unlocked status.
+		 * Note: tier 0 BoxHolders are automatically unlocked here.
 		 * @param tier the tier this BoxHolder is on.
 		 * @param unlockedTier the unlocked tier of the parent Tree.
 		 */
@@ -146,7 +168,7 @@ public final class GameData {
 	/**
 	 * Class representing a game tree.
 	 */
-	static class Tree {
+	class Tree {
 		private int nameStrRes;
 		private int unlockedTier;
 		List<List<BoxHolder>> boxHolderMatrix; // List of tiers of BoxHolders
@@ -170,15 +192,16 @@ public final class GameData {
 		
 		/**
 		 * Checks all conditions and updates unlocked and activated status of each BoxHolder, unlockedTier status of Tree.
+		 * Releases locked Recipes according to Tree progress.
 		 * This method is called before the Tree needs to be used or displayed, to reflect changes made.
 		 * @return this Tree instance, for convenience.
 		 */
 		private Tree validateTree() {
 			// re-verify tier status
 			unlockedTier = 0;
-			int currentTier = 0;
 			
-			// update activated status of each BoxHolder
+			// UPDATE ACTIVATED STATUS OF EACH BOXHOLDER
+			int currentTier = 0;
 			for (List<BoxHolder> tier : boxHolderMatrix) {
 				boolean rowHasActivated = false;
 				
@@ -186,18 +209,23 @@ public final class GameData {
 					bh.updateActivatedStatus();
 					if (bh.activated)
 						rowHasActivated = true;
-				}
+				}	
 				
+				// advance unlockedTier
 				if (rowHasActivated && unlockedTier == currentTier)
 					unlockedTier++;
 				
 				currentTier++;
 			}
 			
-			// update unlocked status of each BoxHolder
+			// UPDATE UNLOCKED STATUS OF EACH BOXHOLDER AND RELEASE RECIPES
 			for (int tier = 0; tier < boxHolderMatrix.size(); tier++) {
-				for (BoxHolder bh : boxHolderMatrix.get(tier))
+				for (BoxHolder bh : boxHolderMatrix.get(tier)) {
 					bh.updateUnlockedStatus(tier, unlockedTier);
+					
+					if (bh.isUnlocked())
+						recipeDatabase.unlockRecipesByBox(bh.boxId);
+				}
 			}
 			
 			return this;
@@ -218,8 +246,12 @@ public final class GameData {
 		return holder;
 	}
 	
+	/**
+	 * Private constructor.
+	 */
 	private GameData() {
-		resetData();
+		resetGameData();
+		loadGameData();
 	}
 	
 	/**
@@ -236,12 +268,21 @@ public final class GameData {
 	}
 	
 	/**
-	 * Adds a new Tree to the database.
+	 * Adds a new Tree to the database. Unlock tier 0 Recipes by default.
+	 * Note: Tree should be fully formed before adding.
 	 * @param treeId the unique identifier for the new Tree.
 	 * @param newTree the new Tree to be added to the database.
 	 */
 	public void addTree(int treeId, Tree newTree) {
 		treeMap.put(treeId, newTree);
+	}
+	
+	/**
+	 * Clears the live and saved Box unlock progress.
+	 */
+	void clearGameData() {
+		resetGameData();
+		saveGameData();
 	}
 	
 	/**
@@ -276,6 +317,20 @@ public final class GameData {
 		// get resource Id's and load
 		for (short i = 0; i < NUM_OF_BOXES; i++)
 			addBox(i, r.getIdentifier("game_box_title" + i, "string", p), r.getIdentifier("game_box_description" + i, "string", p), r.getIdentifier("ic_box_locked", "drawable", p), r.getIdentifier("ic_box_unlocked" + i, "drawable", p), r.getIdentifier("ic_box_activated" + i, "drawable", p));
+	}
+	
+	/**
+	 * Loads game data from preferences file.
+	 */
+	private void loadGameData() {
+		String serialized = sharedPref.getString("SERIALIZED_GAME_DATA", null);
+		
+		if (serialized != null) {
+			String[] boxIds = serialized.split(" ");
+			
+			for (String boxId : boxIds)
+				boxMap.get(Short.valueOf(boxId)).setActivated(true);
+		}
 	}
 	
 	/**
@@ -316,22 +371,48 @@ public final class GameData {
 	
 	/**
 	 * Updates the box after one of its recipes has been completed.
+	 * TODO make more interesting rules or leveling system, for now simply one ping --> activated
 	 * @param boxId the unique identifier for the Box.
 	 */
 	void pingBox(short boxId) {
-		// TODO make more interesting rules or leveling system, for now simply one ping --> activated
 		findBoxById(boxId).setActivated(true);
+		
+		saveGameData();
 	}
 	
 	/**
-	 * Resets the database.
+	 * Loads game into default state with default unlocks and progress.
 	 */
 	@SuppressLint("UseSparseArrays")
-	void resetData() {
+	void resetGameData() {
 		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Integer, Tree>();
 		
+		sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		
+		recipeDatabase = RecipeDatabase.getInstance(context);
+		
 		loadBoxes();
 		loadTrees();
+	}
+	
+	/**
+	 * Save game data as a serialized String to preferences file.
+	 * Currently Box unlock progress is saved.
+	 */
+	private void saveGameData() {
+		String serialized = "";
+		
+		for (Box box : boxMap.values()) {
+			if (box.isActivated())
+				serialized += box.boxId + " ";
+		}
+		
+		// remove trailing space and save to preferences file
+		if (serialized.length() > 0) {
+			SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
+			sharedPrefEditor.putString("SERIALIZED_GAME_DATA", serialized.substring(0, serialized.length() - 1));
+			sharedPrefEditor.commit();
+		}
 	}
 }
