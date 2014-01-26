@@ -35,9 +35,9 @@
         android:orderInCategory="6"
         android:title="@string/menu_settings"/>
     <item
-        android:id="@+id/menu_info"
+        android:id="@+id/menu_adam"
         android:orderInCategory="7"
-        android:title="@string/menu_info"/>
+        android:title="@string/menu_adam"/>
     <item
         android:id="@+id/menu_quit"
         android:orderInCategory="8"
