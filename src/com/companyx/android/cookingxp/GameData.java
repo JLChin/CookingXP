@@ -304,6 +304,14 @@ public final class GameData {
 		return boxMap.get(boxId);
 	}
 	
+	public String getRank() {
+		return "Newbie";
+	}
+	
+	public int getScore() {
+		return 0;
+	}
+	
 	/**
 	 * Returns a List of game Trees.
 	 * @return a List of game Trees.
