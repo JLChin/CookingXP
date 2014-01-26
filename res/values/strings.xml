@@ -109,25 +109,25 @@
     <string name="game_box_title0">Everyone Loves Bacon</string>
     <string name="game_box_description0">Who doesn\'t, right?!</string>
     <string name="game_box_title1">Basic Steak</string>
-    <string name="game_box_description1">Description 1.</string>
+    <string name="game_box_description1">Steak Jitsu.</string>
     <string name="game_box_title2">Patty</string>
-    <string name="game_box_description2">Description 2.</string>
+    <string name="game_box_description2">A good burger isn't good without a Patty!</string>
     <string name="game_box_title3">BLT</string>
-    <string name="game_box_description3">Description 3.</string>
+    <string name="game_box_description3">The Classic Sandwich.</string>
     <string name="game_box_title4">Bacon Wrapped Steak</string>
-    <string name="game_box_description4">Description 4.</string>
+    <string name="game_box_description4">Bacon + Meat = Delicious</string>
     <string name="game_box_title5">Patty Melt</string>
-    <string name="game_box_description5">Description 5.</string>
+    <string name="game_box_description5">Level 2 - Fight!</string>
     <string name="game_box_title6">Meatloaf</string>
-    <string name="game_box_description6">Description 6.</string>
+    <string name="game_box_description6">Not your mother's Meatloaf!</string>
     <string name="game_box_title7">Crockpot Roast</string>
-    <string name="game_box_description7">Description 7.</string>
+    <string name="game_box_description7">Low and slow, that is the tempo!</string>
     <string name="game_box_title8">Meatball</string>
-    <string name="game_box_description8">Description 8.</string>
+    <string name="game_box_description8">Perfect to eat, or use as ammo to start a food fight!</string>
     <string name="game_box_title9">Beef Stew</string>
-    <string name="game_box_description9">Description 9.</string>
+    <string name="game_box_description9">It didn't come out of a can this time!</string>
     <string name="game_box_title10">Chicken Fried Steak</string>
-    <string name="game_box_description10">Description 10.</string>
+    <string name="game_box_description10">There is no Secret Chicken level.</string>
     
     <!-- GAME TREES -->
     <string name="game_tree0">The Way of Beef</string>
@@ -138,6 +138,6 @@
     <string name="info_credits"><b>Development</b>
         \nJames Chin
         \nAdam Hackbarth
-    </string>
+    </string>Steak Jitsu 
 
 </resources>
