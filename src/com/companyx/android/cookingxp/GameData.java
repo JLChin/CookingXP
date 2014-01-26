@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * Game Database
@@ -223,8 +226,15 @@ public final class GameData {
 				for (BoxHolder bh : boxHolderMatrix.get(tier)) {
 					bh.updateUnlockedStatus(tier, unlockedTier);
 					
-					if (bh.isUnlocked())
-						recipeDatabase.unlockRecipesByBox(bh.boxId);
+					if (bh.isUnlocked()) {
+						List<Recipe> newRecipes = recipeDatabase.unlockRecipesByBox(bh.boxId);
+						
+						// new Recipe unlock notification, ignore tier 0 unlocks
+						if (tier > 0) {
+							for (Recipe r : newRecipes)
+								Toast.makeText(context, r.name + " " + context.getString(R.string.recipe_unlocked) + "!", Toast.LENGTH_SHORT).show();
+						}
+					}
 				}
 			}
 			
@@ -295,14 +305,14 @@ public final class GameData {
 	}
 	
 	/**
-	 * Returns a List of updated game Trees.
-	 * @return a List of updated game Trees.
+	 * Returns a List of game Trees.
+	 * @return a List of game Trees.
 	 */
 	public List<Tree> getTrees() {
 		List<Tree> result = new ArrayList<Tree>();
 		
-		for (Map.Entry<Integer, Tree> entry : treeMap.entrySet())
-			result.add(entry.getValue().validateTree());
+		for (Tree tree : treeMap.values())
+			result.add(tree);
 		
 		return result;
 	}
@@ -377,6 +387,7 @@ public final class GameData {
 	void pingBox(short boxId) {
 		findBoxById(boxId).setActivated(true);
 		
+		validate();
 		saveGameData();
 	}
 	
@@ -391,9 +402,12 @@ public final class GameData {
 		sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		
 		recipeDatabase = RecipeDatabase.getInstance(context);
+		recipeDatabase.resetRecipeLocks();
 		
 		loadBoxes();
 		loadTrees();
+		
+		validate();
 	}
 	
 	/**
@@ -409,10 +423,15 @@ public final class GameData {
 		}
 		
 		// remove trailing space and save to preferences file
-		if (serialized.length() > 0) {
-			SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
-			sharedPrefEditor.putString("SERIALIZED_GAME_DATA", serialized.substring(0, serialized.length() - 1));
-			sharedPrefEditor.commit();
-		}
+		if (serialized.length() > 0)
+			sharedPref.edit().putString("SERIALIZED_GAME_DATA", serialized.substring(0, serialized.length() - 1)).commit();
+	}
+	
+	/**
+	 * Re-validates all Trees. Call this method after updates to game progress.
+	 */
+	void validate() {
+		for (Tree tree : treeMap.values())
+			tree.validateTree();
 	}
 }

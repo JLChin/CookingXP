@@ -62,6 +62,7 @@
     <string name="recipe_info_hour">hr</string>
     <string name="recipe_info_hours">hrs</string>
     <string name="recipe_info_min">min</string>
+    <string name="recipe_unlocked">unlocked</string>
     
     <string name="welcome">Welcome to the new cooking game</string>
     

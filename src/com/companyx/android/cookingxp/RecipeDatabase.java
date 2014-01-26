@@ -14,6 +14,7 @@ import com.companyx.android.cookingxp.R;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 /**
  * Recipe Database
@@ -53,6 +54,7 @@ public final class RecipeDatabase {
 	
 	// SYSTEM
 	private static Context context;
+	private static SharedPreferences sharedPref;
 	
 	/**
 	 * Class representing a recipe.
@@ -335,22 +337,26 @@ public final class RecipeDatabase {
 		// for each recipe on the shopping list
 		for (Map.Entry<Integer, Byte> entry : shoppingListRecipes.entrySet()) {
 			Recipe recipe = findRecipeById(entry.getKey());
-			List<RecipeIngredient> recipeIngredients = recipe.ingredients;
 			
-			// for each ingredient of each recipe
-			for (RecipeIngredient ri : recipeIngredients) {
-				Double amount = entry.getValue() * stringToDouble(ri.amount); // recipe quantity * ingredient quantity
-				String measurementAlias = measurementAliases.get(measurementCleaner(ri.measurement));
-				String name = ri.ingredientName;
+			// ignore locked Recipes
+			if (recipe.unlocked) {
+				List<RecipeIngredient> recipeIngredients = recipe.ingredients;
 				
-				if (measurementAlias != null) { // "4 apples" or "5 1/2 lbs. chicken"
-					if (!amountMap.containsKey(name)) {
-						measurementMap.put(name, measurementAlias);
-						amountMap.put(name, amount);
-					} else
-						amountMap.put(name, amountMap.get(name) + amount);
-				} else // 5 tbsps. pepper
-					amountless.add(name);
+				// for each ingredient of each recipe
+				for (RecipeIngredient ri : recipeIngredients) {
+					Double amount = entry.getValue() * stringToDouble(ri.amount); // recipe quantity * ingredient quantity
+					String measurementAlias = measurementAliases.get(measurementCleaner(ri.measurement));
+					String name = ri.ingredientName;
+					
+					if (measurementAlias != null) { // "4 apples" or "5 1/2 lbs. chicken"
+						if (!amountMap.containsKey(name)) {
+							measurementMap.put(name, measurementAlias);
+							amountMap.put(name, amount);
+						} else
+							amountMap.put(name, amountMap.get(name) + amount);
+					} else // 5 tbsps. pepper
+						amountless.add(name);
+				}
 			}
 		}
 		
@@ -446,9 +452,10 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Load favorite Recipes into database from a serialized String containing the recipe indexes.
-	 * @param serialized serialized String containing the recipe indexes.
 	 */
-	public void loadFavoriteRecipes(String serialized) {
+	public void loadFavoriteRecipes() {
+		String serialized = sharedPref.getString("SERIALIZED_FAVORITES", null);
+		
 		if (serialized == null || serialized.length() == 0)
 			return;
 		
@@ -497,9 +504,10 @@ public final class RecipeDatabase {
 	
 	/**
 	 * Load shopping list Recipes into database from a serialized String containing the recipe indexes and respective quantities.
-	 * @param serialized serialized String containing the recipe indexes and respective quantities.
 	 */
-	public void loadShoppingListRecipes(String serialized) {
+	public void loadShoppingListRecipes() {
+		String serialized = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
+		
 		if (serialized == null || serialized.length() == 0)
 			return;
 		
@@ -569,6 +577,19 @@ public final class RecipeDatabase {
 		meats = new HashSet<String>();
 		foodTypeMap = new HashMap<String, Byte>();
 		loadFoodTypes();
+		
+		sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+	}
+	
+	/**
+	 * Revert Recipe unlock status for all Recipes.
+	 * Called by GameData to clear game progress.
+	 */
+	void resetRecipeLocks() {
+		for (Recipe r : idMap.values()) {
+			if (r.unlocked)
+				r.unlocked = false;
+		}
 	}
 	
 	/**

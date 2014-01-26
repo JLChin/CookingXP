@@ -163,8 +163,7 @@ public class RecipeActivity extends BaseActivity {
 		// LOAD SYSTEM VARIABLES
 		recipeDatabase = RecipeDatabase.getInstance(this);
 		gameData = GameData.getInstance(this);
-		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-		sharedPrefEditor = sharedPref.edit();
+		sharedPrefEditor = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).edit();
 		dpiScalingFactor = getResources().getDisplayMetrics().density;
 		
 		// GET RECIPE INFO
@@ -202,8 +201,7 @@ public class RecipeActivity extends BaseActivity {
 						Toast.makeText(getApplicationContext(), getString(R.string.recipe_favorites_added) + " " + recipe.name + " " + getString(R.string.recipe_favorites_to_favorites), Toast.LENGTH_SHORT).show();
 					}
 					
-					sharedPrefEditor.putString("SERIALIZED_FAVORITES", recipeDatabase.getSerializedFavorites());
-					sharedPrefEditor.commit();
+					sharedPrefEditor.putString("SERIALIZED_FAVORITES", recipeDatabase.getSerializedFavorites()).commit();
 				}
 			}
 		});
@@ -223,8 +221,7 @@ public class RecipeActivity extends BaseActivity {
 					byte currentQty = recipeDatabase.getQuantity(recipeId);
 					
 					recipeDatabase.updateQuantity(recipeId, (byte) position); 
-					sharedPrefEditor.putString("SERIALIZED_SHOPPING_LIST", recipeDatabase.getSerializedShoppingList());
-					sharedPrefEditor.commit();
+					sharedPrefEditor.putString("SERIALIZED_SHOPPING_LIST", recipeDatabase.getSerializedShoppingList()).commit();
 					
 					// QUANTITY CHANGE NOTIFICATION
 					if (position > currentQty)
