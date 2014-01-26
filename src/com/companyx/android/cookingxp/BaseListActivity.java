@@ -67,8 +67,8 @@ public class BaseListActivity extends ListActivity {
 		case R.id.menu_settings:
 			// TODO
 			break;
-		case R.id.menu_info:
-			intent = new Intent(this, InfoActivity.class);
+		case R.id.menu_adam:
+			intent = new Intent(this, AdamActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(intent);
 			break;

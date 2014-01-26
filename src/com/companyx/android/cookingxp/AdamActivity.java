@@ -10,21 +10,26 @@ import android.widget.TextView;
  * 
  * @author James Chin <jameslchin@gmail.com>
  */
-public class InfoActivity extends BaseActivity {
+public class AdamActivity extends BaseActivity {
+	private RecipeDatabase recipeDatabase;
+	private GameData gameData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_info);
+		setContentView(R.layout.activity_adam);
 		
 		initialize();
 	}
 	
 	private void initialize() {
-		LinearLayout layoutInfo = (LinearLayout) findViewById(R.id.layout_info);
+		recipeDatabase = RecipeDatabase.getInstance(this);
+		gameData = GameData.getInstance(this);
+		
+		LinearLayout layoutInfo = (LinearLayout) findViewById(R.id.layout_adam);
 		
 		TextView tvInfo = new TextView(this);
-		tvInfo.setText(R.string.info_credits);
+		tvInfo.setText("There are a total of " + recipeDatabase.allRecipes().size() + " recipes unlocked.");
 		tvInfo.setTextSize(16 + 0.5f);
 		
 		layoutInfo.addView(tvInfo);
