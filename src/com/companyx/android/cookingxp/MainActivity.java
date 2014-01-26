@@ -2,9 +2,7 @@ package com.companyx.android.cookingxp;
 
 import java.io.InputStream;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -20,8 +18,8 @@ import android.widget.TextView;
  */
 public class MainActivity extends BaseActivity {
 	// SYSTEM
-	private RecipeDatabase recipeDatabase;
-	private GameData gameData;
+	RecipeDatabase recipeDatabase;
+	GameData gameData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +27,13 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 		
 		loadDatabase();
-		testRandomStuff();
+		initialize();
 	}
 	
-	private void testRandomStuff() {
+	private void initialize() {
+		gameData = GameData.getInstance(this);
+		gameData.validate();
+		
 		LinearLayout layoutMain = (LinearLayout) findViewById(R.id.layout_main);
 		
 		TextView tvWelcome = new TextView(this);
@@ -45,7 +46,7 @@ public class MainActivity extends BaseActivity {
 		buttonReset.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				GameData.getInstance(MainActivity.this).clearGameData();
+				gameData.clearGameData();
 			}	
 		});
 		layoutMain.addView(buttonReset);
@@ -57,24 +58,17 @@ public class MainActivity extends BaseActivity {
 	private void loadDatabase() {
 		recipeDatabase = RecipeDatabase.getInstance(this);
 		recipeDatabase.resetDatabase(); // in case singleton RecipeDatabase was not destroyed (i.e. exit/re-enter app quickly)
-		
-		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
 		// LOAD RECIPES FROM FILE
 		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
 		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
 		loader.loadData();
-
+		
 		// LOAD FAVORITES
-		String serializedFavorites = sharedPref.getString("SERIALIZED_FAVORITES", null);
-		recipeDatabase.loadFavoriteRecipes(serializedFavorites);
+		recipeDatabase.loadFavoriteRecipes();
 		
 		// LOAD SHOPPING LIST
-		String serializedShoppingList = sharedPref.getString("SERIALIZED_SHOPPING_LIST", null);
-		recipeDatabase.loadShoppingListRecipes(serializedShoppingList);
-		
-		// LOAD GAME DATA
-		gameData = GameData.getInstance(this);
+		recipeDatabase.loadShoppingListRecipes();
 	}
 
 	@Override
