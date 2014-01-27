@@ -550,6 +550,13 @@ public final class RecipeDatabase {
 	}
 	
 	/**
+	 * Nulls out resources and holders.
+	 */
+	void release() {
+		holder = null;
+	}
+	
+	/**
 	 * Remove Recipe from favoriteRecipes.
 	 * @param recipeId the unique identifier of the Recipe to remove from favoriteRecipes.
 	 */

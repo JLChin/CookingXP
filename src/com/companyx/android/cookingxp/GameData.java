@@ -400,6 +400,13 @@ public final class GameData {
 	}
 	
 	/**
+	 * Nulls out resources and holders.
+	 */
+	void release() {
+		holder = null;
+	}
+	
+	/**
 	 * Loads game into default state with default unlocks and progress.
 	 */
 	@SuppressLint("UseSparseArrays")
