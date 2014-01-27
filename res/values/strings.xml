@@ -138,6 +138,18 @@
     <string name="game_tree1">Some Other Tree</string>
     <string name="game_tree2">Yet Another Tree</string>
     
+    <!-- GAME RANKS -->
+    <string name="game_rank0">Aspiring Cook</string>
+    <string name="game_rank1">Cook</string>
+    <string name="game_rank2">Apprentice Chef</string>
+    <string name="game_rank3">Station Chef</string>
+    <string name="game_rank4">Chef</string>
+    <string name="game_rank5">Senior Chef</string>
+    <string name="game_rank6">Sous Chef</string>
+    <string name="game_rank7">Chef de cuisine</string>
+    <string name="game_rank8">Executive Chef</string>
+    <string name="game_rank9">Master Chef</string>
+    
     <!-- INFO -->
     <string name="info_credits"><b>Development</b>
         \nJames Chin

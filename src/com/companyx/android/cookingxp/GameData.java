@@ -36,6 +36,7 @@ public final class GameData {
 	// STATE VARIABLES
 	private static Map<Short, Box> boxMap; // maps unique boxId to Box
 	private static Map<Integer, Tree> treeMap; // maps unique treeId to Tree
+	private static int score;
 	
 	// SINGLETON
 	private static GameData holder;
@@ -304,12 +305,20 @@ public final class GameData {
 		return boxMap.get(boxId);
 	}
 	
+	/**
+	 * Returns the user's current rank.
+	 * @return the user's current rank.
+	 */
 	public String getRank() {
-		return "Newbie";
+		return context.getString(context.getResources().getIdentifier("game_rank" + score, "string", context.getPackageName()));
 	}
 	
+	/**
+	 * Returns the user's current score.
+	 * @return the user's current score.
+	 */
 	public int getScore() {
-		return 0;
+		return score;
 	}
 	
 	/**
@@ -341,14 +350,17 @@ public final class GameData {
 	 * Loads game data from preferences file.
 	 */
 	private void loadGameData() {
+		// LOAD BOX UNLOCKS
 		String serialized = sharedPref.getString("SERIALIZED_GAME_DATA", null);
-		
 		if (serialized != null) {
 			String[] boxIds = serialized.split(" ");
 			
 			for (String boxId : boxIds)
 				boxMap.get(Short.valueOf(boxId)).setActivated(true);
 		}
+		
+		// LOAD SCORE
+		score = sharedPref.getInt("GAME_SCORE", 0);
 	}
 	
 	/**
