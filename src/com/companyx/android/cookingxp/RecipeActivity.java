@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -49,12 +48,6 @@ public class RecipeActivity extends BaseActivity {
 	// STATE VARIABLES
 	private int recipeId;
 	private Recipe recipe;
-	
-	// SYSTEM
-	private GameData gameData;
-	private RecipeDatabase recipeDatabase;
-	private SharedPreferences.Editor sharedPrefEditor;
-	private float dpiScalingFactor;
 	
 	/**
 	 * Adds a formatted header to the parent ViewGroup.
@@ -160,12 +153,6 @@ public class RecipeActivity extends BaseActivity {
 	 * Set up the Activity.
 	 */
 	private void initialize() {
-		// LOAD SYSTEM VARIABLES
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		gameData = GameData.getInstance(this);
-		sharedPrefEditor = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).edit();
-		dpiScalingFactor = getResources().getDisplayMetrics().density;
-		
 		// GET RECIPE INFO
 		recipeId = getIntent().getIntExtra("recipeId", -1);
 		recipe = recipeDatabase.findRecipeById(recipeId);

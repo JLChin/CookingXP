@@ -18,25 +18,20 @@ import android.widget.TextView;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class MainActivity extends BaseActivity {
-	// SYSTEM
-	private RecipeDatabase recipeDatabase;
-	private GameData gameData;
-	private float dpiScalingFactor;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		loadDatabase();
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		loadDatabase();
 		initialize();
 	}
 	
 	private void initialize() {
-		gameData = GameData.getInstance(this);
 		gameData.validate();
 		
-		dpiScalingFactor = getResources().getDisplayMetrics().density;
 		int padding = (int) (dpiScalingFactor * 10 + 0.5f);
 		
 		LinearLayout layoutMain = (LinearLayout) findViewById(R.id.layout_main);

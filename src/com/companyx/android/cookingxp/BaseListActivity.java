@@ -3,7 +3,9 @@ package com.companyx.android.cookingxp;
 import com.companyx.android.cookingxp.R;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,12 +16,27 @@ import android.view.MenuItem;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class BaseListActivity extends ListActivity {
+	// SYSTEM
+	protected RecipeDatabase recipeDatabase;
+	protected GameData gameData;
+	protected SharedPreferences.Editor sharedPrefEditor;
+	protected float dpiScalingFactor;
+	
+	private void init() {
+		recipeDatabase = RecipeDatabase.getInstance(this);
+		gameData = GameData.getInstance(this);
+		sharedPrefEditor = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).edit();
+		dpiScalingFactor = getResources().getDisplayMetrics().density;
+		
+		// enable "type-to-search", activates the search dialog when the user starts typing on the keyboard
+		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// enable "type-to-search", activates the search dialog when the user starts typing on the keyboard
-		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+		init();
 	}
 
 	@Override

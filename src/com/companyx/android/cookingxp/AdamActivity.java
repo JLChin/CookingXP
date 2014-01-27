@@ -11,8 +11,6 @@ import android.widget.TextView;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class AdamActivity extends BaseActivity {
-	private RecipeDatabase recipeDatabase;
-	private GameData gameData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +21,6 @@ public class AdamActivity extends BaseActivity {
 	}
 	
 	private void initialize() {
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		gameData = GameData.getInstance(this);
-		
 		LinearLayout layoutInfo = (LinearLayout) findViewById(R.id.layout_adam);
 		
 		TextView tvInfo = new TextView(this);

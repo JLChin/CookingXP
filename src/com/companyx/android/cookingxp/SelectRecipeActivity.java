@@ -45,10 +45,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 	private List<Recipe> recipes;
 	private String operation;
 	
-	// SYSTEM
-	private RecipeDatabase recipeDatabase;
-	private float dpiScalingFactor;
-	
 	/**
 	 * Custom Recipe list view adapter.
 	 */
@@ -164,10 +160,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 		layoutIngredients = (LinearLayout) findViewById(R.id.layout_select_recipe_ingredients);
 		
 		initializeListView();
-		
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		
-		dpiScalingFactor = getResources().getDisplayMetrics().density;
 	}
 
 	/**
