@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
 		LinearLayout layoutInfo = new LinearLayout(this);
 		layoutInfo.setOrientation(LinearLayout.VERTICAL);
 		layoutInfo.setPadding(padding, padding, padding, padding);
-		layoutInfo.setBackgroundColor(Color.BLACK);
+		layoutInfo.setBackgroundResource(R.drawable.box_background_dark);
 		
 		// RANK
 		TextView tvRank = new TextView(this);
@@ -83,7 +83,6 @@ public class MainActivity extends BaseActivity {
 	 */
 	private void loadDatabase() {
 		recipeDatabase = RecipeDatabase.getInstance(this);
-		recipeDatabase.resetDatabase(); // in case singleton RecipeDatabase was not destroyed (i.e. exit/re-enter app quickly)
 
 		// LOAD RECIPES FROM FILE
 		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
