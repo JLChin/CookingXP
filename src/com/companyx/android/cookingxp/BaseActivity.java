@@ -46,6 +46,14 @@ public class BaseActivity extends Activity {
 	}
 	
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		recipeDatabase.release();
+		gameData.release();
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 		
