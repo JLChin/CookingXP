@@ -34,17 +34,17 @@ public final class GameData {
 	private static final short NUM_OF_BOXES = 11;
 	
 	// STATE VARIABLES
-	private static Map<Short, Box> boxMap; // maps unique boxId to Box
-	private static Map<Integer, Tree> treeMap; // maps unique treeId to Tree
-	private static int score;
+	private Map<Short, Box> boxMap; // maps unique boxId to Box
+	private Map<Integer, Tree> treeMap; // maps unique treeId to Tree
+	private int score;
 	
 	// SINGLETON
 	private static GameData holder;
 	
 	// SYSTEM
-	private static Context context;
-	private static SharedPreferences sharedPref;
-	private static RecipeDatabase recipeDatabase;
+	private Context context;
+	private SharedPreferences sharedPref;
+	private RecipeDatabase recipeDatabase;
 	
 	/**
 	 * Class representing a box on the game Tree.
@@ -249,18 +249,18 @@ public final class GameData {
 	 * @return the singleton instance of the game database.
 	 */
 	public synchronized static GameData getInstance(Context c) {
-		context = c;
-		
 		if (holder == null)
-			holder = new GameData();
+			holder = new GameData(c);
 		
 		return holder;
 	}
 	
 	/**
 	 * Private constructor.
+	 * @param c the calling context.
 	 */
-	private GameData() {
+	private GameData(Context c) {
+		context = c;
 		resetGameData();
 		loadGameData();
 	}
@@ -412,7 +412,7 @@ public final class GameData {
 	}
 	
 	/**
-	 * Nulls out resources and holders.
+	 * Release all system references for immediate garbage collection.
 	 */
 	void release() {
 		holder = null;
@@ -425,6 +425,7 @@ public final class GameData {
 	void resetGameData() {
 		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Integer, Tree>();
+		score = 0;
 		
 		sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		
@@ -452,6 +453,14 @@ public final class GameData {
 		// remove trailing space and save to preferences file
 		if (serialized.length() > 0)
 			sharedPref.edit().putString("SERIALIZED_GAME_DATA", serialized.substring(0, serialized.length() - 1)).commit();
+	}
+	
+	/**
+	 * Set score.
+	 * @param newScore the new score.
+	 */
+	void setScore(int newScore) {
+		score = newScore;
 	}
 	
 	/**
