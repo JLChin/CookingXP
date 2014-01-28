@@ -102,6 +102,14 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		recipeDatabase.release();
+		gameData.release();
+	}
+	
+	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		

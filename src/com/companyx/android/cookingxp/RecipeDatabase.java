@@ -39,22 +39,22 @@ public final class RecipeDatabase {
 	// MEASUREMENT ALIASES
 	public static final String[] POUNDS_ALIASES = {"lb", "lbs", "pound", "pounds"};
 	public static final String POUNDS = "pounds";
-	private static Map<String, String> measurementAliases; // maps measurement alias to the preferred measurement name, i.e. "lbs" to "pounds"
+	private Map<String, String> measurementAliases; // maps measurement alias to the preferred measurement name, i.e. "lbs" to "pounds"
 	
 	// STATE VARIABLES
-	private static Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeId's
-	private static Map<Integer, Recipe> idMap; // maps recipeId to corresponding recipe
-	private static Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
-	private static Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
-	private static Set<Integer> vegetarianRecipes; // set containing recipeId's of vegetarian recipes
-	private static Map<Short, Set<Integer>> boxMap; // maps boxId to Set of RecipeId's
+	private Map<String, Set<Integer>> indexMap; // maps search word to Set of recipeId's
+	private Map<Integer, Recipe> idMap; // maps recipeId to corresponding recipe
+	private Set<Integer> favoriteRecipes; // set containing recipeId's of favorite recipes
+	private Map<Integer, Byte> shoppingListRecipes; // maps recipeId to shopping list quantity
+	private Set<Integer> vegetarianRecipes; // set containing recipeId's of vegetarian recipes
+	private Map<Short, Set<Integer>> boxMap; // maps boxId to Set of RecipeId's
 	
 	// SINGLETON
 	private static RecipeDatabase holder;
 	
 	// SYSTEM
-	private static Context context;
-	private static SharedPreferences sharedPref;
+	private Context context;
+	private SharedPreferences sharedPref;
 	
 	/**
 	 * Class representing a recipe.
@@ -153,15 +153,18 @@ public final class RecipeDatabase {
 	 * @return the singleton instance of the Recipe database.
 	 */
 	public synchronized static RecipeDatabase getInstance(Context c) {
-		context = c;
-		
 		if (holder == null)
-			holder = new RecipeDatabase();
+			holder = new RecipeDatabase(c);
 		
 		return holder;
 	}
 	
-	private RecipeDatabase() {
+	/**
+	 * Private constructor.
+	 * @param c the calling context.
+	 */
+	private RecipeDatabase(Context c) {
+		context = c;
 		resetDatabase();
 	}
 	
@@ -550,7 +553,7 @@ public final class RecipeDatabase {
 	}
 	
 	/**
-	 * Nulls out resources and holders.
+	 * Release all system references for immediate garbage collection.
 	 */
 	void release() {
 		holder = null;
@@ -568,7 +571,7 @@ public final class RecipeDatabase {
 	 * Resets the database.
 	 */
 	@SuppressLint("UseSparseArrays")
-	public void resetDatabase() {
+	private void resetDatabase() {
 		indexMap = new HashMap<String, Set<Integer>>();
 		idMap = new HashMap<Integer, Recipe>();
 		favoriteRecipes = new HashSet<Integer>();
@@ -702,11 +705,13 @@ public final class RecipeDatabase {
 		Set<Integer> recipeSet = boxMap.get(boxId);
 		
 		// unlock Recipes, counting only the ones not already unlocked
-		for (int recipeId : recipeSet) {
-			Recipe recipe = findRecipeById(recipeId);
-			if (!recipe.unlocked) {
-				recipe.unlocked = true;
-				unlockedRecipes.add(recipeId);
+		if (recipeSet != null) {
+			for (int recipeId : recipeSet) {
+				Recipe recipe = findRecipeById(recipeId);
+				if (!recipe.unlocked) {
+					recipe.unlocked = true;
+					unlockedRecipes.add(recipeId);
+				}
 			}
 		}
 		

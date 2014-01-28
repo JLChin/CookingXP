@@ -44,14 +44,6 @@ public class BaseActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		
-		recipeDatabase.release();
-		gameData.release();
-	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
