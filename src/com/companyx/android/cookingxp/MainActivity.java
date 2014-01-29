@@ -18,11 +18,11 @@ import android.widget.TextView;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class MainActivity extends BaseActivity {
+	// VIEW HOLDERS
+	private LinearLayout layoutMain;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		loadDatabase();
-		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
@@ -30,11 +30,48 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	private void initialize() {
+		// LOAD RECIPES FROM FILE
+		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
+		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
+		loader.loadData();
+		
+		// LOAD FAVORITES
+		recipeDatabase.loadFavoriteRecipes();
+		
+		// LOAD SHOPPING LIST
+		recipeDatabase.loadShoppingListRecipes();
+		
 		gameData.validate();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 		
+		recipeDatabase.release();
+		gameData.release();
+	}
+	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		
+		// QUIT
+		finish();
+	}
+	
+	/**
+	 * Refresh the screen layout.
+	 * This is called onRestart() and handles any game updates since the user left the current Activity.
+	 */
+	private void refreshLayout() {
+		layoutMain = (LinearLayout) findViewById(R.id.layout_main);
 		int padding = (int) (dpiScalingFactor * 10 + 0.5f);
-		
-		LinearLayout layoutMain = (LinearLayout) findViewById(R.id.layout_main);
 		
 		// USER INFO BOX
 		LinearLayout layoutInfoContainer = new LinearLayout(this);
@@ -73,47 +110,25 @@ public class MainActivity extends BaseActivity {
 			@Override
 			public void onClick(View arg0) {
 				gameData.clearGameData();
+				
+				layoutMain.removeAllViews();
+				refreshLayout();
 			}	
 		});
 		layoutMain.addView(buttonReset);
 	}
-	
-	/**
-	 * Bulk recipe data loading, at the start of the app.
-	 */
-	private void loadDatabase() {
-		recipeDatabase = RecipeDatabase.getInstance(this);
 
-		// LOAD RECIPES FROM FILE
-		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
-		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
-		loader.loadData();
+	@Override
+	protected void onRestart() {
+		super.onRestart();
 		
-		// LOAD FAVORITES
-		recipeDatabase.loadFavoriteRecipes();
-		
-		// LOAD SHOPPING LIST
-		recipeDatabase.loadShoppingListRecipes();
+		layoutMain.removeAllViews();
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
+	protected void onStart() {
+		super.onStart();
 		
-		recipeDatabase.release();
-		gameData.release();
-	}
-	
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		
-		// QUIT
-		finish();
+		refreshLayout();
 	}
 }
