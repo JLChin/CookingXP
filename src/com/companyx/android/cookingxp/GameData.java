@@ -36,7 +36,7 @@ public final class GameData {
 	// STATE VARIABLES
 	private Map<Short, Box> boxMap; // maps unique boxId to Box
 	private Map<Integer, Tree> treeMap; // maps unique treeId to Tree
-	private int score;
+	private Integer score;
 	
 	// SINGLETON
 	private static GameData holder;
@@ -261,6 +261,8 @@ public final class GameData {
 	 */
 	private GameData(Context c) {
 		context = c;
+		score = 0;
+		
 		resetGameData();
 		loadGameData();
 	}
@@ -360,7 +362,9 @@ public final class GameData {
 		}
 		
 		// LOAD SCORE
-		score = sharedPref.getInt("GAME_SCORE", 0);
+		synchronized(score) {
+			score = sharedPref.getInt("GAME_SCORE", 0);
+		}
 	}
 	
 	/**
@@ -407,6 +411,10 @@ public final class GameData {
 	void pingBox(short boxId) {
 		findBoxById(boxId).setActivated(true);
 		
+		synchronized(score) {
+			score++;
+		}
+		
 		validate();
 		saveGameData();
 	}
@@ -425,7 +433,9 @@ public final class GameData {
 	void resetGameData() {
 		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Integer, Tree>();
-		score = 0;
+		synchronized(score) {
+			score = 0;
+		}
 		
 		sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		
@@ -453,6 +463,8 @@ public final class GameData {
 		// remove trailing space and save to preferences file
 		if (serialized.length() > 0)
 			sharedPref.edit().putString("SERIALIZED_GAME_DATA", serialized.substring(0, serialized.length() - 1)).commit();
+		
+		sharedPref.edit().putInt("GAME_SCORE", score).commit();
 	}
 	
 	/**
@@ -460,7 +472,9 @@ public final class GameData {
 	 * @param newScore the new score.
 	 */
 	void setScore(int newScore) {
-		score = newScore;
+		synchronized(score) {
+			score = newScore;
+		}
 	}
 	
 	/**
