@@ -2,8 +2,10 @@ package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 
@@ -198,9 +200,9 @@ public final class GameData {
 		 * Checks all conditions and updates unlocked and activated status of each BoxHolder, unlockedTier status of Tree.
 		 * Releases locked Recipes according to Tree progress.
 		 * This method is called before the Tree needs to be used or displayed, to reflect changes made.
-		 * @return this Tree instance, for convenience.
+		 * @return the Set of recipeId's whose Recipes have been newly unlocked.
 		 */
-		private Tree validateTree() {
+		private Set<Integer> validateTree() {
 			// re-verify tier status
 			unlockedTier = 0;
 			
@@ -223,23 +225,20 @@ public final class GameData {
 			}
 			
 			// UPDATE UNLOCKED STATUS OF EACH BOXHOLDER AND RELEASE RECIPES
+			Set<Integer> unlockedRecipes = new HashSet<Integer>();
 			for (int tier = 0; tier < boxHolderMatrix.size(); tier++) {
 				for (BoxHolder bh : boxHolderMatrix.get(tier)) {
 					bh.updateUnlockedStatus(tier, unlockedTier);
 					
 					if (bh.isUnlocked()) {
-						List<Recipe> newRecipes = recipeDatabase.unlockRecipesByBox(bh.boxId);
-						
-						// new Recipe unlock notification, ignore tier 0 unlocks
-						if (tier > 0) {
-							for (Recipe r : newRecipes)
-								Toast.makeText(context, r.name + " " + context.getString(R.string.recipe_unlocked) + "!", Toast.LENGTH_SHORT).show();
-						}
+						// unlock Recipes and accumulate Set of recipeId's whose Recipes have been newly unlocked
+						for (Integer i : recipeDatabase.unlockRecipesByBox(bh.boxId))
+							unlockedRecipes.add(i);
 					}
 				}
 			}
 			
-			return this;
+			return unlockedRecipes;
 		}
 	}
 	
@@ -415,7 +414,10 @@ public final class GameData {
 			score++;
 		}
 		
-		validate();
+		// validate and notify of new Recipe unlocks
+		for (Recipe r : recipeDatabase.getRecipesById(validate()))
+			Toast.makeText(context, r.name + " " + context.getString(R.string.recipe_unlocked) + "!", Toast.LENGTH_SHORT).show();
+		
 		saveGameData();
 	}
 	
@@ -479,9 +481,16 @@ public final class GameData {
 	
 	/**
 	 * Re-validates all Trees. Call this method after updates to game progress.
+	 * @return the Set of recipeId's whose Recipes have been newly unlocked.
 	 */
-	void validate() {
-		for (Tree tree : treeMap.values())
-			tree.validateTree();
+	Set<Integer> validate() {
+		Set<Integer> unlockedRecipes = new HashSet<Integer>();
+		
+		for (Tree tree : treeMap.values()) {
+			for (Integer i : tree.validateTree())
+				unlockedRecipes.add(i);
+		}
+		
+		return unlockedRecipes;
 	}
 }

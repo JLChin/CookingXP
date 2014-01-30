@@ -301,4 +301,16 @@ public class SelectRecipeActivity extends BaseListActivity {
 		setIntent(intent);
 		handleIntent(intent);
 	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
 }
