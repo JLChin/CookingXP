@@ -261,7 +261,7 @@ public final class RecipeDatabase {
 	 * @param recipeIdSet the Set of recipeId's to retrieve the sorted List for.
 	 * @return the List of Recipes corresponding to the Set of recipeId's, sorted by name.
 	 */
-	private List<Recipe> getRecipesById(Set<Integer> recipeIdSet) {
+	List<Recipe> getRecipesById(Set<Integer> recipeIdSet) {
 		List<Recipe> result = new ArrayList<Recipe>();
 		
 		if (recipeIdSet != null) {
@@ -696,9 +696,9 @@ public final class RecipeDatabase {
 	/**
 	 * Unlocks all Recipes that apply to the specified Box.
 	 * @param boxId the unique identifier for the Box whose recipes are to be unlocked.
-	 * @return a List of Recipes that have been newly unlocked, sorted by name, excluding Recipes already unlocked.
+	 * @return a Set of recipeId's whose Recipes have been newly unlocked, excluding Recipes already unlocked.
 	 */
-	public List<Recipe> unlockRecipesByBox(short boxId) {
+	public Set<Integer> unlockRecipesByBox(short boxId) {
 		Set<Integer> unlockedRecipes = new HashSet<Integer>();
 		
 		// retrieve the Set of Recipes unlocked by this Box
@@ -715,7 +715,7 @@ public final class RecipeDatabase {
 			}
 		}
 		
-		return getRecipesById(unlockedRecipes);
+		return unlockedRecipes;
 	}
 	
 	/**
