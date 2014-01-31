@@ -30,8 +30,6 @@ import com.companyx.android.cookingxp.RecipeDatabase.ShoppingList;
  * 
  * Multi-purposed recipe selection activity.
  * 
- * TODO orientation, screen size, density etc
- * 
  * @author James Chin <jameslchin@gmail.com>
  */
 public class SelectRecipeActivity extends BaseListActivity {
@@ -129,13 +127,17 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
-	 * Perform search if user arrived at this activity via Search, return complete recipe list otherwise.
-	 * @param intent the Intent passed to this Activity.
+	 * Builds the most current state/progress based on Intent. The Intent is used to conveniently store state information.
+	 * Performs search if user arrived at this activity via Search.
+	 * @param intent the Intent attached to this Activity.
 	 */
 	private void handleIntent(Intent intent) {
 		// receive search action and other operations
 		String action = intent.getAction();
 		operation = intent.getStringExtra("operation");
+		
+		// retrieve category from Intent if this Activity has been recreated after a category was chosen
+		String category = intent.getStringExtra("category");
 		
 		// reset views
 		layoutIngredients.removeAllViews();
@@ -150,7 +152,8 @@ public class SelectRecipeActivity extends BaseListActivity {
 				loadShoppingListRecipes();
 			else if (operation.equals("Categories"))
 				loadCategories();
-		}
+		} else // operation == null, display Recipe Category listing
+			loadCategory(category);
 	}
 	
 	/**
@@ -200,6 +203,11 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 */
 	private void loadCategory(String category) {
 		operation = null; // remove "Categories" status
+		
+		// update Intent (using Intent to conveniently store state information)
+		Intent intent =  getIntent();
+		intent.removeExtra("operation");
+		intent.putExtra("category", category);
 		
 		List<String> searchStrings = new ArrayList<String>();
 		
@@ -304,13 +312,10 @@ public class SelectRecipeActivity extends BaseListActivity {
 
 	@Override
 	protected void onRestart() {
-		// TODO Auto-generated method stub
 		super.onRestart();
-	}
-
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
+		
+		// update results when user navigates away and returns to this Activity
+		handleIntent(getIntent());
+		
 	}
 }
