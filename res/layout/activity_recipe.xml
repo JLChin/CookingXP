@@ -1,6 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_recipe_body"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -13,26 +12,56 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/textview_recipe_name"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1" >
 
-        <ImageButton
-            android:id="@+id/imagebutton_recipe_favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/recipe_favorites_button_description"
-            android:src="@drawable/ic_action_star" />
+            <TextView
+                android:id="@+id/textview_recipe_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Spinner
-            android:id="@+id/spinner_recipe_shopping_list"
+            <TextView
+                android:id="@+id/textview_recipe_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textview_recipe_name" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/button_background_gray" />
+            android:layout_height="wrap_content" >
+
+            <ImageButton
+                android:id="@+id/imagebutton_recipe_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/recipe_favorites_button_description"
+                android:src="@drawable/ic_action_star" />
+
+            <Spinner
+                android:id="@+id/spinner_recipe_shopping_list"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@id/imagebutton_recipe_favorite"
+                android:layout_toRightOf="@id/imagebutton_recipe_favorite"
+                android:background="@drawable/button_background_gray" />
+        </RelativeLayout>
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/layout_recipe_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
 </LinearLayout>

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,31 +14,32 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companyx.android.appx.R;
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 import com.companyx.android.cookingxp.RecipeDatabase.RecipeDirection;
 import com.companyx.android.cookingxp.RecipeDatabase.RecipeIngredient;
+import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 
 /**
  * Recipe Activity
- * 
- * TODO Step-by-Step Walkthrough
  * 
  *  @author James Chin <jameslchin@gmail.com>
  */
 public class RecipeActivity extends BaseActivity {
 	// DEFAULT SETTINGS
-	public static final byte MAX_QUANTITY = 8;
+	private static final byte MAX_QUANTITY = 8;
 	
 	// VIEW HOLDERS
 	private LinearLayout layoutBody;
 	private TextView textViewName;
+	private TextView textViewSubtitle;
 	private ImageButton buttonFavorite;
 	private Spinner spinnerShoppingList;
 	
@@ -46,26 +47,110 @@ public class RecipeActivity extends BaseActivity {
 	private int recipeId;
 	private Recipe recipe;
 	
-	// SYSTEM
-	private RecipeDatabase recipeDatabase;
-	private SharedPreferences.Editor sharedPrefEditor;
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_recipe);
+	/**
+	 * Adds a formatted header to the parent ViewGroup.
+	 * @param title the String to use as the header title.
+	 * @param viewGroup the parent ViewGroup to add the header to.
+	 * @param context the parent Context.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 */
+	static void addHeader(String title, ViewGroup viewGroup, Context context, float scalingFactor) {
+		// leading space
+		viewGroup.addView(new View(context), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (scalingFactor * 16 + 0.5f)));
 		
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-		initialize();
+		// TextView
+		TextView header = new TextView(context);
+		header.setText(title);
+		header.setTypeface(null, Typeface.BOLD);
+		int padding = (int) (scalingFactor * 10 + 0.5f);
+		header.setPadding(padding, padding, padding, padding);
+		header.setTextSize(16 + 0.5f);
+		header.setTextColor(Color.WHITE);
+		header.setBackgroundColor(Color.BLACK);
+		viewGroup.addView(header, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		
+		addHorizontalSeparator(viewGroup, Color.BLACK, 3.0f, context, scalingFactor);
 	}
 	
-	private void initialize() {
-		// LOAD SYSTEM VARIABLES
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-		sharedPrefEditor = sharedPref.edit();
+	/**
+	 * Adds a horizontal divider View to the parent ViewGroup.
+	 * @param viewGroup the parent ViewGroup to add the separator line to.
+	 * @param color the color of the separator line.
+	 * @param dpThickness the thickness of the separator line to be drawn, in density-independent pixels (dip).
+	 * @param context the parent Context.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 */
+	static void addHorizontalSeparator(ViewGroup viewGroup, int color, float dpThickness, Context context, float scalingFactor) {
+		View separator = new View(context);
+		separator.setBackgroundColor(color);
+		viewGroup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (scalingFactor * dpThickness + 0.5f)));
+	}
+	
+	/**
+	 * Adds a formatted info line to the parent ViewGroup.
+	 * @param info the String to add as the info.
+	 * @param viewGroup the parent ViewGroup to add the info line to.
+	 * @param context the parent Context.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 */
+	static void addInfoLine(String info, ViewGroup viewGroup, Context context, float scalingFactor) {
+		TextView tv = new TextView(context);
+		tv.setText(info);
+		tv.setTextSize(16 + 0.5f);
+		tv.setTextColor(Color.GRAY);
+		int padding = (int) (scalingFactor * 2 + 0.5f);
+		tv.setPadding(0, padding, 0, padding);
+		viewGroup.addView(tv);
+	}
+	
+	/**
+	 * Adds a formatted text line to the parent ViewGroup.
+	 * @param text the String to add as the text.
+	 * @param viewGroup the parent ViewGroup to add the text line to.
+	 * @param context the parent Context.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 */
+	static void addTextLine(String text, ViewGroup viewGroup, Context context, float scalingFactor) {
+		TextView tv = new TextView(context);
+		tv.setText(text);
+		tv.setTextSize(16 + 0.5f);
+		int padding = (int) (scalingFactor * 6 + 0.5f);
+		tv.setPadding(0, padding, 0, padding);
+		viewGroup.addView(tv);
 		
+		addHorizontalSeparator(viewGroup, Color.LTGRAY, 1.0f, context, scalingFactor);
+	}
+	
+	/**
+	 * Returns a string containing the formatted hour and minute representation of the recipe cooking time.
+	 * @param recipeTime the RecipeTime object containing the time information for this Recipe.
+	 * @param context the parent Context.
+	 * @return a string containing the formatted hour and minute representation of the recipe cooking time.
+	 */
+	static String getTime(RecipeTime recipeTime, Context context) {
+		// retrieve total time
+		short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
+		
+		if (totalTimeInMin <= 0)
+			return " --- ";
+		
+		// construct hours string
+		short hours = (short) (totalTimeInMin / 60);
+		String hoursStr = "";
+		if (hours != 0) {
+			if (hours == 1)
+				hoursStr += hours + " " + context.getString(R.string.recipe_info_hour) + " ";
+			else
+				hoursStr += hours + " " + context.getString(R.string.recipe_info_hours) + " ";
+		}
+			
+		return hoursStr + (totalTimeInMin % 60) + " " + context.getString(R.string.recipe_info_min);
+	}
+	
+	/**
+	 * Set up the Activity.
+	 */
+	private void initialize() {
 		// GET RECIPE INFO
 		recipeId = getIntent().getIntExtra("recipeId", -1);
 		recipe = recipeDatabase.findRecipeById(recipeId);
@@ -73,6 +158,13 @@ public class RecipeActivity extends BaseActivity {
 		// RECIPE NAME
 		textViewName = (TextView) findViewById(R.id.textview_recipe_name);
 		textViewName.setText(recipe.name);
+		textViewName.setTextSize(18 + 0.5f);
+		
+		// RECIPE SUBTITLE
+		textViewSubtitle = (TextView) findViewById(R.id.textview_recipe_subtitle);
+		textViewSubtitle.setText(recipe.author);
+		textViewSubtitle.setTextColor(Color.GRAY);
+		textViewSubtitle.setTextSize(14 + 0.5f);
 		
 		// FAVORITE BUTTON
 		buttonFavorite = (ImageButton) findViewById(R.id.imagebutton_recipe_favorite);
@@ -94,8 +186,7 @@ public class RecipeActivity extends BaseActivity {
 						Toast.makeText(getApplicationContext(), getString(R.string.recipe_favorites_added) + " " + recipe.name + " " + getString(R.string.recipe_favorites_to_favorites), Toast.LENGTH_SHORT).show();
 					}
 					
-					sharedPrefEditor.putString("SERIALIZED_FAVORITES", recipeDatabase.getSerializedFavorites());
-					sharedPrefEditor.commit();
+					sharedPrefEditor.putString("SERIALIZED_FAVORITES", recipeDatabase.getSerializedFavorites()).commit();
 				}
 			}
 		});
@@ -115,8 +206,7 @@ public class RecipeActivity extends BaseActivity {
 					byte currentQty = recipeDatabase.getQuantity(recipeId);
 					
 					recipeDatabase.updateQuantity(recipeId, (byte) position); 
-					sharedPrefEditor.putString("SERIALIZED_SHOPPING_LIST", recipeDatabase.getSerializedShoppingList());
-					sharedPrefEditor.commit();
+					sharedPrefEditor.putString("SERIALIZED_SHOPPING_LIST", recipeDatabase.getSerializedShoppingList()).commit();
 					
 					// QUANTITY CHANGE NOTIFICATION
 					if (position > currentQty)
@@ -135,43 +225,75 @@ public class RecipeActivity extends BaseActivity {
 		// RECIPE BODY
 		layoutBody = (LinearLayout) findViewById(R.id.layout_recipe_body);
 		
+		// INFORMATION
+		addHeader(getString(R.string.recipe_header_info), layoutBody, this, scalingFactor);
+		LinearLayout llInfoContainer = new LinearLayout(this);
+		
+		// left side: info
+		LinearLayout llInfo = new LinearLayout(this);
+		llInfo.setOrientation(LinearLayout.VERTICAL);
+		
+		// preparation time
+		addInfoLine(getString(R.string.recipe_info_prep_time) + ": " + getTime(recipe.recipeTime, this), llInfo, this, scalingFactor);
+		
+		// servings
+		addInfoLine(getString(R.string.recipe_info_servings) + ": " + recipe.numOfServings, llInfo, this, scalingFactor);
+		
+		// right side: boxes
+		LinearLayout llBoxes = new LinearLayout(this);
+		llBoxes.setOrientation(LinearLayout.VERTICAL);
+		
+		List<Short> boxes = recipe.boxes;
+		for (short boxId : boxes) {
+			ImageView iv = new ImageView(this);
+			iv.setImageResource(gameData.findBoxById(boxId).unlockedImgRes);
+			llBoxes.addView(iv);
+		}
+		
+		llInfoContainer.addView(llInfo, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+		llInfoContainer.addView(llBoxes, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		layoutBody.addView(llInfoContainer, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		
 		// INGREDIENTS
+		addHeader(getString(R.string.recipe_header_ingredients), layoutBody, this, scalingFactor);
 		for (RecipeIngredient ri : recipe.ingredients) {
-			addSeparator(layoutBody);
-			
-			TextView tv = new TextView(this);
 			String s = ri.amount + " " + ri.measurement + " " + ri.ingredientName;
 			
 			// ingredient notes
 			String notes = ri.notes;
+			if (notes != null && notes.length() > 1)
+				s += " (" + notes + ")";
 			
-			if (notes != null && notes != "" && notes != " ") // TODO something unexpected is being added to notes when it's supposed to be blank
-				s += ", " + notes;
-			
-			tv.setText(s);
-			layoutBody.addView(tv);
+			addTextLine(s, layoutBody, this, scalingFactor);
 		}
 		
 		// DIRECTIONS
+		addHeader(getString(R.string.recipe_header_directions), layoutBody, this, scalingFactor);
 		if (recipe.directions != null) {
-			for (RecipeDirection rd : recipe.directions) {
-				addSeparator(layoutBody);
-				
-				TextView tv = new TextView(this);
-				String s = rd.direction;
-				tv.setText(s);
-				layoutBody.addView(tv);
-			}
+			for (RecipeDirection rd : recipe.directions)
+				addTextLine(rd.direction, layoutBody, this, scalingFactor);
 		}
+		
+		// "I COOKED IT" TODO for debugging
+		Button buttonICookedIt = new Button(this);
+		buttonICookedIt.setText("I cooked it, Scout's honor.");
+		buttonICookedIt.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				for (short boxId : recipe.boxes)
+					gameData.pingBox(boxId);
+			}
+		});
+		layoutBody.addView(buttonICookedIt);
 	}
 	
-	/**
-	 * Helper function to add a horizontal divider View to the parent ViewGroup.
-	 * @param viewGroup the parent ViewGroup to add the separator to.
-	 */
-	private void addSeparator(ViewGroup viewGroup) {
-		View separator = new View(this);
-		separator.setBackgroundColor(Color.LTGRAY);
-		viewGroup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_recipe);
+		
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+		initialize();
 	}
 }

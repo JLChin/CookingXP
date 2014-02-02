@@ -2,10 +2,16 @@
 
     <item
         android:id="@+id/menu_recipes"
-        android:icon="@drawable/ic_action_select_all"
+        android:icon="@drawable/ic_action_recipes"
         android:orderInCategory="0"
         android:showAsAction="always"
         android:title="@string/menu_recipes"/>
+    <item
+        android:id="@+id/menu_trees"
+        android:icon="@drawable/ic_action_tree"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/menu_trees"/>
     <item
         android:id="@+id/menu_shopping_list"
         android:icon="@drawable/ic_action_shopping_cart"
@@ -29,9 +35,9 @@
         android:orderInCategory="6"
         android:title="@string/menu_settings"/>
     <item
-        android:id="@+id/menu_info"
+        android:id="@+id/menu_adam"
         android:orderInCategory="7"
-        android:title="@string/menu_info"/>
+        android:title="@string/menu_adam"/>
     <item
         android:id="@+id/menu_quit"
         android:orderInCategory="8"

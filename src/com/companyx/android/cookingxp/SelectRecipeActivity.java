@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +18,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companyx.android.appx.R;
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
-import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 import com.companyx.android.cookingxp.RecipeDatabase.ShoppingList;
 
 /**
@@ -40,47 +38,106 @@ public class SelectRecipeActivity extends BaseListActivity {
 	
 	// VIEW HOLDERS
 	private LinearLayout layoutIngredients;
-		
+	
 	// STATE VARIABLES
 	private List<Recipe> recipes;
 	private String operation;
 	
-	// SYSTEM
-	private RecipeDatabase recipeDatabase;
-	
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_select_recipe);
+	/**
+	 * Custom Recipe list view adapter.
+	 */
+	private class RecipeListViewAdapter extends ArrayAdapter<Recipe> {
+		class RecipeView {
+			int recipeId;
+			RelativeLayout layoutRecipeListItem;
+			TextView textViewName;
+			TextView textViewDescription;
+			TextView textViewInfoRight;
+		}
 		
-		initialize();
-		handleIntent(getIntent());
-	}
-
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
+		private final Context activity;
+		private final List<Recipe> recipes;
 		
-		// singleTop flag set in manifest; handle when the user searches from this Activity and sends new search Intent to itself without restarting
-		setIntent(intent);
-		handleIntent(intent);
-	}
-	
-	private void initialize() {
-		layoutIngredients = (LinearLayout) findViewById(R.id.layout_select_recipe_ingredients);
+		RecipeListViewAdapter(Context activity, List<Recipe> recipes) {
+			super(activity, R.layout.recipe_list_item, recipes);
+			this.activity = activity;
+			this.recipes = recipes;
+		}
 		
-		initializeListView();
-		
-		recipeDatabase = RecipeDatabase.getInstance(this);
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+	        View view = convertView;
+	        RecipeView recipeView = null;
+	 
+	        if (view == null) {
+	        	LayoutInflater inflater = ((Activity) activity).getLayoutInflater();
+	            view = inflater.inflate(R.layout.recipe_list_item, null);
+	 
+	            // hold the view objects in an object, so they don't need to be re-fetched
+	            recipeView = new RecipeView();
+	            recipeView.layoutRecipeListItem = (RelativeLayout) view.findViewById(R.id.layout_recipe_list_item);
+	            recipeView.textViewName = (TextView) view.findViewById(R.id.recipe_list_name);
+	            recipeView.textViewDescription = (TextView) view.findViewById(R.id.recipe_list_description);
+	            recipeView.textViewInfoRight = (TextView) view.findViewById(R.id.recipe_list_info_right);
+	 
+	            // cache the view objects in the tag, so they can be re-accessed later
+	            view.setTag(recipeView);
+	        } else
+	        	recipeView = (RecipeView) view.getTag();
+	 
+	        // set up view, store unique ID to retrieve recipe from database when selected
+	        Recipe recipe = recipes.get(position);
+	        int recipeId = recipe.recipeId;
+	        
+	        recipeView.recipeId = recipeId;
+	        
+	        int padding = (int) (scalingFactor * 6 + 0.5f);
+			recipeView.layoutRecipeListItem.setPadding(0, padding, 0, padding);
+	        
+	        recipeView.textViewName.setText(recipe.name);
+	        recipeView.textViewName.setTextSize(16 + 0.5f);
+	        
+	        recipeView.textViewDescription.setText(recipe.author);
+	        recipeView.textViewDescription.setTextSize(12 + 0.5f);
+	        recipeView.textViewDescription.setPadding(padding, 0, 0, 0);
+	        
+	        if (operation != null && operation.equals("Shopping List"))
+	        	recipeView.textViewInfoRight.setText(String.valueOf(recipeDatabase.getQuantity(recipeId)));
+	        else
+	        	recipeView.textViewInfoRight.setText(RecipeActivity.getTime(recipe.recipeTime, SelectRecipeActivity.this));
+	        recipeView.textViewInfoRight.setTextSize(16 + 0.5f);
+	        
+	        return view;
+	    }
 	}
 	
 	/**
-	 * Perform search if user arrived at this activity via Search, return complete recipe list otherwise.
-	 * @param intent the Intent passed to this Activity.
+	 * Helper function which adds child views displaying ingredients to a parent ViewGroup.
+	 * @param title the title String of the section, e.g. Meats, Produce, etc. 
+	 * @param ingredients the List of Strings representing ingredients.
+	 * @param viewGroup the parent ViewGroup to add the child views to.
+	 */
+	private void addIngredientViews(String title, Set<String> ingredients, ViewGroup viewGroup) {
+		// add header
+		RecipeActivity.addHeader(title, viewGroup, this, scalingFactor);
+		
+		// add ingredient Views
+		for (String s : ingredients)
+			RecipeActivity.addTextLine(s, viewGroup, this, scalingFactor);
+	}
+	
+	/**
+	 * Builds the most current state/progress based on Intent. The Intent is used to conveniently store state information.
+	 * Performs search if user arrived at this activity via Search.
+	 * @param intent the Intent attached to this Activity.
 	 */
 	private void handleIntent(Intent intent) {
 		// receive search action and other operations
 		String action = intent.getAction();
 		operation = intent.getStringExtra("operation");
+		
+		// retrieve category from Intent if this Activity has been recreated after a category was chosen
+		String category = intent.getStringExtra("category");
 		
 		// reset views
 		layoutIngredients.removeAllViews();
@@ -95,7 +152,17 @@ public class SelectRecipeActivity extends BaseListActivity {
 				loadShoppingListRecipes();
 			else if (operation.equals("Categories"))
 				loadCategories();
-		}
+		} else // operation == null, display Recipe Category listing
+			loadCategory(category);
+	}
+	
+	/**
+	 * Set up the Activity.
+	 */
+	private void initialize() {
+		layoutIngredients = (LinearLayout) findViewById(R.id.layout_select_recipe_ingredients);
+		
+		initializeListView();
 	}
 
 	/**
@@ -120,30 +187,6 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
-	 * Load recipes from the database that match the search query.
-	 * @param query the user-specified search query.
-	 */
-	private void loadSearchRecipes(String query) {
-		recipes = recipeDatabase.searchRecipes(query);
-		setListAdapter(new RecipeListViewAdapter(this, recipes));
-		
-		// COUNT NOTIFICATION
-		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
-	}
-	
-	/**
-	 * Load favorite recipes from the RecipeDatabase, sorted by Recipe name.
-	 */
-	private void loadFavoriteRecipes() {
-		recipes = recipeDatabase.getFavoriteRecipes();
-		setListAdapter(new RecipeListViewAdapter(this, recipes));
-		
-		// EMPTY NOTIFICATION
-		if (recipes.size() == 0)
-			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_favorites_alert_title).setMessage(R.string.select_recipe_favorites_empty).setPositiveButton(R.string.select_recipe_favorites_empty_ok, null).show();
-	}
-	
-	/**
 	 * Load recipe categories.
 	 */
 	private void loadCategories() {
@@ -161,13 +204,19 @@ public class SelectRecipeActivity extends BaseListActivity {
 	private void loadCategory(String category) {
 		operation = null; // remove "Categories" status
 		
+		// update Intent (using Intent to conveniently store state information)
+		Intent intent =  getIntent();
+		intent.removeExtra("operation");
+		intent.putExtra("category", category);
+		
 		List<String> searchStrings = new ArrayList<String>();
 		
 		if (category.equals(getString(R.string.select_recipe_all_recipes)))
 			recipes = recipeDatabase.allRecipes();
 		else if (category.equals(getString(R.string.pork))) {
-			searchStrings.add(getString(R.string.pork));
+			searchStrings.add(getString(R.string.bacon));
 			searchStrings.add(getString(R.string.ham));
+			searchStrings.add(getString(R.string.pork));
 			recipes = recipeDatabase.searchSetRecipes(searchStrings);
 		} else if (category.equals(getString(R.string.beef))) {
 			searchStrings.add(getString(R.string.beef));
@@ -189,6 +238,30 @@ public class SelectRecipeActivity extends BaseListActivity {
 	}
 	
 	/**
+	 * Load favorite recipes from the RecipeDatabase, sorted by Recipe name.
+	 */
+	private void loadFavoriteRecipes() {
+		recipes = recipeDatabase.getFavoriteRecipes();
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
+		
+		// EMPTY NOTIFICATION
+		if (recipes.size() == 0)
+			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_favorites_alert_title).setMessage(R.string.select_recipe_favorites_empty).setPositiveButton(R.string.select_recipe_favorites_empty_ok, null).show();
+	}
+	
+	/**
+	 * Load recipes from the database that match the search query.
+	 * @param query the user-specified search query.
+	 */
+	private void loadSearchRecipes(String query) {
+		recipes = recipeDatabase.searchRecipes(query);
+		setListAdapter(new RecipeListViewAdapter(this, recipes));
+		
+		// COUNT NOTIFICATION
+		Toast.makeText(getApplicationContext(), getString(R.string.select_recipe_showing) + " " + recipes.size() + " " + getString(R.string.select_recipe_recipes), Toast.LENGTH_SHORT).show();
+	}
+	
+	/**
 	 * Load shopping list recipes from the RecipeDatabase, sorted by Recipe name.
 	 * Show list of aggregated recipe ingredients.
 	 */
@@ -200,127 +273,49 @@ public class SelectRecipeActivity extends BaseListActivity {
 		
 		// MEAT
 		if (!list.meat.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_meat) + " (" + list.meat.size() + ")", list.meat, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_meat), list.meat, layoutIngredients);
 		
 		// SEAFOOD
 		if (!list.seafood.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_seafood) + " (" + list.seafood.size() + ")", list.seafood, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_seafood), list.seafood, layoutIngredients);
 		
 		// PRODUCE
 		if (!list.produce.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_produce) + " (" + list.produce.size() + ")", list.produce, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_produce), list.produce, layoutIngredients);
 		
 		// OTHER
 		if (!list.other.isEmpty())
-			addIngredientViews(getString(R.string.select_recipe_other) + " (" + list.other.size() + ")", list.other, layoutIngredients);
+			addIngredientViews(getString(R.string.select_recipe_other), list.other, layoutIngredients);
 		
 		// EMPTY NOTIFICATION
 		if (recipes.size() == 0)
 			new AlertDialog.Builder(this).setTitle(R.string.select_recipe_shopping_list_alert_title).setMessage(R.string.select_recipe_shopping_list_empty).setPositiveButton(R.string.select_recipe_shopping_list_empty_ok, null).show();
 	}
 	
-	/**
-	 * Helper function which adds child views displaying ingredients to a parent ViewGroup.
-	 * @param title the title String of the section, e.g. Meats, Produce, etc. 
-	 * @param ingredients the List of Strings representing ingredients.
-	 * @param viewGroup the parent ViewGroup to add the child views to.
-	 */
-	private void addIngredientViews(String title, Set<String> ingredients, ViewGroup viewGroup) {
-		// add title TextView to layout
-		TextView titleView = new TextView(this);
-		titleView.setText(title);
-		titleView.setTypeface(null, Typeface.BOLD_ITALIC);
-		viewGroup.addView(titleView);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_select_recipe);
 		
-		// add ingredient Views to layout
-		for (String s : ingredients) {
-			TextView tv = new TextView(this);
-			tv.setText(s);
-			viewGroup.addView(tv);
-		}
-		
-		// add footer View TODO currently blank
-		viewGroup.addView(new TextView(this));
+		initialize();
+		handleIntent(getIntent());
 	}
 	
-	/**
-	 * Custom Recipe list view adapter.
-	 */
-	private class RecipeListViewAdapter extends ArrayAdapter<Recipe> {
-		private final List<Recipe> recipes;
-		private final Context activity;
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
 		
-		RecipeListViewAdapter(Context activity, List<Recipe> recipes) {
-			super(activity, R.layout.recipe_list_item, recipes);
-			this.activity = activity;
-			this.recipes = recipes;
-		}
+		// singleTop flag set in manifest; handle when the user searches from this Activity and sends new search Intent to itself without restarting
+		setIntent(intent);
+		handleIntent(intent);
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
 		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-	        View view = convertView;
-	        RecipeView recipeView = null;
-	 
-	        if (view == null) {
-	        	LayoutInflater inflater = ((Activity) activity).getLayoutInflater();
-	            view = inflater.inflate(R.layout.recipe_list_item, null);
-	 
-	            // hold the view objects in an object, so they don't need to be re-fetched
-	            recipeView = new RecipeView();
-	            recipeView.textViewName = (TextView) view.findViewById(R.id.recipe_list_name);
-	            recipeView.textViewDescription = (TextView) view.findViewById(R.id.recipe_list_description);
-	            recipeView.textViewInfoRight = (TextView) view.findViewById(R.id.recipe_list_info_right);
-	 
-	            // cache the view objects in the tag, so they can be re-accessed later
-	            view.setTag(recipeView);
-	        } else
-	        	recipeView = (RecipeView) view.getTag();
-	 
-	        // set up view, store unique ID to retrieve recipe from database when selected
-	        Recipe recipe = recipes.get(position);
-	        int recipeId = recipe.recipeId;
-	        
-	        recipeView.recipeId = recipeId;
-	        recipeView.textViewName.setText(recipe.name);
-	        recipeView.textViewDescription.setText("Put something cool here.");
-	        if (operation != null && operation.equals("Shopping List"))
-	        	recipeView.textViewInfoRight.setText(String.valueOf(recipeDatabase.getQuantity(recipeId)));
-	        else
-	        	recipeView.textViewInfoRight.setText(getTime(recipe.recipeTime));
-	        
-	        return view;
-	    }
+		// update results when user navigates away and returns to this Activity
+		handleIntent(getIntent());
 		
-		class RecipeView {
-			int recipeId;
-			TextView textViewName;
-			TextView textViewDescription;
-			TextView textViewInfoRight;
-		}
-		
-		/**
-		 * Helper function that generates a string containing the formatted hour and minute representation of the recipe cooking time.
-		 * @param timeRequiredInMin the time required in minutes for the Recipe.
-		 * @return a string containing the formatted hour and minute representation of the recipe cooking time.
-		 */
-		private String getTime(RecipeTime recipeTime) {
-			// retrieve total time
-			short totalTimeInMin = (short) (recipeTime.prepTimeInMin + recipeTime.inactivePrepTimeInMin + recipeTime.cookTimeInMin);
-			
-			if (totalTimeInMin <= 0)
-				return " --- ";
-			
-			// construct hours string
-			short hours = (short) (totalTimeInMin / 60);
-			String hoursStr = "";
-			if (hours != 0) {
-				if (hours == 1)
-					hoursStr += hours + " " + getString(R.string.select_recipe_hour) + " ";
-				else
-					hoursStr += hours + " " + getString(R.string.select_recipe_hours) + " ";
-			}
-				
-			return hoursStr + (totalTimeInMin % 60) + " " + getString(R.string.select_recipe_min);
-		}
 	}
 }
