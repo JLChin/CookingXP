@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity {
 	 */
 	private void refreshLayout() {
 		layoutMain = (LinearLayout) findViewById(R.id.layout_main);
-		int padding = (int) (dpiScalingFactor * 10 + 0.5f);
+		int padding = (int) (scalingFactor * 10 + 0.5f);
 		
 		// USER INFO BOX
 		LinearLayout layoutInfoContainer = new LinearLayout(this);
