@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+Steak Jitsu <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- SYSTEM -->
@@ -113,7 +113,7 @@
     <string name="game_box_title0">Everyone Loves Bacon</string>
     <string name="game_box_description0">Who doesn\'t, right?!</string>
     <string name="game_box_title1">Basic Steak</string>
-    <string name="game_box_description1">Description 1.</string>
+    <string name="game_box_description1">Steak Jitsu</string>
     <string name="game_box_title2">Patty</string>
     <string name="game_box_description2">Description 2.</string>
     <string name="game_box_title3">BLT</string>
