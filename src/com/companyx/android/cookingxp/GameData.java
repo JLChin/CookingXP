@@ -2,8 +2,10 @@ package com.companyx.android.cookingxp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 
@@ -34,16 +36,17 @@ public final class GameData {
 	private static final short NUM_OF_BOXES = 11;
 	
 	// STATE VARIABLES
-	private static Map<Short, Box> boxMap; // maps unique boxId to Box
-	private static Map<Integer, Tree> treeMap; // maps unique treeId to Tree
+	private Map<Short, Box> boxMap; // maps unique boxId to Box
+	private Map<Integer, Tree> treeMap; // maps unique treeId to Tree
+	private Integer score;
 	
 	// SINGLETON
 	private static GameData holder;
 	
 	// SYSTEM
-	private static Context context;
-	private static SharedPreferences sharedPref;
-	private static RecipeDatabase recipeDatabase;
+	private Context context;
+	private SharedPreferences sharedPref;
+	private RecipeDatabase recipeDatabase;
 	
 	/**
 	 * Class representing a box on the game Tree.
@@ -197,9 +200,9 @@ public final class GameData {
 		 * Checks all conditions and updates unlocked and activated status of each BoxHolder, unlockedTier status of Tree.
 		 * Releases locked Recipes according to Tree progress.
 		 * This method is called before the Tree needs to be used or displayed, to reflect changes made.
-		 * @return this Tree instance, for convenience.
+		 * @return the Set of recipeId's whose Recipes have been newly unlocked.
 		 */
-		private Tree validateTree() {
+		private Set<Integer> validateTree() {
 			// re-verify tier status
 			unlockedTier = 0;
 			
@@ -222,23 +225,20 @@ public final class GameData {
 			}
 			
 			// UPDATE UNLOCKED STATUS OF EACH BOXHOLDER AND RELEASE RECIPES
+			Set<Integer> unlockedRecipes = new HashSet<Integer>();
 			for (int tier = 0; tier < boxHolderMatrix.size(); tier++) {
 				for (BoxHolder bh : boxHolderMatrix.get(tier)) {
 					bh.updateUnlockedStatus(tier, unlockedTier);
 					
 					if (bh.isUnlocked()) {
-						List<Recipe> newRecipes = recipeDatabase.unlockRecipesByBox(bh.boxId);
-						
-						// new Recipe unlock notification, ignore tier 0 unlocks
-						if (tier > 0) {
-							for (Recipe r : newRecipes)
-								Toast.makeText(context, r.name + " " + context.getString(R.string.recipe_unlocked) + "!", Toast.LENGTH_SHORT).show();
-						}
+						// unlock Recipes and accumulate Set of recipeId's whose Recipes have been newly unlocked
+						for (Integer i : recipeDatabase.unlockRecipesByBox(bh.boxId))
+							unlockedRecipes.add(i);
 					}
 				}
 			}
 			
-			return this;
+			return unlockedRecipes;
 		}
 	}
 	
@@ -248,18 +248,20 @@ public final class GameData {
 	 * @return the singleton instance of the game database.
 	 */
 	public synchronized static GameData getInstance(Context c) {
-		context = c;
-		
 		if (holder == null)
-			holder = new GameData();
+			holder = new GameData(c);
 		
 		return holder;
 	}
 	
 	/**
 	 * Private constructor.
+	 * @param c the calling context.
 	 */
-	private GameData() {
+	private GameData(Context c) {
+		context = c;
+		score = 0;
+		
 		resetGameData();
 		loadGameData();
 	}
@@ -305,6 +307,22 @@ public final class GameData {
 	}
 	
 	/**
+	 * Returns the user's current rank.
+	 * @return the user's current rank.
+	 */
+	public String getRank() {
+		return context.getString(context.getResources().getIdentifier("game_rank" + score, "string", context.getPackageName()));
+	}
+	
+	/**
+	 * Returns the user's current score.
+	 * @return the user's current score.
+	 */
+	public int getScore() {
+		return score;
+	}
+	
+	/**
 	 * Returns a List of game Trees.
 	 * @return a List of game Trees.
 	 */
@@ -333,13 +351,18 @@ public final class GameData {
 	 * Loads game data from preferences file.
 	 */
 	private void loadGameData() {
+		// LOAD BOX UNLOCKS
 		String serialized = sharedPref.getString("SERIALIZED_GAME_DATA", null);
-		
 		if (serialized != null) {
 			String[] boxIds = serialized.split(" ");
 			
 			for (String boxId : boxIds)
 				boxMap.get(Short.valueOf(boxId)).setActivated(true);
+		}
+		
+		// LOAD SCORE
+		synchronized(score) {
+			score = sharedPref.getInt("GAME_SCORE", 0);
 		}
 	}
 	
@@ -387,8 +410,22 @@ public final class GameData {
 	void pingBox(short boxId) {
 		findBoxById(boxId).setActivated(true);
 		
-		validate();
+		synchronized(score) {
+			score++;
+		}
+		
+		// validate and notify of new Recipe unlocks
+		for (Recipe r : recipeDatabase.getRecipesById(validate()))
+			Toast.makeText(context, r.name + " " + context.getString(R.string.recipe_unlocked) + "!", Toast.LENGTH_SHORT).show();
+		
 		saveGameData();
+	}
+	
+	/**
+	 * Release all system references for immediate garbage collection.
+	 */
+	void release() {
+		holder = null;
 	}
 	
 	/**
@@ -398,6 +435,9 @@ public final class GameData {
 	void resetGameData() {
 		boxMap = new HashMap<Short, Box>();
 		treeMap = new HashMap<Integer, Tree>();
+		synchronized(score) {
+			score = 0;
+		}
 		
 		sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		
@@ -425,13 +465,32 @@ public final class GameData {
 		// remove trailing space and save to preferences file
 		if (serialized.length() > 0)
 			sharedPref.edit().putString("SERIALIZED_GAME_DATA", serialized.substring(0, serialized.length() - 1)).commit();
+		
+		sharedPref.edit().putInt("GAME_SCORE", score).commit();
+	}
+	
+	/**
+	 * Set score.
+	 * @param newScore the new score.
+	 */
+	void setScore(int newScore) {
+		synchronized(score) {
+			score = newScore;
+		}
 	}
 	
 	/**
 	 * Re-validates all Trees. Call this method after updates to game progress.
+	 * @return the Set of recipeId's whose Recipes have been newly unlocked.
 	 */
-	void validate() {
-		for (Tree tree : treeMap.values())
-			tree.validateTree();
+	Set<Integer> validate() {
+		Set<Integer> unlockedRecipes = new HashSet<Integer>();
+		
+		for (Tree tree : treeMap.values()) {
+			for (Integer i : tree.validateTree())
+				unlockedRecipes.add(i);
+		}
+		
+		return unlockedRecipes;
 	}
 }

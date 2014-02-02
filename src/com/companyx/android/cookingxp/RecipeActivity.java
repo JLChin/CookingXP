@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -31,8 +30,6 @@ import com.companyx.android.cookingxp.RecipeDatabase.RecipeTime;
 /**
  * Recipe Activity
  * 
- * TODO orientation, screen size, density etc
- * 
  *  @author James Chin <jameslchin@gmail.com>
  */
 public class RecipeActivity extends BaseActivity {
@@ -50,35 +47,29 @@ public class RecipeActivity extends BaseActivity {
 	private int recipeId;
 	private Recipe recipe;
 	
-	// SYSTEM
-	private GameData gameData;
-	private RecipeDatabase recipeDatabase;
-	private SharedPreferences.Editor sharedPrefEditor;
-	private float dpiScalingFactor;
-	
 	/**
 	 * Adds a formatted header to the parent ViewGroup.
 	 * @param title the String to use as the header title.
 	 * @param viewGroup the parent ViewGroup to add the header to.
 	 * @param context the parent Context.
-	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	static void addHeader(String title, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
+	static void addHeader(String title, ViewGroup viewGroup, Context context, float scalingFactor) {
 		// leading space
-		viewGroup.addView(new View(context), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (dpiScalingFactor * 16 + 0.5f)));
+		viewGroup.addView(new View(context), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (scalingFactor * 16 + 0.5f)));
 		
 		// TextView
 		TextView header = new TextView(context);
 		header.setText(title);
 		header.setTypeface(null, Typeface.BOLD);
-		int padding = (int) (dpiScalingFactor * 10 + 0.5f);
+		int padding = (int) (scalingFactor * 10 + 0.5f);
 		header.setPadding(padding, padding, padding, padding);
 		header.setTextSize(16 + 0.5f);
 		header.setTextColor(Color.WHITE);
 		header.setBackgroundColor(Color.BLACK);
 		viewGroup.addView(header, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		
-		addHorizontalSeparator(viewGroup, Color.BLACK, 3.0f, context, dpiScalingFactor);
+		addHorizontalSeparator(viewGroup, Color.BLACK, 3.0f, context, scalingFactor);
 	}
 	
 	/**
@@ -87,12 +78,12 @@ public class RecipeActivity extends BaseActivity {
 	 * @param color the color of the separator line.
 	 * @param dpThickness the thickness of the separator line to be drawn, in density-independent pixels (dip).
 	 * @param context the parent Context.
-	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	static void addHorizontalSeparator(ViewGroup viewGroup, int color, float dpThickness, Context context, float dpiScalingFactor) {
+	static void addHorizontalSeparator(ViewGroup viewGroup, int color, float dpThickness, Context context, float scalingFactor) {
 		View separator = new View(context);
 		separator.setBackgroundColor(color);
-		viewGroup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (dpiScalingFactor * dpThickness + 0.5f)));
+		viewGroup.addView(separator, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (scalingFactor * dpThickness + 0.5f)));
 	}
 	
 	/**
@@ -100,14 +91,14 @@ public class RecipeActivity extends BaseActivity {
 	 * @param info the String to add as the info.
 	 * @param viewGroup the parent ViewGroup to add the info line to.
 	 * @param context the parent Context.
-	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	static void addInfoLine(String info, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
+	static void addInfoLine(String info, ViewGroup viewGroup, Context context, float scalingFactor) {
 		TextView tv = new TextView(context);
 		tv.setText(info);
 		tv.setTextSize(16 + 0.5f);
 		tv.setTextColor(Color.GRAY);
-		int padding = (int) (dpiScalingFactor * 2 + 0.5f);
+		int padding = (int) (scalingFactor * 2 + 0.5f);
 		tv.setPadding(0, padding, 0, padding);
 		viewGroup.addView(tv);
 	}
@@ -117,17 +108,17 @@ public class RecipeActivity extends BaseActivity {
 	 * @param text the String to add as the text.
 	 * @param viewGroup the parent ViewGroup to add the text line to.
 	 * @param context the parent Context.
-	 * @param dpiScalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
+	 * @param scalingFactor the hardware-dependent scaling factor to use for calculating pixel dimensions to use.
 	 */
-	static void addTextLine(String text, ViewGroup viewGroup, Context context, float dpiScalingFactor) {
+	static void addTextLine(String text, ViewGroup viewGroup, Context context, float scalingFactor) {
 		TextView tv = new TextView(context);
 		tv.setText(text);
 		tv.setTextSize(16 + 0.5f);
-		int padding = (int) (dpiScalingFactor * 6 + 0.5f);
+		int padding = (int) (scalingFactor * 6 + 0.5f);
 		tv.setPadding(0, padding, 0, padding);
 		viewGroup.addView(tv);
 		
-		addHorizontalSeparator(viewGroup, Color.LTGRAY, 1.0f, context, dpiScalingFactor);
+		addHorizontalSeparator(viewGroup, Color.LTGRAY, 1.0f, context, scalingFactor);
 	}
 	
 	/**
@@ -160,12 +151,6 @@ public class RecipeActivity extends BaseActivity {
 	 * Set up the Activity.
 	 */
 	private void initialize() {
-		// LOAD SYSTEM VARIABLES
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		gameData = GameData.getInstance(this);
-		sharedPrefEditor = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).edit();
-		dpiScalingFactor = getResources().getDisplayMetrics().density;
-		
 		// GET RECIPE INFO
 		recipeId = getIntent().getIntExtra("recipeId", -1);
 		recipe = recipeDatabase.findRecipeById(recipeId);
@@ -241,7 +226,7 @@ public class RecipeActivity extends BaseActivity {
 		layoutBody = (LinearLayout) findViewById(R.id.layout_recipe_body);
 		
 		// INFORMATION
-		addHeader(getString(R.string.recipe_header_info), layoutBody, this, dpiScalingFactor);
+		addHeader(getString(R.string.recipe_header_info), layoutBody, this, scalingFactor);
 		LinearLayout llInfoContainer = new LinearLayout(this);
 		
 		// left side: info
@@ -249,10 +234,10 @@ public class RecipeActivity extends BaseActivity {
 		llInfo.setOrientation(LinearLayout.VERTICAL);
 		
 		// preparation time
-		addInfoLine(getString(R.string.recipe_info_prep_time) + ": " + getTime(recipe.recipeTime, this), llInfo, this, dpiScalingFactor);
+		addInfoLine(getString(R.string.recipe_info_prep_time) + ": " + getTime(recipe.recipeTime, this), llInfo, this, scalingFactor);
 		
 		// servings
-		addInfoLine(getString(R.string.recipe_info_servings) + ": " + recipe.numOfServings, llInfo, this, dpiScalingFactor);
+		addInfoLine(getString(R.string.recipe_info_servings) + ": " + recipe.numOfServings, llInfo, this, scalingFactor);
 		
 		// right side: boxes
 		LinearLayout llBoxes = new LinearLayout(this);
@@ -270,7 +255,7 @@ public class RecipeActivity extends BaseActivity {
 		layoutBody.addView(llInfoContainer, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 		
 		// INGREDIENTS
-		addHeader(getString(R.string.recipe_header_ingredients), layoutBody, this, dpiScalingFactor);
+		addHeader(getString(R.string.recipe_header_ingredients), layoutBody, this, scalingFactor);
 		for (RecipeIngredient ri : recipe.ingredients) {
 			String s = ri.amount + " " + ri.measurement + " " + ri.ingredientName;
 			
@@ -279,14 +264,14 @@ public class RecipeActivity extends BaseActivity {
 			if (notes != null && notes.length() > 1)
 				s += " (" + notes + ")";
 			
-			addTextLine(s, layoutBody, this, dpiScalingFactor);
+			addTextLine(s, layoutBody, this, scalingFactor);
 		}
 		
 		// DIRECTIONS
-		addHeader(getString(R.string.recipe_header_directions), layoutBody, this, dpiScalingFactor);
+		addHeader(getString(R.string.recipe_header_directions), layoutBody, this, scalingFactor);
 		if (recipe.directions != null) {
 			for (RecipeDirection rd : recipe.directions)
-				addTextLine(rd.direction, layoutBody, this, dpiScalingFactor);
+				addTextLine(rd.direction, layoutBody, this, scalingFactor);
 		}
 		
 		// "I COOKED IT" TODO for debugging

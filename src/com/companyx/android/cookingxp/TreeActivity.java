@@ -52,8 +52,6 @@ public class TreeActivity extends BaseActivity {
 	private List<BoxHolder> pendingEdgeBHs; // path edges to draw, waiting for layout dimensions
 	
 	// SYSTEM
-	private GameData gameData;
-	private RecipeDatabase recipeDatabase;
 	OnGlobalLayoutListener listenerOGL;
 	
 	/**
@@ -267,8 +265,6 @@ public class TreeActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_trees);
 		
-		recipeDatabase = RecipeDatabase.getInstance(this);
-		gameData = GameData.getInstance(this);
 		openPopups = new HashMap<View, PopupWindow>();
 		layoutTree = (RelativeLayout) findViewById(R.id.layout_tree);
 	}

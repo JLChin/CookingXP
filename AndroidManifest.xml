@@ -58,7 +58,7 @@
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
-            android:name=".InfoActivity"
+            android:name=".AdamActivity"
             android:parentActivityName=".MainActivity" >
         </activity>
     </application>

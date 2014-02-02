@@ -13,7 +13,7 @@
     <string name="menu_favorites">Favorites</string>
     <string name="menu_search">Search</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_info">Info</string>
+    <string name="menu_adam">Adam\'s Lab</string>
     <string name="menu_quit">Quit</string>
 
     <!-- TITLE -->
@@ -23,6 +23,12 @@
     <string name="title_recipe">Recipe</string>
     <string name="title_settings">Settings</string>
     <string name="title_info">Info</string>
+    
+    <!-- MAIN -->
+    <string name="rank">Rank</string>
+    <string name="score">Score</string>
+    <string name="welcome">Under construction</string>
+    <string name="reset">Reset Game Data</string>
     
     <!-- SELECT RECIPE -->
     <string name="select_recipe_favorites_alert_title">Favorite Recipes</string>
@@ -63,8 +69,6 @@
     <string name="recipe_info_hours">hrs</string>
     <string name="recipe_info_min">min</string>
     <string name="recipe_unlocked">unlocked</string>
-    
-    <string name="welcome">Welcome to the new cooking game</string>
     
     <!-- MEAT -->
     <string name="bacon">Bacon</string>
@@ -133,6 +137,18 @@
     <string name="game_tree0">The Way of Beef</string>
     <string name="game_tree1">Some Other Tree</string>
     <string name="game_tree2">Yet Another Tree</string>
+    
+    <!-- GAME RANKS -->
+    <string name="game_rank0">Aspiring Cook</string>
+    <string name="game_rank1">Cook</string>
+    <string name="game_rank2">Apprentice Chef</string>
+    <string name="game_rank3">Station Chef</string>
+    <string name="game_rank4">Chef</string>
+    <string name="game_rank5">Senior Chef</string>
+    <string name="game_rank6">Sous Chef</string>
+    <string name="game_rank7">Chef de cuisine</string>
+    <string name="game_rank8">Executive Chef</string>
+    <string name="game_rank9">Master Chef</string>
     
     <!-- INFO -->
     <string name="info_credits"><b>Development</b>
