@@ -91,7 +91,7 @@ public class SelectRecipeActivity extends BaseListActivity {
 	        
 	        recipeView.recipeId = recipeId;
 	        
-	        int padding = (int) (dpiScalingFactor * 6 + 0.5f);
+	        int padding = (int) (scalingFactor * 6 + 0.5f);
 			recipeView.layoutRecipeListItem.setPadding(0, padding, 0, padding);
 	        
 	        recipeView.textViewName.setText(recipe.name);
@@ -119,11 +119,11 @@ public class SelectRecipeActivity extends BaseListActivity {
 	 */
 	private void addIngredientViews(String title, Set<String> ingredients, ViewGroup viewGroup) {
 		// add header
-		RecipeActivity.addHeader(title, viewGroup, this, dpiScalingFactor);
+		RecipeActivity.addHeader(title, viewGroup, this, scalingFactor);
 		
 		// add ingredient Views
 		for (String s : ingredients)
-			RecipeActivity.addTextLine(s, viewGroup, this, dpiScalingFactor);
+			RecipeActivity.addTextLine(s, viewGroup, this, scalingFactor);
 	}
 	
 	/**

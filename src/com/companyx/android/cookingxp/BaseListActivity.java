@@ -1,12 +1,11 @@
 package com.companyx.android.cookingxp;
 
-import com.companyx.android.cookingxp.R;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,13 +19,22 @@ public class BaseListActivity extends ListActivity {
 	protected RecipeDatabase recipeDatabase;
 	protected GameData gameData;
 	protected SharedPreferences.Editor sharedPrefEditor;
-	protected float dpiScalingFactor;
+	protected float scalingFactor; // composite scalar taking into account both screen density and size, use to scale fonts/drawables/layouts
 	
 	private void init() {
 		recipeDatabase = RecipeDatabase.getInstance(this);
 		gameData = GameData.getInstance(this);
 		sharedPrefEditor = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).edit();
-		dpiScalingFactor = getResources().getDisplayMetrics().density;
+		
+		// calculate scalingFactor
+		DisplayMetrics dm = getResources().getDisplayMetrics();
+		float dpiScalingFactor = dm.density;
+
+		double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
+		double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
+		double screenInches = Math.sqrt(x + y);
+
+		scalingFactor = (float) (screenInches / 5.5f) * dpiScalingFactor;
 		
 		// enable "type-to-search", activates the search dialog when the user starts typing on the keyboard
 		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
