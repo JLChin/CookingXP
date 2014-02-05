@@ -5,6 +5,7 @@ import java.io.InputStream;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,7 +17,9 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
+import com.facebook.widget.FacebookDialog;
 
 /**
  * MainActivity
@@ -26,6 +29,9 @@ import com.facebook.model.GraphUser;
 public class MainActivity extends BaseActivity {
 	// VIEW HOLDERS
 	private LinearLayout layoutMain;
+	
+	// SYSTEM
+	private UiLifecycleHelper uiHelper;
 	
 	private void initialize() {
 		// LOAD RECIPES FROM FILE
@@ -72,10 +78,25 @@ public class MainActivity extends BaseActivity {
 		});
 	}
 	
+	/**
+	 * Callback handling, invoked when dialog closes and control returns to the calling app.
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		//Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		
+		uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
+	        @Override
+	        public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+	            Log.e("Activity", String.format("Error: %s", error.toString()));
+	        }
+
+	        @Override
+	        public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+	            Log.i("Activity", "Success!");
+	        }
+	    });
 	}
 
 	@Override
@@ -84,7 +105,14 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 		
 		initialize();
-		loginFacebook();
+		//loginFacebook();
+		
+		uiHelper = new UiLifecycleHelper(this, null);
+	    uiHelper.onCreate(savedInstanceState);
+	    
+	    //can only use if Facebook Android app is present
+	    //FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this).setLink("https://developers.facebook.com/android").build();
+	    //uiHelper.trackPendingDialogCall(shareDialog.present());
 	}
 	
 	@Override
@@ -95,6 +123,8 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		
+		uiHelper.onDestroy();
 		
 		recipeDatabase.release();
 		gameData.release();
@@ -109,10 +139,31 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		uiHelper.onPause();
+	}
+
+	@Override
 	protected void onRestart() {
 		super.onRestart();
 		
 		layoutMain.removeAllViews();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		uiHelper.onResume();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		uiHelper.onSaveInstanceState(outState);
 	}
 
 	@Override
