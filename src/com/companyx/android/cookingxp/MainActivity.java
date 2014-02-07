@@ -1,7 +1,10 @@
 package com.companyx.android.cookingxp;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,14 +12,21 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.LoggingBehavior;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
+import com.facebook.Settings;
+import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
+
 
 /**
  * MainActivity
@@ -24,8 +34,29 @@ import com.facebook.model.GraphUser;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class MainActivity extends BaseActivity {
+	// CONSTANTS
+	static final String PENDING_REQUEST_BUNDLE_KEY = "com.companyx.android.cookingxp:PendingRequest";
+	
 	// VIEW HOLDERS
 	private LinearLayout layoutMain;
+	TextView textViewFacebookResults;
+	EditText editRequests;
+	
+	// STATE VARIABLES
+	boolean pendingRequest;
+	
+	// SYSTEM
+	Session session;
+	
+	private Session createSession() {
+        Session activeSession = Session.getActiveSession();
+        if (activeSession == null || activeSession.getState().isClosed()) {
+            activeSession = new Session.Builder(this).setApplicationId(getString(R.string.facebook_app_id)).build();
+            Session.setActiveSession(activeSession);
+        }
+        
+        return activeSession;
+    }
 	
 	private void initialize() {
 		// LOAD RECIPES FROM FILE
@@ -40,6 +71,10 @@ public class MainActivity extends BaseActivity {
 		recipeDatabase.loadShoppingListRecipes();
 		
 		gameData.validate();
+		
+		// FACEBOOK SETUP
+		session = createSession();
+        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
 	}
 	
 	/**
@@ -75,8 +110,32 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		
+		// sharing
+		if (session.onActivityResult(this, requestCode, resultCode, data) && pendingRequest && session.getState().isOpened()) {
+            sendRequests();
+        }
 	}
+	
+	private void onClickRequest() {
+        if (this.session.isOpened()) {
+            sendRequests();
+        } else {
+            StatusCallback callback = new StatusCallback() {
+                public void call(Session session, SessionState state, Exception exception) {
+                    if (exception != null) {
+                        new AlertDialog.Builder(MainActivity.this).setTitle(R.string.facebook_login_failed).setMessage(exception.getMessage()).setPositiveButton(R.string.ok, null).show();
+                        MainActivity.this.session = createSession();
+                    }
+                }
+            };
+            
+            pendingRequest = true;
+            this.session.openForRead(new Session.OpenRequest(this).setCallback(callback));
+        }
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +171,20 @@ public class MainActivity extends BaseActivity {
 		super.onRestart();
 		
 		layoutMain.removeAllViews();
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		pendingRequest = savedInstanceState.getBoolean(PENDING_REQUEST_BUNDLE_KEY, pendingRequest);
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		outState.putBoolean(PENDING_REQUEST_BUNDLE_KEY, pendingRequest);
 	}
 
 	@Override
@@ -174,14 +247,61 @@ public class MainActivity extends BaseActivity {
 		layoutMain.addView(buttonReset);
 		
 		// LOGIN FACEBOOK BUTTON
-		Button buttonLoginFacebook = new Button(this);
-		buttonLoginFacebook.setText(R.string.login_facebook);
-		buttonLoginFacebook.setOnClickListener(new OnClickListener() {
+		Button buttonFacebookLogin = new Button(this);
+		buttonFacebookLogin.setText(R.string.facebook_login);
+		buttonFacebookLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				loginFacebook();
 			}
 		});
-		layoutMain.addView(buttonLoginFacebook);
+		layoutMain.addView(buttonFacebookLogin);
+		
+		// FACEBOOK SHARE BUTTON
+		Button buttonFacebookShare = new Button(this);
+		buttonFacebookShare.setText(R.string.facebook_share);
+		buttonFacebookShare.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				onClickRequest();
+			}
+		});
+		layoutMain.addView(buttonFacebookShare);
+		
+		editRequests = new EditText(this);
+		layoutMain.addView(editRequests);
+		
+		textViewFacebookResults = new TextView(this);
+		layoutMain.addView(textViewFacebookResults);
 	}
+	
+	private void sendRequests() {
+        textViewFacebookResults.setText("");
+
+        String requestIdsText = editRequests.getText().toString();
+        String[] requestIds = requestIdsText.split(",");
+
+        List<Request> requests = new ArrayList<Request>();
+        for (final String requestId : requestIds) {
+            requests.add(new Request(session, requestId, null, null, new Request.Callback() {
+                public void onCompleted(Response response) {
+                    GraphObject graphObject = response.getGraphObject();
+                    FacebookRequestError error = response.getError();
+                    String s = textViewFacebookResults.getText().toString();
+                    if (graphObject != null) {
+                        if (graphObject.getProperty("id") != null) {
+                            s = s + String.format("%s: %s\n", graphObject.getProperty("id"), graphObject.getProperty("name"));
+                        } else {
+                            s = s + String.format("%s: <no such id>\n", requestId);
+                        }
+                    } else if (error != null) {
+                        s = s + String.format("Error: %s", error.getErrorMessage());
+                    }
+                    textViewFacebookResults.setText(s);
+                }
+            }));
+        }
+        pendingRequest = false;
+        Request.executeBatchAndWait(requests);
+    }
 }
