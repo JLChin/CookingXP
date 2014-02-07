@@ -84,7 +84,6 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 		
 		initialize();
-		loginFacebook();
 	}
 	
 	@Override
@@ -173,5 +172,16 @@ public class MainActivity extends BaseActivity {
 			}	
 		});
 		layoutMain.addView(buttonReset);
+		
+		// LOGIN FACEBOOK BUTTON
+		Button buttonLoginFacebook = new Button(this);
+		buttonLoginFacebook.setText(R.string.login_facebook);
+		buttonLoginFacebook.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				loginFacebook();
+			}
+		});
+		layoutMain.addView(buttonLoginFacebook);
 	}
 }
