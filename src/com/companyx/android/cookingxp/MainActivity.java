@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 
@@ -174,14 +175,14 @@ public class MainActivity extends BaseActivity {
 		layoutMain.addView(buttonReset);
 		
 		// LOGIN FACEBOOK BUTTON
-		Button buttonLoginFacebook = new Button(this);
-		buttonLoginFacebook.setText(R.string.login_facebook);
-		buttonLoginFacebook.setOnClickListener(new OnClickListener() {
+		Button buttonFacebookLogin = new Button(this);
+		buttonFacebookLogin.setText(R.string.facebook_login);
+		buttonFacebookLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				loginFacebook();
 			}
 		});
-		layoutMain.addView(buttonLoginFacebook);
+		layoutMain.addView(buttonFacebookLogin);
 	}
 }
