@@ -68,6 +68,10 @@ public class MainActivity extends BaseActivity {
 					  }
 					});
 				}
+				
+				if (state.isOpened()) {
+					// TODO Share stuff
+				}
 			}
 		});
 	}
@@ -184,5 +188,16 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		layoutMain.addView(buttonFacebookLogin);
+		
+		// FACEBOOK SHARE
+		Button buttonFacebookShare = new Button(this);
+		buttonFacebookShare.setText(R.string.facebook_share);
+		buttonFacebookShare.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			}
+		});
+		layoutMain.addView(buttonFacebookShare);
 	}
 }
