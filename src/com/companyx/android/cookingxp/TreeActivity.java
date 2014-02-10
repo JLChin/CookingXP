@@ -43,7 +43,7 @@ public class TreeActivity extends BaseActivity {
 	public static final int DEFAULT_EDGE_STROKE_WIDTH = 10;
 	
 	// VIEW HOLDERS
-	private RelativeLayout layoutTree;
+	private RelativeLayout layoutTree; // container ViewGroup for volatile layout elements
 	private Spinner spinnerTree;
 	
 	// STATE VARIABLES
@@ -242,10 +242,9 @@ public class TreeActivity extends BaseActivity {
 	
 	/**
 	 * Set up the Tree selection Spinner.
-	 * @param layout the LinearLayout to add the Spinner to.
 	 */
-	private void initializeSpinner(LinearLayout layout) {
-		spinnerTree = new Spinner(this);
+	private void initializeSpinner() {
+		spinnerTree = (Spinner) findViewById(R.id.trees_spinner);
 		
 		// add selections
 		List<String> treeTitles = new ArrayList<String>();
@@ -260,14 +259,16 @@ public class TreeActivity extends BaseActivity {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				// position == treeId
 				sharedPrefEditor.putInt("DEFAULT_TREE_SELECTION", position).commit();
+				
+				layoutTree.removeAllViews();
+				dismissPopups();
+				refreshLayout();
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
-		
-		layout.addView(spinnerTree);
 	}
 	
 	@Override
@@ -277,6 +278,17 @@ public class TreeActivity extends BaseActivity {
 		
 		openPopups = new HashMap<View, PopupWindow>();
 		layoutTree = (RelativeLayout) findViewById(R.id.layout_tree);
+		
+		// draw edges when ImageViews are given layout dimensions
+		listenerOGL = new OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				drawEdges();
+			}
+		};
+		
+		treeList = gameData.getTrees();
+		initializeSpinner();
 	}
 	
 	@Override
@@ -304,25 +316,18 @@ public class TreeActivity extends BaseActivity {
 	 * This is called onStart() and handles any game updates since the user left the current Activity.
 	 */
 	private void refreshLayout() {
-		// draw edges when ImageViews are given layout dimensions
-		listenerOGL = new OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				drawEdges();
-			}
-		};
-		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
-
 		// vertical LinearLayout container
 		LinearLayout llTree = new LinearLayout(this);
 		llTree.setOrientation(LinearLayout.VERTICAL);
 		
-		treeList = gameData.getTrees();
-		initializeSpinner(llTree);
-		constructTree(treeList.get(sharedPref.getInt("DEFAULT_TREE_SELECTION", 0)), llTree);
+		// construct the selected Tree; position == treeId
+		constructTree(treeList.get(spinnerTree.getSelectedItemPosition()), llTree);
 		
 		// volatile layout elements refreshed, add to parent RelativeLayout
 		layoutTree.addView(llTree, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+		
+		// draw edges when ImageViews are given layout dimensions
+		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
 	}
 	
 	/**
@@ -337,8 +342,7 @@ public class TreeActivity extends BaseActivity {
 		}
 		
 		// manage currently open PopupWindows (close all)
-		for (View v : openPopups.keySet())
-			openPopups.remove(v).dismiss();
+		dismissPopups();
 		
 		// retrieve Box
 		Box box = (Box) view.getTag();
