@@ -33,7 +33,7 @@ import android.widget.Toast;
 public final class GameData {
 	// CONSTANTS
 	private static final short DEFAULT_TREE_HEIGHT = 4;
-	private static final short NUM_OF_BOXES = 11;
+	private static final short NUM_OF_BOXES = 20;
 	
 	// STATE VARIABLES
 	private Map<Short, Box> boxMap; // maps unique boxId to Box
@@ -370,25 +370,27 @@ public final class GameData {
 	 * Loads Trees into the game data.
 	 */
 	private void loadTrees() {
-		// TEST TREE
-		Tree newTree = new Tree(R.string.game_tree0);
+		List<BoxHolder> tier1, tier2, tier3, tier4;
 		
-		List<BoxHolder> tier1 = newTree.boxHolderMatrix.get(0);
+		// TREE0
+		Tree tree0 = new Tree(R.string.game_tree0);
+		
+		tier1 = tree0.boxHolderMatrix.get(0);
 		tier1.add(new BoxHolder((short) 0));
 		tier1.add(new BoxHolder((short) 1));
 		tier1.add(new BoxHolder((short) 2));
 		
-		List<BoxHolder> tier2 = newTree.boxHolderMatrix.get(1);
+		tier2 = tree0.boxHolderMatrix.get(1);
 		tier2.add(new BoxHolder((short) 3));
 		tier2.add(new BoxHolder((short) 4));
 		tier2.add(new BoxHolder((short) 5));
 		
-		List<BoxHolder> tier3 = newTree.boxHolderMatrix.get(2);
+		tier3 = tree0.boxHolderMatrix.get(2);
 		tier3.add(new BoxHolder((short) 6));
 		tier3.add(new BoxHolder((short) 7));
 		tier3.add(new BoxHolder((short) 8));
 		
-		List<BoxHolder> tier4 = newTree.boxHolderMatrix.get(3);
+		tier4 = tree0.boxHolderMatrix.get(3);
 		tier4.add(new BoxHolder((short) 9));
 		tier4.add(new BoxHolder((short) 10));
 		
@@ -399,7 +401,35 @@ public final class GameData {
 		tier2.get(2).incomingEdges.add(tier1.get(2));
 		tier3.get(2).incomingEdges.add(tier2.get(2));
 		
-		addTree(0, newTree);
+		addTree(0, tree0);
+
+		// TREE1
+		Tree tree1 = new Tree(R.string.game_tree1);
+
+		tier1 = tree1.boxHolderMatrix.get(0);
+		tier1.add(new BoxHolder((short) 11));
+		tier1.add(new BoxHolder((short) 3));
+		tier1.add(new BoxHolder((short) 12));
+
+		tier2 = tree1.boxHolderMatrix.get(1);
+		tier2.add(new BoxHolder((short) 13));
+		tier2.add(new BoxHolder((short) 14));
+		tier2.add(new BoxHolder((short) 15));
+
+		tier3 = tree1.boxHolderMatrix.get(2);
+		tier3.add(new BoxHolder((short) 16));
+		tier3.add(new BoxHolder((short) 17));
+
+		tier4 = tree1.boxHolderMatrix.get(3);
+		tier4.add(new BoxHolder((short) 18));
+		tier4.add(new BoxHolder((short) 19));
+
+		// add edges
+		tier2.get(1).incomingEdges.add(tier1.get(1));
+		tier4.get(0).incomingEdges.add(tier3.get(0));
+		tier4.get(1).incomingEdges.add(tier3.get(1));
+
+		addTree(1, tree1);
 	}
 	
 	/**

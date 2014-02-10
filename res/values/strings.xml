@@ -135,11 +135,28 @@
     <string name="game_box_description9">It didn\'t come out of a can this time!</string>
     <string name="game_box_title10">Chicken Fried Steak</string>
     <string name="game_box_description10">There is no Secret Chicken level.</string>
+    <string name="game_box_title11">Breakfast Sandwich</string>
+    <string name="game_box_description11">Breakfast Sandwich</string>
+    <string name="game_box_title12">Sloppy Joe</string>
+    <string name="game_box_description12">Sloppy Joe</string>
+    <string name="game_box_title13">Tuna Salad Sandwich</string>
+    <string name="game_box_description13">Tuna Salad Sandwich</string>
+    <string name="game_box_title14">Club Sandwich</string>
+    <string name="game_box_description14">Club Sandwich</string>
+    <string name="game_box_title15">Reuben Sandwich</string>
+    <string name="game_box_description15">Reuben Sandwich</string>
+    <string name="game_box_title16">Po\' Boy Sub Sandwich</string>
+    <string name="game_box_description16">Po\' Boy Sub Sandwich</string>
+    <string name="game_box_title17">Meatball Sandwich</string>
+    <string name="game_box_description17">Meatball Sandwich</string>
+    <string name="game_box_title18">Lobster Roll</string>
+    <string name="game_box_description18">Lobster Roll</string>
+    <string name="game_box_title19">French Dip</string>
+    <string name="game_box_description19">French Dip</string>
     
     <!-- GAME TREES -->
     <string name="game_tree0">The Way of Beef</string>
-    <string name="game_tree1">Some Other Tree</string>
-    <string name="game_tree2">Yet Another Tree</string>
+    <string name="game_tree1">Path of the Sandwich</string>
     
     <!-- GAME RANKS -->
     <string name="game_rank0">Aspiring Cook</string>

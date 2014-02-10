@@ -158,6 +158,14 @@ public class TreeActivity extends BaseActivity {
 	}
 	
 	/**
+	 * Close all open PopupWindows.
+	 */
+	private void dismissPopups() {
+		for (View v : openPopups.keySet())
+			openPopups.remove(v).dismiss();
+	}
+	
+	/**
 	 * Draws the path edges connecting the Boxes on the Tree.
 	 * NOTE: Y coordinate on screen goes top-->down.
 	 * This is called only once, after the ImageViews have been given layout dimensions.
@@ -244,12 +252,14 @@ public class TreeActivity extends BaseActivity {
 		for (Tree tree : treeList)
 			treeTitles.add(tree.getName());
 		spinnerTree.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, treeTitles));
+		spinnerTree.setSelection(sharedPref.getInt("DEFAULT_TREE_SELECTION", 0));
 		
 		// attach listener
 		spinnerTree.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				// TODO position = treeId
+				// position == treeId
+				sharedPrefEditor.putInt("DEFAULT_TREE_SELECTION", position).commit();
 			}
 
 			@Override
@@ -279,10 +289,7 @@ public class TreeActivity extends BaseActivity {
 		super.onRestart();
 		
 		layoutTree.removeAllViews();
-		
-		// close all open PopupWindows
-		for (View v : openPopups.keySet())
-			openPopups.remove(v).dismiss();
+		dismissPopups();
 	}
 	
 	@Override
@@ -294,7 +301,7 @@ public class TreeActivity extends BaseActivity {
 
 	/**
 	 * Refresh the screen layout.
-	 * This is called onRestart() and handles any game updates since the user left the current Activity.
+	 * This is called onStart() and handles any game updates since the user left the current Activity.
 	 */
 	private void refreshLayout() {
 		// draw edges when ImageViews are given layout dimensions
@@ -312,7 +319,7 @@ public class TreeActivity extends BaseActivity {
 		
 		treeList = gameData.getTrees();
 		initializeSpinner(llTree);
-		constructTree(treeList.get(0), llTree);
+		constructTree(treeList.get(sharedPref.getInt("DEFAULT_TREE_SELECTION", 0)), llTree);
 		
 		// volatile layout elements refreshed, add to parent RelativeLayout
 		layoutTree.addView(llTree, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
