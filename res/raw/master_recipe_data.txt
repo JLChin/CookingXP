@@ -246,6 +246,7 @@ Lobster Roll:Cooking XP:18
 _Cook and remove the meat from the lobsters chopping it into bite-sized chunks.:Combine the lobster meat, mayo, celery, parsley, and lemon juice in a bowl.  Salt and pepper to taste!:Put the lobster filling in the refridgerator for 5 minutes to allow the ingredients to marry together.:Cut open the rolls and lightly toast them.:Brush the inside of the rolls with butter and fill with lobster filling!
 0:E
 How to cook Lobster:Cooking XP:18
+0:0:0:0
 1: :Lobster Tail:Huzzah!
 _This is where to learn how to cook it, eventually!
 0:E
