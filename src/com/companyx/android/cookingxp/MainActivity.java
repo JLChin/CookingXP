@@ -1,32 +1,33 @@
 package com.companyx.android.cookingxp;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-import android.app.AlertDialog;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookRequestError;
-import com.facebook.LoggingBehavior;
+import com.facebook.HttpMethod;
 import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
-import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
-import com.facebook.Settings;
-import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
-
 
 /**
  * MainActivity
@@ -35,28 +36,14 @@ import com.facebook.model.GraphUser;
  */
 public class MainActivity extends BaseActivity {
 	// CONSTANTS
-	static final String PENDING_REQUEST_BUNDLE_KEY = "com.companyx.android.cookingxp:PendingRequest";
+	private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+	private static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
 	
 	// VIEW HOLDERS
 	private LinearLayout layoutMain;
-	TextView textViewFacebookResults;
-	EditText editRequests;
 	
 	// STATE VARIABLES
-	boolean pendingRequest;
-	
-	// SYSTEM
-	Session session;
-	
-	private Session createSession() {
-        Session activeSession = Session.getActiveSession();
-        if (activeSession == null || activeSession.getState().isClosed()) {
-            activeSession = new Session.Builder(this).setApplicationId(getString(R.string.facebook_app_id)).build();
-            Session.setActiveSession(activeSession);
-        }
-        
-        return activeSession;
-    }
+	private boolean pendingPublishReauthorization = false; // if activity is stopped during the reauthorization flow
 	
 	private void initialize() {
 		// LOAD RECIPES FROM FILE
@@ -71,10 +58,21 @@ public class MainActivity extends BaseActivity {
 		recipeDatabase.loadShoppingListRecipes();
 		
 		gameData.validate();
-		
-		// FACEBOOK SETUP
-		session = createSession();
-        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+	}
+	
+	/**
+	 * Determine whether or not the user has granted the necessary permissions to publish the story.
+	 * @param subset subset of permissions to check.
+	 * @param superset superset of permissions to check against.
+	 * @return true if all permissions contained in the subset are also contained in the superset, false otherwise.
+	 */
+	private boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
+	    for (String string : subset) {
+	        if (!superset.contains(string)) {
+	            return false;
+	        }
+	    }
+	    return true;
 	}
 	
 	/**
@@ -103,6 +101,10 @@ public class MainActivity extends BaseActivity {
 					  }
 					});
 				}
+				
+				if (state.isOpened()) {
+					// TODO Share stuff
+				}
 			}
 		});
 	}
@@ -112,30 +114,7 @@ public class MainActivity extends BaseActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-		
-		// sharing
-		if (session.onActivityResult(this, requestCode, resultCode, data) && pendingRequest && session.getState().isOpened()) {
-            sendRequests();
-        }
 	}
-	
-	private void onClickRequest() {
-        if (this.session.isOpened()) {
-            sendRequests();
-        } else {
-            StatusCallback callback = new StatusCallback() {
-                public void call(Session session, SessionState state, Exception exception) {
-                    if (exception != null) {
-                        new AlertDialog.Builder(MainActivity.this).setTitle(R.string.facebook_login_failed).setMessage(exception.getMessage()).setPositiveButton(R.string.ok, null).show();
-                        MainActivity.this.session = createSession();
-                    }
-                }
-            };
-            
-            pendingRequest = true;
-            this.session.openForRead(new Session.OpenRequest(this).setCallback(callback));
-        }
-    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -174,24 +153,62 @@ public class MainActivity extends BaseActivity {
 	}
 
 	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		
-		pendingRequest = savedInstanceState.getBoolean(PENDING_REQUEST_BUNDLE_KEY, pendingRequest);
-	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		
-		outState.putBoolean(PENDING_REQUEST_BUNDLE_KEY, pendingRequest);
-	}
-
-	@Override
 	protected void onStart() {
 		super.onStart();
 		
 		refreshLayout();
+	}
+	
+	/**
+	 * Publish a link (together with a name, caption, image, etc.) to Facebook.
+	 * Checks if the logged-in user has granted publish permissions; otherwise re-authorize to grant the missing permissions.
+	 * Creates a Request object that will be executed by a subclass of AsyncTask called RequestAsyncTask.
+	 * Make a POST to the Graph API, passing in the current user's session, the Graph endpoint to post to, a Bundle of POST parameters, the HTTP method (POST) and a callback to handle the response when the call completes.
+	 */
+	private void publishStory() {
+	    Session session = Session.getActiveSession();
+
+	    if (session != null){
+
+	        // Check for publish permissions    
+	        List<String> permissions = session.getPermissions();
+	        if (!isSubsetOf(PERMISSIONS, permissions)) {
+	            pendingPublishReauthorization = true;
+	            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, PERMISSIONS);
+	            session.requestNewPublishPermissions(newPermissionsRequest);
+	            return;
+	        }
+
+	        Bundle postParams = new Bundle();
+	        postParams.putString("name", "CookingXP for Android");
+	        postParams.putString("caption", "Way cooler than Flappy Bird.");
+	        postParams.putString("description", "Hohoho Test description.");
+	        postParams.putString("link", "https://github.com/JLChin/CookingXP");
+	        postParams.putString("picture", "https://raw.github.com/JLChin/CookingXP/master/res/drawable-xhdpi/ic_launcher.png");
+
+	        Request.Callback callback= new Request.Callback() {
+	            public void onCompleted(Response response) {
+	                JSONObject graphResponse = response.getGraphObject().getInnerJSONObject();
+	                String postId = null;
+	                try {
+	                    postId = graphResponse.getString("id");
+	                } catch (JSONException e) {
+	                    Log.i("JAMES", "JSON error "+ e.getMessage());
+	                }
+	                FacebookRequestError error = response.getError();
+	                if (error != null) {
+	                    Toast.makeText(MainActivity.this, error.getErrorMessage(), Toast.LENGTH_SHORT).show();
+	                    } else {
+	                        Toast.makeText(MainActivity.this, postId, Toast.LENGTH_LONG).show();
+	                }
+	            }
+	        };
+
+	        Request request = new Request(session, "me/feed", postParams, HttpMethod.POST, callback);
+
+	        RequestAsyncTask task = new RequestAsyncTask(request);
+	        task.execute();
+	    }
 	}
 	
 	/**
@@ -257,51 +274,15 @@ public class MainActivity extends BaseActivity {
 		});
 		layoutMain.addView(buttonFacebookLogin);
 		
-		// FACEBOOK SHARE BUTTON
+		// FACEBOOK SHARE
 		Button buttonFacebookShare = new Button(this);
 		buttonFacebookShare.setText(R.string.facebook_share);
 		buttonFacebookShare.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View arg0) {
-				onClickRequest();
+			public void onClick(View v) {
+				publishStory();
 			}
 		});
 		layoutMain.addView(buttonFacebookShare);
-		
-		editRequests = new EditText(this);
-		layoutMain.addView(editRequests);
-		
-		textViewFacebookResults = new TextView(this);
-		layoutMain.addView(textViewFacebookResults);
 	}
-	
-	private void sendRequests() {
-        textViewFacebookResults.setText("");
-
-        String requestIdsText = editRequests.getText().toString();
-        String[] requestIds = requestIdsText.split(",");
-
-        List<Request> requests = new ArrayList<Request>();
-        for (final String requestId : requestIds) {
-            requests.add(new Request(session, requestId, null, null, new Request.Callback() {
-                public void onCompleted(Response response) {
-                    GraphObject graphObject = response.getGraphObject();
-                    FacebookRequestError error = response.getError();
-                    String s = textViewFacebookResults.getText().toString();
-                    if (graphObject != null) {
-                        if (graphObject.getProperty("id") != null) {
-                            s = s + String.format("%s: %s\n", graphObject.getProperty("id"), graphObject.getProperty("name"));
-                        } else {
-                            s = s + String.format("%s: <no such id>\n", requestId);
-                        }
-                    } else if (error != null) {
-                        s = s + String.format("Error: %s", error.getErrorMessage());
-                    }
-                    textViewFacebookResults.setText(s);
-                }
-            }));
-        }
-        pendingRequest = false;
-        Request.executeBatchAndWait(requests);
-    }
 }

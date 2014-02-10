@@ -31,9 +31,7 @@
     <string name="welcome">Under construction</string>
     <string name="reset">Reset Game Data</string>
     <string name="facebook_login">Login Using Facebook</string>
-    <string name="facebook_login_failed">Login failed</string>
     <string name="facebook_share">Share to My Wall</string>
-    <string name="ok">OK!</string>
     
     <!-- SELECT RECIPE -->
     <string name="select_recipe_favorites_alert_title">Favorite Recipes</string>
