@@ -18,15 +18,13 @@ public class BaseActivity extends Activity {
 	// SYSTEM
 	protected RecipeDatabase recipeDatabase;
 	protected GameData gameData;
-	protected SharedPreferences sharedPref;
 	protected SharedPreferences.Editor sharedPrefEditor;
 	protected float scalingFactor; // composite scalar taking into account both screen density and size, use to scale fonts/drawables/layouts
 	
 	private void init() {
 		recipeDatabase = RecipeDatabase.getInstance(this);
 		gameData = GameData.getInstance(this);
-		sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-		sharedPrefEditor = sharedPref.edit();
+		sharedPrefEditor = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).edit();
 		
 		// calculate scalingFactor
 		DisplayMetrics dm = getResources().getDisplayMetrics();
