@@ -7,6 +7,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -43,7 +44,7 @@ public class TreeActivity extends BaseActivity {
 	public static final int DEFAULT_EDGE_STROKE_WIDTH = 10;
 	
 	// VIEW HOLDERS
-	private RelativeLayout layoutTree;
+	private RelativeLayout layoutTree; // container ViewGroup for volatile layout elements
 	private Spinner spinnerTree;
 	
 	// STATE VARIABLES
@@ -158,6 +159,14 @@ public class TreeActivity extends BaseActivity {
 	}
 	
 	/**
+	 * Close all open PopupWindows.
+	 */
+	private void dismissPopups() {
+		for (View v : openPopups.keySet())
+			openPopups.remove(v).dismiss();
+	}
+	
+	/**
 	 * Draws the path edges connecting the Boxes on the Tree.
 	 * NOTE: Y coordinate on screen goes top-->down.
 	 * This is called only once, after the ImageViews have been given layout dimensions.
@@ -182,9 +191,10 @@ public class TreeActivity extends BaseActivity {
 				int edgeViewHeight = imageViewEndXY[1] - imageViewStartXY[1] - imageViewHeight;
 				int edgeViewWidth = edgeViewHeight; // currently the ImageView spacing width scales 1:1 with height
 				
-				// absolute screen location coordinates are offset by XML padding - Android bug?
-				int adjustedImageViewStartX = imageViewStartXY[0] - (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-				int adjustedImageViewStartY = imageViewStartXY[1] - (int) getResources().getDimension(R.dimen.activity_vertical_margin);
+				// absolute screen location coordinates are offset by vertical/horizontal padding and Spinner height
+				Resources resources = getResources();
+				int adjustedImageViewStartX = imageViewStartXY[0] - (int) resources.getDimension(R.dimen.activity_horizontal_margin);
+				int adjustedImageViewStartY = imageViewStartXY[1] - (int) resources.getDimension(R.dimen.activity_vertical_margin) - spinnerTree.getHeight();
 				
 				// EdgeView draw parameters
 				int startX = 0;
@@ -234,30 +244,33 @@ public class TreeActivity extends BaseActivity {
 	
 	/**
 	 * Set up the Tree selection Spinner.
-	 * @param layout the LinearLayout to add the Spinner to.
 	 */
-	private void initializeSpinner(LinearLayout layout) {
-		spinnerTree = new Spinner(this);
+	private void initializeSpinner() {
+		spinnerTree = (Spinner) findViewById(R.id.trees_spinner);
 		
 		// add selections
 		List<String> treeTitles = new ArrayList<String>();
 		for (Tree tree : treeList)
 			treeTitles.add(tree.getName());
 		spinnerTree.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, treeTitles));
+		spinnerTree.setSelection(sharedPref.getInt("DEFAULT_TREE_SELECTION", 0));
 		
 		// attach listener
 		spinnerTree.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				// TODO position = treeId
+				// position == treeId
+				sharedPrefEditor.putInt("DEFAULT_TREE_SELECTION", position).commit();
+				
+				layoutTree.removeAllViews();
+				dismissPopups();
+				refreshLayout();
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
-		
-		layout.addView(spinnerTree);
 	}
 	
 	@Override
@@ -267,6 +280,17 @@ public class TreeActivity extends BaseActivity {
 		
 		openPopups = new HashMap<View, PopupWindow>();
 		layoutTree = (RelativeLayout) findViewById(R.id.layout_tree);
+		
+		// draw edges when ImageViews are given layout dimensions
+		listenerOGL = new OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				drawEdges();
+			}
+		};
+		
+		treeList = gameData.getTrees();
+		initializeSpinner();
 	}
 	
 	@Override
@@ -279,10 +303,7 @@ public class TreeActivity extends BaseActivity {
 		super.onRestart();
 		
 		layoutTree.removeAllViews();
-		
-		// close all open PopupWindows
-		for (View v : openPopups.keySet())
-			openPopups.remove(v).dismiss();
+		dismissPopups();
 	}
 	
 	@Override
@@ -294,28 +315,21 @@ public class TreeActivity extends BaseActivity {
 
 	/**
 	 * Refresh the screen layout.
-	 * This is called onRestart() and handles any game updates since the user left the current Activity.
+	 * This is called onStart() and handles any game updates since the user left the current Activity.
 	 */
 	private void refreshLayout() {
-		// draw edges when ImageViews are given layout dimensions
-		listenerOGL = new OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				drawEdges();
-			}
-		};
-		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
-
 		// vertical LinearLayout container
 		LinearLayout llTree = new LinearLayout(this);
 		llTree.setOrientation(LinearLayout.VERTICAL);
 		
-		treeList = gameData.getTrees();
-		initializeSpinner(llTree);
-		constructTree(treeList.get(0), llTree);
+		// construct the selected Tree; position == treeId
+		constructTree(treeList.get(spinnerTree.getSelectedItemPosition()), llTree);
 		
 		// volatile layout elements refreshed, add to parent RelativeLayout
 		layoutTree.addView(llTree, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+		
+		// draw edges when ImageViews are given layout dimensions
+		layoutTree.getViewTreeObserver().addOnGlobalLayoutListener(listenerOGL);
 	}
 	
 	/**
@@ -330,8 +344,7 @@ public class TreeActivity extends BaseActivity {
 		}
 		
 		// manage currently open PopupWindows (close all)
-		for (View v : openPopups.keySet())
-			openPopups.remove(v).dismiss();
+		dismissPopups();
 		
 		// retrieve Box
 		Box box = (Box) view.getTag();

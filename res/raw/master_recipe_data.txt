@@ -130,4 +130,134 @@ Chicken Fried Steak:Alton Brown:10
 2:cups:chicken broth: 
 1/2:cup:whole milk: 
 1/2:teaspoon:thyme: 
-_Preheat oven to 250 degrees F.:Cut the meat with the grain into 1/2-inch thick slices and eason each piece on both sides with the salt and pepper.:Place the flour into a pie pan. Dredge the meat on both sides in the flour.:Using a needling device, tenderize the meat until each slice is 1/4-inch thick.:Place the eggs into a separate pie pan.:Dredge the meat again in the flour, followed by the egg and finally back into the flour again.:Repeat with all the pieces of meat.:Place the meat onto a plate and allow it to rest for 10-15 minutes before cooking.:Place enough of the vegetable oil to cover the bottom of a 12-inch slope-sided skillet and set over medium-high heat.:Once the oil begins to shimmer, add the meat in batches, being careful not to overcrowd the pan.:Cook each piece on both sides until golden brown, approximately 4 minutes per side.:Remove the steaks to a wire rack set in a half sheet pan and place into the oven. Repeat until all of the meat is browned.:Once all steaks are in the oven, Add the remaining vegetable oil, or at least 1 tablespoon, to the pan.: Whisk in 3 tablespoons of the flour left over from the dredging.:Add the chicken broth and deglaze the pan and whisk until the gravy comes to a boil and begins to thicken.:Add the milk and thyme and whisk until the gravy coats the back of a spoon, approximately 5 to 10 minutes.:Season to taste, with more salt and pepper, if needed and serve the gravy over the steaks!
+_Preheat oven to 250 degrees F.:Cut the meat with the grain into 1/2-inch thick slices and season each piece on both sides with the salt and pepper.:Place the flour into a pie pan. Dredge the meat on both sides in the flour.:Using a needling device, tenderize the meat until each slice is 1/4-inch thick.:Place the eggs into a separate pie pan.:Dredge the meat again in the flour, followed by the egg and finally back into the flour again.:Repeat with all the pieces of meat.:Place the meat onto a plate and allow it to rest for 10-15 minutes before cooking.:Place enough of the vegetable oil to cover the bottom of a 12-inch slope-sided skillet and set over medium-high heat.:Once the oil begins to shimmer, add the meat in batches, being careful not to overcrowd the pan.:Cook each piece on both sides until golden brown, approximately 4 minutes per side.:Remove the steaks to a wire rack set in a half sheet pan and place into the oven. Repeat until all of the meat is browned.:Once all steaks are in the oven, Add the remaining vegetable oil, or at least 1 tablespoon, to the pan.: Whisk in 3 tablespoons of the flour left over from the dredging.:Add the chicken broth and deglaze the pan and whisk until the gravy comes to a boil and begins to thicken.:Add the milk and thyme and whisk until the gravy coats the back of a spoon, approximately 5 to 10 minutes.:Season to taste, with more salt and pepper, if needed and serve the gravy over the steaks!
+0:E
+Breakfast Sandwich:Cooking XP:11
+10:0:15:1
+1:package:Sliced Cheese:American or Cheddar
+2:slices:bread:Your Favorite bread!
+3:slices:bacon:cooked any way you like
+2: :large eggs: 
+1:tablespoon:butter: 
+_Cook the bacon.:While the bacon is cooking, crack 2 large eggs in a bowl and beat them.  A fork works well if a whisk is unavailable.:Once the bacon is done cooking, butter a cast-iron or nonstick pan and heat over Medium.:Whisk the eggs one more time briefly if they have sat there for a moment, then pour them into your pan.:Use a spatula to stir the eggs until they are cooked to desired doneness.:Butter and toast 2 slices of bread.  You can use the griddle, toaster oven, or a toaster.  If you are using a pop-up toaster, be sure to butter AFTER they pop up!:Place about half the eggs on the first slice of toast.  Place a slice of Cheese on top.  Place the remaining eggs and top with the bacon and second slice of toast.  Now time to enjoy a great breakfast treat!
+0:E
+Sloppy Joe:Cooking XP:12
+10:0:20:2
+1:tablespoon:butter: 
+1: :onion:chopped finely
+1:pound:ground beef:lean
+1/2:cup:ketchup: 
+1:teaspoon:brown sugar: 
+1/8:teaspoon:garlic powder: 
+ : :salt: 
+ : :pepper: 
+1:package:hambuger buns:If you already have a plain bread, that can be substituted.
+_Butter and heat a non-stick pan over medium.:Add onion and cook until softened.  This takes 3-5 minutes.:Add the ground beef to the pan and cook until browned, using a spatula or wooden spoon to break it up and stir the meat.:After 3-5 minutes of cooking the meat, Stir in the ketchup, brown sugar, and garlic powder.:Reduce heat to simmer and let it cook for 10-15 minutes.  Cook until all the meat is cooked through.:Add Salt and Pepper to taste.:Toast hamburger buns and serve!
+0:E
+Tuna Salad Sandwich:Cooking XP:13
+15:0:0:4
+1:loaf:white bread:Any kind of bread will work as it can be served several ways!
+3:cans:Tuna:Buy the highest quality or substitute homemade from fresh fish.
+4:tablespoons:celery:diced
+1/2: :medium onion:finely chopped
+6:tablespoons:mayonnaise:Choose your favorite or make your own! Do not use Miracle whip, it isn't the same!
+2:tablespoons:dijon mustard: 
+2:teaspoons:dill:finely chopped
+ : :salt: 
+ : :pepper: 
+_Mix tuna together with all the other ingredients in a large bowl.:Taste it and add salt and pepper as desired.:Toast 2 slices of bread and spread on as much tuna salad as desired!
+0:E
+Club Sandwich:Cooking XP:14
+10:0:0:1
+3:slices:white bread: 
+2:leaves:lettuce:Romaine, Iceberg, or Greenleaf
+1: :tomato:sliced into sandwich friendly slices
+4:strips:bacon:Cooked until crispy
+2:tablespoons:mayonnaise: 
+1/4:pound:sliced roasted turkey: 
+ : :salt: 
+ : :pepper: 
+_Toast 3 slices of bread on both sides.:Spread one side of each slice of bread with mayo.:Place the lettuce on the slice that will be the bottom of your sandwich.:Place 2 tomato slices on next seasoned with salt and pepper to taste.:Place 2 slices of bacon on next.:Place half the sliced roasted turkey without letting turkey hang out the sides of the sandwich.:Repeat the same process for the second piece of toast to form the middle piece.:Combine the sandwich.  The middle piece is placed on the bottom piece turkey side up.  The final piece is placed on mayo side down.:Cut the sandwich diagnoally and add frilly toothpicks to complete the look!  Or if you are like me, you just eat it right then and there LOL!:NOTES You can use other meats, like chicken or beef, or even leftover turkey after thanksgiving!
+0:E
+Reuben Sandwich:Cooking XP:15
+5:0:10:4
+2:tablespoons:butter: 
+8:slices:rye bread: 
+8:slices:swiss cheese:Gruyère can be substituted
+3/4:pound:corned beef:thinly sliced, pastrami can be substituted if necessary.
+1/2:pound:souerkraut: 
+1/4:cup:thousand island dressing:Or you can make your own russian dressing!
+_Preheat a nonstick pan to medium heat.:Lay out 4 slices of bread and place one slice of swiss cheese on each.:Next layer corned beef on top of that.:Next layer the souerkraut.  If there is a lot of moisture in the souerkraut, squeeze it out using paper towels first.:Next add one table spoon of dressing onto the sandwich.:Add another layer of corned beef.:Finish with a second slice of swiss cheese and place the top slice of bread onto the sandwiches.:Now spread butter onto the top of the sandwich and place ontop the now heated pan.:Butter the other side as the face down side cooks.:Cook until both sides are golden brown, being careful when flipping the sandwich with a spatula!:Cut each sandwich in half and enjoy!
+0:E
+Russian Dressing:Cooking XP:15
+5:0:0:0
+1/3:cup:mayonnaise: 
+1 1/2:tablespoons:ketchup: 
+1 1/2:teaspoons:horseradish: 
+1/2:teaspoon:Worcestershire sauce: 
+ : :salt: 
+ : :black pepper:freshly ground
+_Combine ingredients to make a half cup of Russian Dressing!
+0:E
+Po'Boy Sub Sandwich:Rachael Ray:16
+15:0:10:4
+ : :vegetable oil:peanut oil can be substituted
+1: :large egg: 
+1:cup:milk: 
+1 1/2:pounds:large shrip:peeled and devained
+1:cup:bread crumbs:cornmeal can be used to substitute
+1/2:cup:flour: 
+2:tablespoons:seafood seasoning:Old bay is recommended. Canjun seasoning can be used to substitute.
+8:pieces:lettuce:Bibb or butter lettuce recommended
+1: :tomato:thinly sliced
+1: :lemon:cut into wedges
+1/4:cup:sweet pickle relish: 
+1/2:cup:spicy mustard: 
+ : :hot sauce:Just a few drops!
+ : :salt: 
+_Preheat 1-inch of oil in a deep skillet over medium to medium-high heat.:Beat egg and milk together.:Pull tails off shrimp.:Salt shrimp then soak them in milk batter.:Cover a plate with plastic wrap, then mix together the flour, bread crumbs, and seafood seasoning on the plate to make the breading.:Use tongs to remove a few shrimp at a time and coat them in the breading.:Add the breaded shrimp to the hot oil and fry for 5 to 6 minutes or until firm and deeply golden all over.:Mix relish, mustard, and a few drops of hot sauce together in a bowl.:Spread the sauce onto the bread.:Pile the lettuce and tomato on rolls and top with the cooked shrimp.:Squeeze a little lemon juice over the shrimp and enjoy your Shrimp Po'boy!
+0:E
+Meatball Sandwich:Cooking XP:17
+20:0:20:6
+2:tablespoons:olive oil: 
+1 1/2:pounds:ground beef: 
+1 1/2:pounds:ground pork: 
+1: :egg: 
+1/2: :small onion:chopped
+1:teaspoon:dried parsley: 
+1:teaspoon:garlic powder: 
+1:teaspoon:dried oregano: 
+1:teaspoon:salt: 
+1/2:teaspoon:black pepper:freshly ground
+ : :provolone cheese:thinly sliced
+1: :french baguette:Get one that can be sliced into several sub sandwiches
+4:cups:marinara sauce:Choose your favorite or create your own!
+_Preheat oven to 375 F:Combine the beef, pork, egg, onion, parsley, garlic powder, oregano, salt, and pepper in a bowl and mix until well combined.:Roll the meat into golf balls and place them on an oiled baking dish.:Place baking dish into the oven for 20 minutes.::Heat Marinara sauce over medium to medium-high.  Make sure to stir often so it doesn't stick to the pot or burn.:Remove meatballs and test internal temperature which should be 160-165F.  If there isn't a thermometer available, just open a meatball up and look inside to see if it is cooked through with a fork.  The meatball should be firm and not loose.:Drain the grease out of the baking dish and pour the hot marinara sauce over the meatballs.:Place the meatballs back into the oven for another 15 minutes.:Cut the Baguette into sub sandwich sized portions.  If toasted bread is preferred, only lightly toast it.:Remove the meatballs from oven and spoon meatballs and sauce onto your bread and serve immediately!  Enjoy!:NOTES Beef Meatballs from The Way of Beef can be used for this recipe as well!  Also, Other tomato sauces can be substituted for the marinara.
+0:E
+Lobster Roll:Cooking XP:18
+10:5:0:4
+4: :Lobster Tails:Or approx 1 1/2 pounds of Lobster meat
+1/2:cup:mayonnaise: 
+3:tablespoons:lemon juice:freshly squeezed
+2:stalks:celery:finely chopped
+2:tablespoons:parsley:chopped fresh
+4: :Rolls: 
+ : :butter: 
+_Cook and remove the meat from the lobsters chopping it into bite-sized chunks.:Combine the lobster meat, mayo, celery, parsley, and lemon juice in a bowl.  Salt and pepper to taste!:Put the lobster filling in the refridgerator for 5 minutes to allow the ingredients to marry together.:Cut open the rolls and lightly toast them.:Brush the inside of the rolls with butter and fill with lobster filling!
+0:E
+How to cook Lobster:Cooking XP:18
+0:0:0:0
+1: :Lobster Tail:Huzzah!
+_This is where to learn how to cook it, eventually!
+0:E
+French Dip:Rachael Ray:19
+5:0:10:4
+2:tablespoons:butter: 
+1: :shallot:chopped
+1:tablespoon:all-purpose flour: 
+2:cans:beef consomme:beef broth may be substituted
+1 1/2:pounds:roast beef:deli sliced
+ : :coarse salt: 
+ : :black pepper:freshly ground
+4: :torpedo sandwich rolls:split
+_Heat a large skillet over medium to medium-high heat, melt butter.:Add shallots to butter and saute 2 minutes.:Add flour to butter and shallot and cook a minute longer.:Whisk in beef consomme slowly.:Bring sauce to a bubble and set stove top to low heat.:Allow to simmer over low heat until ready to serve sandwiches.:Pile meat loosely across your cutting board and season meat with salt and pepper.:Set out 4 small bowls to hold au jus, which is a fancy name for the beef juice used to dip your sandwich!:Pour your au jus sauce from your pan into each bowl:Lightly toast your bread before adding the seasoned roast beef to your sandwich.:Set the bowls along side each plate to dip sandwiches in!  Enjoy!
