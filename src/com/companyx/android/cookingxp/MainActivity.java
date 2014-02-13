@@ -5,13 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -72,16 +68,16 @@ public class MainActivity extends BaseActivity {
 	            return false;
 	        }
 	    }
+	    
 	    return true;
 	}
 	
 	/**
-	 * Facebook login.
+	 * Login to Facebook and publish a story to the logged-in user's wall using Graph API.
 	 */
-	private void loginFacebook() {
+	private void shareOnFacebook() {
 		// start Facebook Login
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
-
 			// callback when session changes state
 			@SuppressWarnings("deprecation")
 			@Override
@@ -89,21 +85,12 @@ public class MainActivity extends BaseActivity {
 				if (session.isOpened()) {
 					// make request to the /me API
 					Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
-
-					  // callback after Graph API response with user object
-					  @Override
-					  public void onCompleted(GraphUser user, Response response) {
-						  if (user != null) {
-							  TextView tvWelcome = new TextView(MainActivity.this);
-							  tvWelcome.setText("Hello " + user.getName() + "!");
-							  layoutMain.addView(tvWelcome);
-							}
-					  }
+						// callback after Graph API response with user object
+						@Override
+						public void onCompleted(GraphUser user, Response response) {
+							publishFacebookStory(user.getName());
+						}
 					});
-				}
-				
-				if (state.isOpened()) {
-					// TODO Share stuff
 				}
 			}
 		});
@@ -160,17 +147,14 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	/**
-	 * Publish a link (together with a name, caption, image, etc.) to Facebook.
-	 * Checks if the logged-in user has granted publish permissions; otherwise re-authorize to grant the missing permissions.
-	 * Creates a Request object that will be executed by a subclass of AsyncTask called RequestAsyncTask.
-	 * Make a POST to the Graph API, passing in the current user's session, the Graph endpoint to post to, a Bundle of POST parameters, the HTTP method (POST) and a callback to handle the response when the call completes.
+	 * Publish a link (together with a name, caption, image, etc.) to the currently logged-in Facebook user's wall.
+	 * @param username the currently logged-in Facebook user's name.
 	 */
-	private void publishStory() {
+	private void publishFacebookStory(String username) {
 	    Session session = Session.getActiveSession();
 
 	    if (session != null){
-
-	        // Check for publish permissions    
+	        // check if the logged-in user has publish permissions; otherwise re-authorize to grant the missing permissions
 	        List<String> permissions = session.getPermissions();
 	        if (!isSubsetOf(PERMISSIONS, permissions)) {
 	            pendingPublishReauthorization = true;
@@ -178,37 +162,32 @@ public class MainActivity extends BaseActivity {
 	            session.requestNewPublishPermissions(newPermissionsRequest);
 	            return;
 	        }
-
+	        
+	        // create a Request object that will be executed by a subclass of AsyncTask called RequestAsyncTask
 	        Bundle postParams = new Bundle();
-	        postParams.putString("name", "CookingXP for Android");
-	        postParams.putString("caption", "Way cooler than Flappy Bird.");
-	        postParams.putString("description", "Hohoho Test description.");
-	        postParams.putString("link", "https://github.com/JLChin/CookingXP");
-	        postParams.putString("picture", "https://raw.github.com/JLChin/CookingXP/master/res/drawable-xhdpi/ic_launcher.png");
-
+	        postParams.putString("name", getString(R.string.facebook_name));
+	        postParams.putString("caption", getString(R.string.facebook_caption));
+	        postParams.putString("description", gameData.getRank() + " " + username + getString(R.string.facebook_s_score) + ": " + gameData.getScore());
+	        postParams.putString("link", getString(R.string.facebook_link));
+	        postParams.putString("picture", getString(R.string.facebook_picture));
+	        
 	        Request.Callback callback= new Request.Callback() {
 	            public void onCompleted(Response response) {
-	                JSONObject graphResponse = response.getGraphObject().getInnerJSONObject();
-	                String postId = null;
-	                try {
-	                    postId = graphResponse.getString("id");
-	                } catch (JSONException e) {
-	                    Log.i("JAMES", "JSON error "+ e.getMessage());
-	                }
 	                FacebookRequestError error = response.getError();
 	                if (error != null) {
-	                    Toast.makeText(MainActivity.this, error.getErrorMessage(), Toast.LENGTH_SHORT).show();
-	                    } else {
-	                        Toast.makeText(MainActivity.this, postId, Toast.LENGTH_LONG).show();
+	                	Toast.makeText(MainActivity.this, error.getErrorMessage(), Toast.LENGTH_SHORT).show();
+	                } else {
+	                	Toast.makeText(MainActivity.this, getString(R.string.facebook_share_success), Toast.LENGTH_LONG).show();
 	                }
 	            }
 	        };
-
+	        
+	        // make a POST to the Graph API, passing in the current user's session, the Graph endpoint to post to, a Bundle of POST parameters, the HTTP method (POST) and a callback to handle the response when the call completes
 	        Request request = new Request(session, "me/feed", postParams, HttpMethod.POST, callback);
-
 	        RequestAsyncTask task = new RequestAsyncTask(request);
 	        task.execute();
-	    }
+	    } else
+	    	 Toast.makeText(this, getString(R.string.facebook_no_active_session), Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
@@ -263,24 +242,13 @@ public class MainActivity extends BaseActivity {
 		});
 		layoutMain.addView(buttonReset);
 		
-		// LOGIN FACEBOOK BUTTON
-		Button buttonFacebookLogin = new Button(this);
-		buttonFacebookLogin.setText(R.string.facebook_login);
-		buttonFacebookLogin.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				loginFacebook();
-			}
-		});
-		layoutMain.addView(buttonFacebookLogin);
-		
 		// FACEBOOK SHARE
 		Button buttonFacebookShare = new Button(this);
 		buttonFacebookShare.setText(R.string.facebook_share);
 		buttonFacebookShare.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				publishStory();
+				shareOnFacebook();
 			}
 		});
 		layoutMain.addView(buttonFacebookShare);
