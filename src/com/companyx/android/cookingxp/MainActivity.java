@@ -8,6 +8,7 @@ import java.util.List;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,15 +32,11 @@ import com.facebook.model.GraphUser;
  * @author James Chin <jameslchin@gmail.com>
  */
 public class MainActivity extends BaseActivity {
-	// CONSTANTS
-	private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
-	private static final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
-	
 	// VIEW HOLDERS
 	private LinearLayout layoutMain;
 	
-	// STATE VARIABLES
-	private boolean pendingPublishReauthorization = false; // if activity is stopped during the reauthorization flow
+	// FACEBOOK
+	private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
 	
 	private void initialize() {
 		// LOAD RECIPES FROM FILE
@@ -122,6 +119,11 @@ public class MainActivity extends BaseActivity {
 		
 		recipeDatabase.release();
 		gameData.release();
+		
+		// release Facebook Session
+		Session session = Session.getActiveSession();
+		if (session != null)
+			session.closeAndClearTokenInformation();
 	}
 	
 	@Override
@@ -157,8 +159,8 @@ public class MainActivity extends BaseActivity {
 	        // check if the logged-in user has publish permissions; otherwise re-authorize to grant the missing permissions
 	        List<String> permissions = session.getPermissions();
 	        if (!isSubsetOf(PERMISSIONS, permissions)) {
-	            pendingPublishReauthorization = true;
-	            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, PERMISSIONS);
+	        	Log.wtf("JAMES", "I WAS HERE");
+	        	Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, PERMISSIONS);
 	            session.requestNewPublishPermissions(newPermissionsRequest);
 	            return;
 	        }
