@@ -8,7 +8,6 @@ import java.util.List;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,18 +75,17 @@ public class MainActivity extends BaseActivity {
 		// start Facebook Login
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
 			// callback when session changes state
-			@SuppressWarnings("deprecation")
 			@Override
 			public void call(Session session, SessionState state, Exception exception) {
 				if (session.isOpened()) {
 					// make request to the /me API
-					Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
+					Request.newMeRequest(session, new Request.GraphUserCallback() {
 						// callback after Graph API response with user object
 						@Override
 						public void onCompleted(GraphUser user, Response response) {
 							publishFacebookStory(user.getName());
 						}
-					});
+					}).executeAsync();
 				}
 			}
 		});
@@ -159,7 +157,6 @@ public class MainActivity extends BaseActivity {
 	        // check if the logged-in user has publish permissions; otherwise re-authorize to grant the missing permissions
 	        List<String> permissions = session.getPermissions();
 	        if (!isSubsetOf(PERMISSIONS, permissions)) {
-	        	Log.wtf("JAMES", "I WAS HERE");
 	        	Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, PERMISSIONS);
 	            session.requestNewPublishPermissions(newPermissionsRequest);
 	            return;
