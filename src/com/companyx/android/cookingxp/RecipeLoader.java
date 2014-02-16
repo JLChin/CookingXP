@@ -30,13 +30,14 @@ public class RecipeLoader {
 	}
 
 	public void loadData() {
+		
 		/* Loading Raw Data from File Location into Scanner */
 		Scanner scanner = new Scanner(inputStream);
 		scanner.useDelimiter(System.getProperty("line.separator"));
-
 		String INPUT = scanner.next();
 		String keyLine = "";
 		int recipeNumber = 0;
+		
 		while (scanner.hasNext()) {
 			if ("0:E".matches(INPUT.trim())) {
 				ArrayList<String> ingredListArray = new ArrayList<String>();
