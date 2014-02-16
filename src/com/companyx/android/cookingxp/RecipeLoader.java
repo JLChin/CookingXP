@@ -9,6 +9,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.util.Log;
+
 import com.companyx.android.cookingxp.RecipeDatabase.Recipe;
 import com.companyx.android.cookingxp.RecipeDatabase.RecipeDirection;
 import com.companyx.android.cookingxp.RecipeDatabase.RecipeIngredient;
@@ -28,19 +30,15 @@ public class RecipeLoader {
 	}
 
 	public void loadData() {
-
 		/* Loading Raw Data from File Location into Scanner */
 		Scanner scanner = new Scanner(inputStream);
 		scanner.useDelimiter(System.getProperty("line.separator"));
 
-		String bV = "\\b\\d:\\D"; // New Entry DISCOVERY Text
 		String INPUT = scanner.next();
 		String keyLine = "";
 		int recipeNumber = 0;
-
 		while (scanner.hasNext()) {
-
-			if (INPUT.matches(bV)) {
+			if ("0:E".matches(INPUT.trim())) {
 				ArrayList<String> ingredListArray = new ArrayList<String>();
 				List<Short> boxAssignment = new ArrayList<Short>();
 				List<String> directList = new ArrayList<String>();
@@ -52,13 +50,13 @@ public class RecipeLoader {
 				String title = "";
 				String auth = "";
 				INPUT = initVal;
+				
 				// Recipe Linking Placeholder - Currently just linking to itself
 				linkedRecipe.add(recipeNumber);
 
 				// Storing Recipe title
 				while (scanner.hasNext()) {
-
-					if (INPUT.equals(bV)) {
+					if ("0:E".equals(INPUT.trim())) {
 						INPUT = scanner.next();
 					} else {
 						title = INPUT;
@@ -66,16 +64,16 @@ public class RecipeLoader {
 						break;
 					}
 				}
-				
+
 				// Check for Author and update auth string if one is found.
-				if (title.matches(".*\\b(?i):\\b.*")) {
+				if (title.contains(":")) {
 					String titleS[] = title.split("\\b:");
 					title = titleS[0].trim();
 					auth = titleS[1].trim();
-			        for (int j = 2; j < titleS.length; j++) {
-			        	int boxId = Integer.valueOf(titleS[j].trim());
-	    				boxAssignment.add((short)boxId);
-	                }
+					for (int j = 2; j < titleS.length; j++) {
+						int boxId = Integer.valueOf(titleS[j].trim());
+						boxAssignment.add((short) boxId);
+					}
 				}
 				
 				// Time Split into Int - then Short into the RecipeTime
@@ -84,19 +82,21 @@ public class RecipeLoader {
 				int ipr = Integer.valueOf(timeL[1].trim());
 				int c = Integer.valueOf(timeL[2].trim());
 
-				RecipeTime timeC = new RecipeTime((short)pr, (short)ipr, (short)c);
+				RecipeTime timeC = new RecipeTime((short) pr, (short) ipr,
+						(short) c);
 
 				// Serving size byte (serveSize)
 				int q = Integer.valueOf(timeL[3].trim());
 				byte serveSize = (byte) q;
-
 				INPUT = scanner.next();
-				
+
 				// Grabbing Recipe Ingredients
 				while (scanner.hasNext()) {
+					Log.d("RECIPE INGREDIENTS LOOP", INPUT);
 					ingredListArray.add(INPUT);
 					INPUT = scanner.next();
-					if (INPUT.matches("\\b_.*")) {
+					if (INPUT.contains("_")) {
+						Log.d("Looking for Directions", "FOUND THEM");
 						break;
 					}
 				}
@@ -105,43 +105,39 @@ public class RecipeLoader {
 				directList = Arrays.asList(dirL);
 
 				while (scanner.hasNext()) {
-					if (INPUT.matches(bV)) {
+					if ("0:E".matches(INPUT.trim())) {
 						break;
 					} else {
 						INPUT = scanner.next();
 					}
 				}
+				
 				// Separating the Ingredients for Database import
-				List<RecipeIngredient> riList = new
-				ArrayList<RecipeIngredient>();
+				List<RecipeIngredient> riList = new ArrayList<RecipeIngredient>();
 				for (String z : ingredListArray) {
-					regex = "\\:"; 
+					regex = "\\:";
 					Pattern p = Pattern.compile(regex);
 					String[] ami = p.split(z.toLowerCase());
-					RecipeIngredient newIngredient = new
-					RecipeIngredient(ami[0].trim(), ami[1].trim(), ami[2].trim(), ami[3].trim());
+					RecipeIngredient newIngredient = new RecipeIngredient(
+							ami[0].trim(), ami[1].trim(), ami[2].trim(),
+							ami[3].trim());
 					riList.add(newIngredient);
 				}
-			
-				List<RecipeDirection> dirList = new
-				ArrayList<RecipeDirection>();
-				for (String s : directList){
+
+				List<RecipeDirection> dirList = new ArrayList<RecipeDirection>();
+				for (String s : directList) {
 					dirList.add(new RecipeDirection(s));
 				}
 
-				Recipe newRecipe = new Recipe(recipeNumber, title, auth, riList, dirList, linkedRecipe, boxAssignment, timeC, serveSize);
+				Recipe newRecipe = new Recipe(recipeNumber, title, auth,
+						riList, dirList, linkedRecipe, boxAssignment, timeC,
+						serveSize);
 				recipeDatabase.addRecipe(newRecipe);
 
 				recipeNumber++; // increment recipe numbering system
 
 			} else {
-				while (scanner.hasNext()) {
-					if (INPUT.equals(bV)) {
-						break;
-					}
-					INPUT = scanner.next();
-
-				}
+				INPUT = scanner.next();
 			}
 		}
 
