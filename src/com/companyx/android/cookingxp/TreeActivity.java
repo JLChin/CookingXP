@@ -53,7 +53,7 @@ public class TreeActivity extends BaseActivity {
 	private List<BoxHolder> pendingEdgeBHs; // path edges to draw, waiting for layout dimensions
 	
 	// SYSTEM
-	OnGlobalLayoutListener listenerOGL;
+	private OnGlobalLayoutListener listenerOGL;
 	
 	/**
 	 * Custom View class for drawing the path edges between Boxes.

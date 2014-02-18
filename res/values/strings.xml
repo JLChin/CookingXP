@@ -30,8 +30,6 @@
     <string name="score">Score</string>
     <string name="welcome">Under construction</string>
     <string name="reset">Reset Game Data</string>
-    <string name="facebook_login">Login Using Facebook</string>
-    <string name="facebook_share">Share to My Wall</string>
     
     <!-- SELECT RECIPE -->
     <string name="select_recipe_favorites_alert_title">Favorite Recipes</string>
@@ -169,6 +167,16 @@
     <string name="game_rank7">Chef de cuisine</string>
     <string name="game_rank8">Executive Chef</string>
     <string name="game_rank9">Master Chef</string>
+    
+    <!-- FACEBOOK -->
+    <string name="facebook_share">Share on Facebook</string>
+    <string name="facebook_name">CookingXP for Android</string>
+    <string name="facebook_caption">An upcoming game in cooking achievement.</string>
+    <string name="facebook_link">https://github.com/JLChin/CookingXP</string>
+    <string name="facebook_picture">https://raw.github.com/JLChin/CookingXP/master/res/drawable-xhdpi/ic_launcher.png</string>
+    <string name="facebook_s_score">\'s Score</string>
+    <string name="facebook_share_success">Successfully shared on Facebook!</string>
+    <string name="facebook_no_active_session">No active Facebook session!</string>
     
     <!-- INFO -->
     <string name="info_credits"><b>Development</b>
