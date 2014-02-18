@@ -7,6 +7,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -190,9 +191,10 @@ public class TreeActivity extends BaseActivity {
 				int edgeViewHeight = imageViewEndXY[1] - imageViewStartXY[1] - imageViewHeight;
 				int edgeViewWidth = edgeViewHeight; // currently the ImageView spacing width scales 1:1 with height
 				
-				// absolute screen location coordinates are offset by XML padding - Android bug?
-				int adjustedImageViewStartX = imageViewStartXY[0] - (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-				int adjustedImageViewStartY = imageViewStartXY[1] - (int) getResources().getDimension(R.dimen.activity_vertical_margin);
+				// absolute screen location coordinates are offset by vertical/horizontal padding and Spinner height
+				Resources resources = getResources();
+				int adjustedImageViewStartX = imageViewStartXY[0] - (int) resources.getDimension(R.dimen.activity_horizontal_margin);
+				int adjustedImageViewStartY = imageViewStartXY[1] - (int) resources.getDimension(R.dimen.activity_vertical_margin) - spinnerTree.getHeight();
 				
 				// EdgeView draw parameters
 				int startX = 0;
