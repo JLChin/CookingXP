@@ -495,6 +495,8 @@ public final class GameData {
 		// remove trailing space and save to preferences file
 		if (serialized.length() > 0)
 			sharedPref.edit().putString("SERIALIZED_GAME_DATA", serialized.substring(0, serialized.length() - 1)).commit();
+		else if (serialized.length() == 0)
+			sharedPref.edit().remove("SERIALIZED_GAME_DATA").commit(); // GameData has just been reset
 		
 		sharedPref.edit().putInt("GAME_SCORE", score).commit();
 	}
