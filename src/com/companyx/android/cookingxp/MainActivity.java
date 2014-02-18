@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,7 +12,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,22 +37,69 @@ public class MainActivity extends BaseActivity {
 	// VIEW HOLDERS
 	private LinearLayout layoutMain;
 	
-	// FACEBOOK
-	private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+	/**
+	 * Helper function to set up social media linking buttons, adding an ImageButton to a parent ViewGroup.
+	 * @param viewGroup the parent ViewGroup to add the ImageButton to.
+	 * @param drawableRes the Drawable resource to set as the ImageButton image.
+	 * @param descriptionRes the String resource to set as the ImageButton content description, for accessibility.
+	 * @param func the function to call upon clicking the ImageButton, passed in wrapped in a Callable interface. (Command Pattern)
+	 */
+	private void addSocialMediaLinkButton(ViewGroup viewGroup, int drawableRes, int descriptionRes, final Callable<Void> func) {
+		ImageButton imageButton = new ImageButton(this);
+		imageButton.setImageResource(drawableRes);
+		imageButton.setBackgroundResource(0);
+		imageButton.setContentDescription(getString(descriptionRes));
+		imageButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					func.call();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		viewGroup.addView(imageButton, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+	}
 	
-	private void initialize() {
-		// LOAD RECIPES FROM FILE
-		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
-		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
-		loader.loadData();
+	/**
+	 * Helper function to set up social media linking buttons, adding the row of ImageButtons to a parent ViewGroup.
+	 * @param viewGroup the parent ViewGroup to add the row of ImageButtons to.
+	 */
+	private void addSocialMediaLinksToLayout(ViewGroup viewGroup) {
+		// horizontal layout container
+		LinearLayout llSocial = new LinearLayout(this);
 		
-		// LOAD FAVORITES
-		recipeDatabase.loadFavoriteRecipes();
+		// FACEBOOK SHARE
+		addSocialMediaLinkButton(llSocial, R.drawable.ic_facebook, R.string.facebook_share, new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				shareOnFacebook();
+				return null;
+			}
+		});
 		
-		// LOAD SHOPPING LIST
-		recipeDatabase.loadShoppingListRecipes();
+		// TWITTER SHARE
+		addSocialMediaLinkButton(llSocial, R.drawable.ic_twitter, R.string.twitter_share, new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				// TODO shareOnTwitter();
+				Toast.makeText(MainActivity.this, "Check back soon for Twitter sharing!", Toast.LENGTH_SHORT).show();
+				return null;
+			}
+		});
 		
-		gameData.validate();
+		// GOOGLE+ SHARE
+		addSocialMediaLinkButton(llSocial, R.drawable.ic_google_plus, R.string.google_plus_share, new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				// TODO shareOnGooglePlus();
+				Toast.makeText(MainActivity.this, "Check back soon for Google+ sharing!", Toast.LENGTH_SHORT).show();
+				return null;
+			}
+		});
+		
+		viewGroup.addView(llSocial);
 	}
 	
 	/**
@@ -68,29 +118,6 @@ public class MainActivity extends BaseActivity {
 	    return true;
 	}
 	
-	/**
-	 * Login to Facebook and publish a story to the logged-in user's wall using Graph API.
-	 */
-	private void shareOnFacebook() {
-		// start Facebook Login
-		Session.openActiveSession(this, true, new Session.StatusCallback() {
-			// callback when session changes state
-			@Override
-			public void call(Session session, SessionState state, Exception exception) {
-				if (session.isOpened()) {
-					// make request to the /me API
-					Request.newMeRequest(session, new Request.GraphUserCallback() {
-						// callback after Graph API response with user object
-						@Override
-						public void onCompleted(GraphUser user, Response response) {
-							publishFacebookStory(user.getName());
-						}
-					}).executeAsync();
-				}
-			}
-		});
-	}
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -103,7 +130,18 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		initialize();
+		// LOAD RECIPES FROM FILE
+		InputStream inputStream = getResources().openRawResource(R.raw.master_recipe_data);
+		RecipeLoader loader = new RecipeLoader(inputStream, recipeDatabase);
+		loader.loadData();
+		
+		// LOAD FAVORITES
+		recipeDatabase.loadFavoriteRecipes();
+		
+		// LOAD SHOPPING LIST
+		recipeDatabase.loadShoppingListRecipes();
+		
+		gameData.validate();
 	}
 	
 	@Override
@@ -153,11 +191,12 @@ public class MainActivity extends BaseActivity {
 	private void publishFacebookStory(String username) {
 	    Session session = Session.getActiveSession();
 
-	    if (session != null){
+	    if (session != null) {
 	        // check if the logged-in user has publish permissions; otherwise re-authorize to grant the missing permissions
-	        List<String> permissions = session.getPermissions();
-	        if (!isSubsetOf(PERMISSIONS, permissions)) {
-	        	Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, PERMISSIONS);
+	    	List<String> requiredPermissions = Arrays.asList("publish_actions");
+	        List<String> currentPermissions = session.getPermissions();
+	        if (!isSubsetOf(requiredPermissions, currentPermissions)) {
+	        	Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, requiredPermissions);
 	            session.requestNewPublishPermissions(newPermissionsRequest);
 	            return;
 	        }
@@ -228,6 +267,7 @@ public class MainActivity extends BaseActivity {
 		layoutMain.addView(tvWelcome);
 		
 		// RESET GAME DATA BUTTON
+		// TODO for debugging
 		Button buttonReset = new Button(this);
 		buttonReset.setText(R.string.reset);
 		buttonReset.setOnClickListener(new OnClickListener() {
@@ -241,15 +281,32 @@ public class MainActivity extends BaseActivity {
 		});
 		layoutMain.addView(buttonReset);
 		
-		// FACEBOOK SHARE
-		Button buttonFacebookShare = new Button(this);
-		buttonFacebookShare.setText(R.string.facebook_share);
-		buttonFacebookShare.setOnClickListener(new OnClickListener() {
+		// layout filler, to push social media links to the bottom
+		layoutMain.addView(new View(this), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+		
+		addSocialMediaLinksToLayout(layoutMain);
+	}
+	
+	/**
+	 * Login to Facebook and publish a story to the logged-in user's wall using Graph API.
+	 */
+	private void shareOnFacebook() {
+		// start Facebook Login
+		Session.openActiveSession(this, true, new Session.StatusCallback() {
+			// callback when session changes state
 			@Override
-			public void onClick(View v) {
-				shareOnFacebook();
+			public void call(Session session, SessionState state, Exception exception) {
+				if (session.isOpened()) {
+					// make request to the /me API
+					Request.newMeRequest(session, new Request.GraphUserCallback() {
+						// callback after Graph API response with user object
+						@Override
+						public void onCompleted(GraphUser user, Response response) {
+							publishFacebookStory(user.getName());
+						}
+					}).executeAsync();
+				}
 			}
 		});
-		layoutMain.addView(buttonFacebookShare);
 	}
 }
