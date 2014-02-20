@@ -66,18 +66,24 @@ public class RecipeLoader {
 					}
 				}
 
-				// Check for Author and update auth string if one is found.
+				// Split Title/Author/boxId line & Capitalize the first letter of each word of a recipe
 				if (title.contains(":")) {
 					String titleS[] = title.split("\\b:");
-					title = titleS[0].trim();
+					String capitalizeTitleWords[] = titleS[0].trim().split("\\s");
 					auth = titleS[1].trim();
+					title = "";
 					for (int j = 2; j < titleS.length; j++) {
 						int boxId = Integer.valueOf(titleS[j].trim());
 						boxAssignment.add((short) boxId);
 					}
+					for (int i = 0; i < capitalizeTitleWords.length; i++){
+						char firstLetter = Character.toUpperCase(capitalizeTitleWords[i].charAt(0));
+						title += " " + firstLetter + capitalizeTitleWords[i].substring(1, capitalizeTitleWords[i].length());
+					}
+					title = title.substring(1);
 				}
 				
-				// Time Split into Int - then Short into the RecipeTime
+				// Time Split to Int & then Short for RecipeTime
 				String timeL[] = INPUT.split("\\:");
 				int pr = Integer.valueOf(timeL[0].trim());
 				int ipr = Integer.valueOf(timeL[1].trim());
